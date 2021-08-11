@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.audio.impl;
 
-import net.picklepark.discord.command.audio.AudioContext;
+import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.DiscordAudioCommand;
 
 public class LouderAudioCommand extends DiscordAudioCommand {

@@ -1,6 +1,6 @@
 package net.picklepark.discord.command;
 
-import net.picklepark.discord.command.audio.AudioContext;
+import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.impl.*;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.command.search.impl.SearchCommand;
 
 import java.util.*;
 
@@ -63,6 +64,8 @@ public class DiscordCommandFactory {
             return new UnpauseAudioCommand(context);
         } else if ("~ramranch".equals(command[0])) {
             return new QueueAudioCommand(RAM_RANCH_URL, context);
+        } else if ("~lookup".equals(command[0])) {
+            return new SearchCommand(command[1], event);
         } else {
             return NOOP;
         }

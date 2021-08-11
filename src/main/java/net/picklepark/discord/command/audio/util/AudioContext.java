@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.audio;
+package net.picklepark.discord.command.audio.util;
 
 import net.picklepark.discord.command.audio.util.GuildPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;

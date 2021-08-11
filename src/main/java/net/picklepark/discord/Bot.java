@@ -33,7 +33,11 @@ public class Bot extends ListenerAdapter {
   }
 
   private void executeAsCommand(GuildMessageReceivedEvent event) {
-    factory.buildAuthorizedCommand(event).execute();
+    try {
+      factory.buildAuthorizedCommand(event).execute();
+    } catch (Exception ex) {
+      logger.error(ex.getMessage());
+    }
   }
 
 }
