@@ -4,7 +4,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.embed.Embedder;
+import net.picklepark.discord.embed.renderer.EmbedRendererImpl;
 import net.picklepark.discord.embed.scraper.ElementScraperImpl;
+import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
@@ -14,7 +17,7 @@ public class SearchCommand implements DiscordCommand {
     private final GuildMessageReceivedEvent event;
 
     public SearchCommand(String elementId, GuildMessageReceivedEvent event) {
-        embedder = new Embedder(new ElementScraperImpl());
+        embedder = new Embedder(new ElementScraperImpl(), new EmbedRendererImpl());
         this.elementId = elementId;
         this.event = event;
     }
