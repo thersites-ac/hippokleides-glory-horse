@@ -19,7 +19,7 @@ public class DocumentFetcherImplTests {
         new DocumentFetcherImpl().fetch("http://www.google.com");
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void throwsBadUrlException() throws IOException {
         new DocumentFetcherImpl().fetch("foo");
     }

@@ -6,8 +6,6 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.embed.Embedder;
 import net.picklepark.discord.embed.renderer.EmbedRendererImpl;
 import net.picklepark.discord.embed.scraper.ElementScraperImpl;
-import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 

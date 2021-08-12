@@ -1,9 +1,9 @@
 package net.picklepark.discord;
 
-import net.picklepark.discord.command.DiscordCommandFactory;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.picklepark.discord.command.DiscordCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

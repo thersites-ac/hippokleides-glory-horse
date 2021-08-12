@@ -1,16 +1,19 @@
 package net.picklepark.discord.command;
 
-import net.picklepark.discord.command.audio.util.AudioContext;
-import net.picklepark.discord.command.audio.impl.*;
-import net.picklepark.discord.command.audio.util.GuildPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.command.audio.impl.*;
+import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.command.audio.util.GuildPlayer;
 import net.picklepark.discord.command.search.impl.SearchCommand;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DiscordCommandFactory {
 

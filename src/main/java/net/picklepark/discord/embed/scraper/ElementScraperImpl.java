@@ -3,7 +3,6 @@ package net.picklepark.discord.embed.scraper;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcherImpl;
 import net.picklepark.discord.exception.NotFoundException;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;

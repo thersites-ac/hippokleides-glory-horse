@@ -1,8 +1,8 @@
 package net.picklepark.discord.command.audio.impl;
 
-import net.picklepark.discord.command.audio.util.AudioContext;
-import net.picklepark.discord.command.audio.DiscordAudioCommand;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.picklepark.discord.command.audio.DiscordAudioCommand;
+import net.picklepark.discord.command.audio.util.AudioContext;
 
 public class SkipAudioCommand extends DiscordAudioCommand {
 

@@ -4,9 +4,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
-import net.picklepark.discord.embed.Embedder;
 import org.jsoup.nodes.Element;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,14 +30,6 @@ public class EmbedderTests {
     public void createsEmbed() throws IOException {
         embedder.embedFeat("foo");
     }
-
-    // this is really a renderer test
-    @Test
-    public void usesIdForAuthor() throws IOException {
-        MessageEmbed embed = embedder.embedFeat("foo");
-        Assert.assertEquals("foo", embed.getAuthor());
-    }
-
 
     private class MockElementScraper implements ElementScraper {
         @Override
