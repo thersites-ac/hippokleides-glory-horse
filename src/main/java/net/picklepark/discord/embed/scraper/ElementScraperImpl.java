@@ -3,8 +3,11 @@ package net.picklepark.discord.embed.scraper;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcherImpl;
 import net.picklepark.discord.exception.NotFoundException;
+import net.picklepark.discord.exception.NullDocumentException;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +30,24 @@ public class ElementScraperImpl implements ElementScraper {
 
     @Override
     public List<Element> scrapeCoreFeat(String id) throws IOException {
-        Element element = fetcher.fetch(CORE_FEATS)
-                .getElementById(id);
+        Element element = getRootFeatElement(id);
         List<Element> elements = new ArrayList<>();
-        if (element == null) {
-            throw new NotFoundException(id, CORE_FEATS);
-        }
         while (null != element && !element.tagName().equals(H2)) {
             elements.add(element);
             element = element.nextElementSibling();
         }
         return elements;
+    }
+
+    private Element getRootFeatElement(String id) throws IOException {
+        Document document = fetcher.fetch(CORE_FEATS);
+        if (document == null)
+            throw new NullDocumentException(CORE_FEATS);
+        Element element = document.getElementById(id);
+        if (element == null) {
+            throw new NotFoundException(id, CORE_FEATS);
+        }
+        return element;
     }
 
 }
