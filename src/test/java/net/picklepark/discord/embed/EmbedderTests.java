@@ -1,6 +1,7 @@
 package net.picklepark.discord.embed;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.Embedder;
@@ -49,7 +50,7 @@ public class EmbedderTests {
 
     private class MockRenderer implements EmbedRenderer {
         @Override
-        public MessageEmbed renderCoreFeat(List<Element> elements) {
+        public MessageEmbed renderFeat(Feat feat) {
             return null;
         }
     }

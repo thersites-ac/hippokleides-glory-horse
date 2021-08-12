@@ -1,10 +1,8 @@
 package net.picklepark.discord.embed.renderer;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.jsoup.nodes.Element;
-
-import java.util.List;
+import net.picklepark.discord.embed.model.Feat;
 
 public interface EmbedRenderer {
-    public MessageEmbed renderCoreFeat(List<Element> elements);
+    public MessageEmbed renderFeat(Feat feat);
 }

@@ -1,13 +1,18 @@
 package net.picklepark.discord.embed.renderer;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.jsoup.nodes.Element;
+import net.picklepark.discord.embed.model.Feat;
 
-import java.util.List;
 
 public class EmbedRendererImpl implements EmbedRenderer {
     @Override
-    public MessageEmbed renderCoreFeat(List<Element> elements) {
-        return null;
+    public MessageEmbed renderFeat(Feat feat) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(feat.getName());
+        feat.getFeatDetails()
+                .forEach(detail -> builder.addField(detail.getName(), detail.getText(), false));
+        builder.setFooter(feat.getFooter());
+        return builder.build();
     }
 }
