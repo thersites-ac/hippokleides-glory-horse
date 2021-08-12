@@ -1,6 +1,4 @@
-# Test
-
-| foo | bar | baz |
-| :--- | :---: | ---: |
-| biglongphrae |  longphrase | longphrase | 
-| yetmorewords | not left aligned | whatever |
+To Do
+=====
+* test with feats like `whirlwind-attack`
+* add some degree of fuzzy id matching or in-text search
