@@ -32,10 +32,10 @@ public class ElementScraperImpl implements ElementScraper {
     public List<Element> scrapeCoreFeat(String id) throws IOException {
         Element element = getRootFeatElement(id);
         List<Element> elements = new ArrayList<>();
-        while (null != element && !element.tagName().equals(H2)) {
+        do {
             elements.add(element);
             element = element.nextElementSibling();
-        }
+        } while (null != element && !element.tagName().equals(H2));
         return elements;
     }
 

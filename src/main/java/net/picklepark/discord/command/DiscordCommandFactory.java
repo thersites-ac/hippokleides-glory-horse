@@ -67,7 +67,7 @@ public class DiscordCommandFactory {
             return new UnpauseAudioCommand(context);
         } else if ("~ramranch".equals(command[0])) {
             return new QueueAudioCommand(RAM_RANCH_URL, context);
-        } else if ("~lookup".equals(command[0])) {
+        } else if ("~search".equals(command[0])) {
             return new SearchCommand(command[1], event);
         } else {
             return NOOP;

@@ -52,6 +52,21 @@ public class EmbedderTests {
         Assert.assertEquals("quux", embed.getFooter().getText());
     }
 
+    @Test
+    public void rendersClasslessDescription() {
+        Assert.fail();
+    }
+
+    @Test
+    public void qualifiersCanBeNull() {
+        Assert.fail();
+    }
+
+    @Test
+    public void footerCanBeMissing() {
+        Assert.fail();
+    }
+
     private class MockElementScraper implements ElementScraper {
         @Override
         public List<Element> scrapeCoreFeat(String id) {
