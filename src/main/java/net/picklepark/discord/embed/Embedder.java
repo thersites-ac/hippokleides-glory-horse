@@ -7,8 +7,6 @@ import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +30,12 @@ public class Embedder {
     public MessageEmbed embedCoreFeat(String id) throws IOException {
         List<Element> elements = scraper.scrapeCoreFeat(id);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transform(elements, "Core Rulebook");
+        Feat feat = transformCoreFeat(elements);
         logger.info("Feat: {}", feat.toString());
         return renderer.renderFeat(feat);
     }
 
-    private Feat transform(List<Element> elements, String source) {
+    private Feat transformCoreFeat(List<Element> elements) {
         String name = getValidName(elements);
         String description = getValidDescription(elements);
         List<FeatDetail> details = getValidDetails(elements);
@@ -47,7 +45,7 @@ public class Embedder {
                 .featDetails(details)
                 .description(description)
                 .footer(footer)
-                .source(source)
+                .source("Core Rulebook")
                 .build();
     }
 
