@@ -36,7 +36,8 @@ public class Bot extends ListenerAdapter {
     try {
       factory.buildAuthorizedCommand(event).execute();
     } catch (Exception ex) {
-      logger.error(ex.getMessage());
+      ex.printStackTrace();
+      event.getChannel().sendMessage("Oh no, I'm broken!").queue();
     }
   }
 

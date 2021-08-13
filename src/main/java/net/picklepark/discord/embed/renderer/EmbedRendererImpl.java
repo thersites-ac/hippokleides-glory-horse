@@ -9,10 +9,11 @@ public class EmbedRendererImpl implements EmbedRenderer {
     @Override
     public MessageEmbed renderFeat(Feat feat) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(feat.getName());
+                .setTitle(feat.getName())
+                .setDescription(feat.getDescription())
+                .setFooter(feat.getFooter());
         feat.getFeatDetails()
                 .forEach(detail -> builder.addField(detail.getName(), detail.getText(), false));
-        builder.setFooter(feat.getFooter());
         return builder.build();
     }
 }

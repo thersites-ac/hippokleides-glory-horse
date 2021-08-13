@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class Feat {
     private String name;
+    private String description;
     private List<FeatDetail> featDetails;
     private String footer;
 }

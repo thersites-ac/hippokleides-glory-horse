@@ -58,6 +58,17 @@ public class EmbedRendererImplTests {
         Assert.assertEquals("foo", embed.getFooter().getText());
     }
 
+    @Test
+    public void rendersClasslessDescription() {
+        EmbedRendererImpl renderer = new EmbedRendererImpl();
+        Feat feat = Feat.builder()
+                .featDetails(new ArrayList<>())
+                .description("foo")
+                .build();
+        MessageEmbed embed = renderer.renderFeat(feat);
+        Assert.assertEquals("foo", embed.getDescription());
+    }
+
     private FeatDetail makeFeatDetail(String name, String text) {
         return FeatDetail.builder()
                 .name(name)

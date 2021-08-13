@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.search.impl;
+package net.picklepark.discord.command.pathfinder.impl;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -9,12 +9,12 @@ import net.picklepark.discord.embed.scraper.ElementScraperImpl;
 
 import java.io.IOException;
 
-public class SearchCommand implements DiscordCommand {
+public class FeatCommand implements DiscordCommand {
     private final String elementId;
     private final Embedder embedder;
     private final GuildMessageReceivedEvent event;
 
-    public SearchCommand(String elementId, GuildMessageReceivedEvent event) {
+    public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
         embedder = new Embedder(new ElementScraperImpl(), new EmbedRendererImpl());
         this.elementId = elementId;
         this.event = event;

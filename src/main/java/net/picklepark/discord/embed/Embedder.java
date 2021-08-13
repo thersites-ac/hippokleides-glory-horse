@@ -7,15 +7,22 @@ import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Embedder {
 
     private ElementScraper scraper;
     private EmbedRenderer renderer;
+    private static final Logger logger = LoggerFactory.getLogger(Embedder.class);
 
     public Embedder(ElementScraper scraper, EmbedRenderer renderer) {
         this.scraper = scraper;
@@ -24,40 +31,62 @@ public class Embedder {
 
     public MessageEmbed embedFeat(String id) throws IOException {
         List<Element> elements = scraper.scrapeCoreFeat(id);
+        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
         Feat feat = transform(elements);
+        logger.info("Feat: {}", feat.toString());
         return renderer.renderFeat(feat);
     }
 
     private Feat transform(List<Element> elements) {
         String name = getValidName(elements);
+        String description = getValidDescription(elements);
         List<FeatDetail> details = getValidDetails(elements);
-        String footer = getValidFooter(elements);
+        String footer = getOptionalFooter(elements);
         return Feat.builder()
                 .name(name)
                 .featDetails(details)
+                .description(description)
                 .footer(footer)
                 .build();
     }
 
-    private String getValidFooter(List<Element> elements) {
-        List<Element> footer = elements.stream()
+    private String getValidDescription(List<Element> elements) {
+        Optional<Element> descriptor = elements.stream()
+                .filter(e -> e.classNames().isEmpty() && e.tagName().equals("p"))
+                .findFirst();
+        if (descriptor.isPresent())
+            return descriptor.get().text();
+        else
+            throw new ScrapedElementValidationException("description");
+    }
+
+    private String getOptionalFooter(List<Element> elements) {
+        return elements.stream()
                 .filter(e -> e.hasClass("stat-block-2"))
-                .collect(Collectors.toList());
-        validateFooter(footer);
-        return footer.get(0).text();
+                .map(Element::text)
+                .findFirst()
+                .orElse("Scraped with love by Hippokleides, Glory Horse");
     }
 
     private List<FeatDetail> getValidDetails(List<Element> elements) {
-        List<Element> qualifiers = elements.stream()
+        List<Element> detailParents = elements.stream()
                 .filter(e -> e.hasClass("stat-block-1"))
                 .collect(Collectors.toList());
-        validateQualifiers(qualifiers);
-        return qualifiers.stream()
+        return detailParents.stream()
                 .map(element -> FeatDetail.builder()
                         .name(element.child(0).text())
-                        .text(element.textNodes().get(0).getWholeText())
+                        .text(getDetailText(element))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    private String getDetailText(Element element) {
+        dropFirstChild(element);
+        return element.text();
+    }
+
+    private void dropFirstChild(Element element) {
+        element.childNodes().get(0).remove();
     }
 
     private String getValidName(List<Element> elements) {
@@ -66,16 +95,6 @@ public class Embedder {
                 .collect(Collectors.toList());
         validateName(name);
         return name.get(0).text();
-    }
-
-    private void validateFooter(List<Element> footer) {
-        if (footer.size() != 1) throw new ScrapedElementValidationException("footer");
-    }
-
-    private void validateQualifiers(List<Element> qualifiers) {
-        qualifiers.forEach(qualifier -> {
-            if (qualifier.childNodeSize() != 2) throw new ScrapedElementValidationException("qualifier");
-        });
     }
 
     private void validateName(List<Element> name) {

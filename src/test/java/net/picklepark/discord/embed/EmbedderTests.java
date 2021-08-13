@@ -16,11 +16,13 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(JUnit4.class)
 public class EmbedderTests {
 
     private List<Element> elements;
+    private Embedder embedder = new Embedder(new MockElementScraper(), new EmbedRendererImpl());
 
     @Before
     public void setup() {
@@ -35,6 +37,7 @@ public class EmbedderTests {
 
     private void makeElementsValid() {
         elements.add(new Element("h2").text("foo"));
+        elements.add(new Element("p").text("some text"));
         elements.add(new Element("p").addClass("stat-block-1")
                 .appendChild(new Element("b").text("bar"))
                 .appendChild(new TextNode("baz")));
@@ -44,27 +47,44 @@ public class EmbedderTests {
     @Test
     public void createsValidEmbedWithRealRenderer() throws IOException {
         makeElementsValid();
-        Embedder embedder = new Embedder(new MockElementScraper(), new EmbedRendererImpl());
         MessageEmbed embed = embedder.embedFeat("foo");
         Assert.assertEquals("foo", embed.getTitle());
+        Assert.assertEquals("some text", embed.getDescription());
         Assert.assertEquals("bar", embed.getFields().get(0).getName());
         Assert.assertEquals("baz", embed.getFields().get(0).getValue());
         Assert.assertEquals("quux", embed.getFooter().getText());
     }
 
     @Test
-    public void rendersClasslessDescription() {
-        Assert.fail();
+    public void ifNoQualifiersThenNoFields() throws IOException {
+        makeElementsValid();
+        elements = elements.stream()
+                .filter(e -> !e.hasClass("stat-block-1"))
+                .collect(Collectors.toList());
+        MessageEmbed embed = embedder.embedFeat("foo");
+        Assert.assertTrue(embed.getFields().isEmpty());
     }
 
     @Test
-    public void qualifiersCanBeNull() {
-        Assert.fail();
+    public void footerCanBeMissing() throws IOException {
+        makeElementsValid();
+        elements = elements.stream()
+                .filter(e -> !e.hasClass("stat-block-2"))
+                .collect(Collectors.toList());
+        MessageEmbed embed = embedder.embedFeat("foo");
+        Assert.assertEquals("Scraped with love by Hippokleides, Glory Horse", embed.getFooter().getText());
     }
 
     @Test
-    public void footerCanBeMissing() {
-        Assert.fail();
+    public void unwrapsExtraNodesInQualifier() throws IOException {
+        makeElementsValid();
+        extendQualifierElement();
+        MessageEmbed embed = embedder.embedFeat("foo");
+        Assert.assertEquals("bazextra", embed.getFields().get(0).getValue());
+    }
+
+    private void extendQualifierElement() {
+        elements.get(2).appendChild(new Element("a").text("extra"));
     }
 
     private class MockElementScraper implements ElementScraper {

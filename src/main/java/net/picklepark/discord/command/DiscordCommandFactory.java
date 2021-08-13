@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.audio.impl.*;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
-import net.picklepark.discord.command.search.impl.SearchCommand;
+import net.picklepark.discord.command.pathfinder.impl.FeatCommand;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,8 +67,8 @@ public class DiscordCommandFactory {
             return new UnpauseAudioCommand(context);
         } else if ("~ramranch".equals(command[0])) {
             return new QueueAudioCommand(RAM_RANCH_URL, context);
-        } else if ("~search".equals(command[0])) {
-            return new SearchCommand(command[1], event);
+        } else if ("~feat".equals(command[0])) {
+            return new FeatCommand(command[1], event);
         } else {
             return NOOP;
         }
