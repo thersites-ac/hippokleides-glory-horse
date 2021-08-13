@@ -22,31 +22,21 @@ import java.util.stream.Collectors;
 public class EmbedderTests {
 
     private List<Element> elements;
-    private Embedder embedder = new Embedder(new MockElementScraper(), new EmbedRendererImpl());
+    private Embedder embedder;
 
     @Before
     public void setup() {
-        elements = new ArrayList<>();
+        makeElementsValid();
+        embedder = new Embedder(new MockElementScraper(), new EmbedRendererImpl());
     }
 
     @Test
     public void canCreateAndRun() throws IOException {
-        makeElementsValid();
         new Embedder(new MockElementScraper(), new MockRenderer()).embedFeat("foo");
-    }
-
-    private void makeElementsValid() {
-        elements.add(new Element("h2").text("foo"));
-        elements.add(new Element("p").text("some text"));
-        elements.add(new Element("p").addClass("stat-block-1")
-                .appendChild(new Element("b").text("bar"))
-                .appendChild(new TextNode("baz")));
-        elements.add(new Element("p").addClass("stat-block-2").text("quux"));
     }
 
     @Test
     public void createsValidEmbedWithRealRenderer() throws IOException {
-        makeElementsValid();
         MessageEmbed embed = embedder.embedFeat("foo");
         Assert.assertEquals("foo", embed.getTitle());
         Assert.assertEquals("some text", embed.getDescription());
@@ -56,8 +46,7 @@ public class EmbedderTests {
     }
 
     @Test
-    public void ifNoQualifiersThenNoFields() throws IOException {
-        makeElementsValid();
+    public void ifNoDetailsThenNoFields() throws IOException {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-1"))
                 .collect(Collectors.toList());
@@ -66,8 +55,7 @@ public class EmbedderTests {
     }
 
     @Test
-    public void footerCanBeMissing() throws IOException {
-        makeElementsValid();
+    public void footerNotRequired() throws IOException {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-2"))
                 .collect(Collectors.toList());
@@ -76,14 +64,23 @@ public class EmbedderTests {
     }
 
     @Test
-    public void unwrapsExtraNodesInQualifier() throws IOException {
-        makeElementsValid();
-        extendQualifierElement();
+    public void unwrapsExtraNodesInDetail() throws IOException {
+        extendDetailElement();
         MessageEmbed embed = embedder.embedFeat("foo");
         Assert.assertEquals("bazextra", embed.getFields().get(0).getValue());
     }
 
-    private void extendQualifierElement() {
+    private void makeElementsValid() {
+        elements = new ArrayList<>();
+        elements.add(new Element("h2").text("foo"));
+        elements.add(new Element("p").text("some text"));
+        elements.add(new Element("p").addClass("stat-block-1")
+                .appendChild(new Element("b").text("bar"))
+                .appendChild(new TextNode("baz")));
+        elements.add(new Element("p").addClass("stat-block-2").text("quux"));
+    }
+
+    private void extendDetailElement() {
         elements.get(2).appendChild(new Element("a").text("extra"));
     }
 
@@ -100,4 +97,5 @@ public class EmbedderTests {
             return null;
         }
     }
+
 }
