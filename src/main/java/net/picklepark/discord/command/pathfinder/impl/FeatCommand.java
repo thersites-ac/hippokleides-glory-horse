@@ -22,7 +22,7 @@ public class FeatCommand implements DiscordCommand {
 
     @Override
     public void execute() throws IOException {
-        MessageEmbed embed = embedder.embedFeat(elementId);
+        MessageEmbed embed = embedder.embedCoreFeat(elementId);
         event.getChannel().sendMessageEmbeds(embed).queue();
     }
 }

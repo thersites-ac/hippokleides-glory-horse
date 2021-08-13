@@ -11,6 +11,7 @@ public class EmbedRendererImpl implements EmbedRenderer {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(feat.getName())
                 .setDescription(feat.getDescription())
+                .setAuthor(feat.getSource())
                 .setFooter(feat.getFooter());
         feat.getFeatDetails()
                 .forEach(detail -> builder.addField(detail.getName(), detail.getText(), false));

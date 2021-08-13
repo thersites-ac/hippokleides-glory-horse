@@ -32,12 +32,12 @@ public class EmbedderTests {
 
     @Test
     public void canCreateAndRun() throws IOException {
-        new Embedder(new MockElementScraper(), new MockRenderer()).embedFeat("foo");
+        new Embedder(new MockElementScraper(), new MockRenderer()).embedCoreFeat("foo");
     }
 
     @Test
     public void createsValidEmbedWithRealRenderer() throws IOException {
-        MessageEmbed embed = embedder.embedFeat("foo");
+        MessageEmbed embed = embedder.embedCoreFeat("foo");
         Assert.assertEquals("foo", embed.getTitle());
         Assert.assertEquals("some text", embed.getDescription());
         Assert.assertEquals("bar", embed.getFields().get(0).getName());
@@ -50,7 +50,7 @@ public class EmbedderTests {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-1"))
                 .collect(Collectors.toList());
-        MessageEmbed embed = embedder.embedFeat("foo");
+        MessageEmbed embed = embedder.embedCoreFeat("foo");
         Assert.assertTrue(embed.getFields().isEmpty());
     }
 
@@ -59,14 +59,14 @@ public class EmbedderTests {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-2"))
                 .collect(Collectors.toList());
-        MessageEmbed embed = embedder.embedFeat("foo");
+        MessageEmbed embed = embedder.embedCoreFeat("foo");
         Assert.assertEquals("Scraped with love by Hippokleides, Glory Horse", embed.getFooter().getText());
     }
 
     @Test
     public void unwrapsExtraNodesInDetail() throws IOException {
         extendDetailElement();
-        MessageEmbed embed = embedder.embedFeat("foo");
+        MessageEmbed embed = embedder.embedCoreFeat("foo");
         Assert.assertEquals("bazextra", embed.getFields().get(0).getValue());
     }
 

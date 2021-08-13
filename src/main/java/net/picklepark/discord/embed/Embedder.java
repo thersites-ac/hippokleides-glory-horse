@@ -29,15 +29,15 @@ public class Embedder {
         this.renderer = renderer;
     }
 
-    public MessageEmbed embedFeat(String id) throws IOException {
+    public MessageEmbed embedCoreFeat(String id) throws IOException {
         List<Element> elements = scraper.scrapeCoreFeat(id);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transform(elements);
+        Feat feat = transform(elements, "Core Rulebook");
         logger.info("Feat: {}", feat.toString());
         return renderer.renderFeat(feat);
     }
 
-    private Feat transform(List<Element> elements) {
+    private Feat transform(List<Element> elements, String source) {
         String name = getValidName(elements);
         String description = getValidDescription(elements);
         List<FeatDetail> details = getValidDetails(elements);
@@ -47,6 +47,7 @@ public class Embedder {
                 .featDetails(details)
                 .description(description)
                 .footer(footer)
+                .source(source)
                 .build();
     }
 

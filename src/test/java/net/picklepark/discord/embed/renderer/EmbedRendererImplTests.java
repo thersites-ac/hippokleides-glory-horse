@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -15,6 +16,13 @@ import java.util.List;
 @RunWith(JUnit4.class)
 public class EmbedRendererImplTests {
 
+    private EmbedRendererImpl renderer;
+
+    @Before
+    public void setup() {
+        renderer = new EmbedRendererImpl();
+    }
+
     @Test
     public void canCreate() {
         new EmbedRendererImpl();
@@ -22,7 +30,6 @@ public class EmbedRendererImplTests {
 
     @Test
     public void nameBecomesTitle() {
-        EmbedRendererImpl renderer = new EmbedRendererImpl();
         Feat feat = Feat.builder()
                 .name("foo")
                 .featDetails(new ArrayList<>())
@@ -33,7 +40,6 @@ public class EmbedRendererImplTests {
 
     @Test
     public void featDetailsBecomeFields() {
-        EmbedRendererImpl renderer = new EmbedRendererImpl();
         List<FeatDetail> details = Arrays.asList(
                 makeFeatDetail("foo", "bar"),
                 makeFeatDetail("baz", "quux"));
@@ -49,7 +55,6 @@ public class EmbedRendererImplTests {
 
     @Test
     public void footerBecomesFooter() {
-        EmbedRendererImpl renderer = new EmbedRendererImpl();
         Feat feat = Feat.builder()
                 .footer("foo")
                 .featDetails(new ArrayList<>())
@@ -60,13 +65,22 @@ public class EmbedRendererImplTests {
 
     @Test
     public void rendersClasslessDescription() {
-        EmbedRendererImpl renderer = new EmbedRendererImpl();
         Feat feat = Feat.builder()
                 .featDetails(new ArrayList<>())
                 .description("foo")
                 .build();
         MessageEmbed embed = renderer.renderFeat(feat);
         Assert.assertEquals("foo", embed.getDescription());
+    }
+
+    @Test
+    public void sourceBecomesAuthor() {
+        Feat feat = Feat.builder()
+                .source("foo")
+                .featDetails(new ArrayList<>())
+                .build();
+        MessageEmbed embed = renderer.renderFeat(feat);
+        Assert.assertEquals("foo", embed.getAuthor().getName());
     }
 
     private FeatDetail makeFeatDetail(String name, String text) {
