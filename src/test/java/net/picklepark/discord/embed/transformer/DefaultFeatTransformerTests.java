@@ -29,15 +29,73 @@ public class DefaultFeatTransformerTests {
     @Test
     public void detailBlocksOptionalForCoreFeat() {
         givenScrapedElementsHaveNoDetailBlocks();
-        whenTransformToFeat();
-        thenCoreFeatHasNoDetails();
+        whenTransformToCoreFeat();
+        thenResultHasNoDetails();
     }
 
     @Test
     public void footerBlockOptionalForCoreFeat() {
         givenScrapedElementsHaveNoFooter();
-        whenTransformToFeat();
+        whenTransformToCoreFeat();
         thenFeatHasDefaultFooter();
+    }
+
+    @Test
+    public void detailBlocksOptionalForAdvancedPlayerFeat() {
+        givenScrapedElementsHaveNoDetailBlocks();
+        whenTransformToAdvancedPlayerFeat();
+        thenResultHasNoDetails();
+    }
+
+    @Test
+    public void footerBlockOptionalForAdvancedPlayerFeat() {
+        givenScrapedElementsHaveNoFooter();
+        whenTransformToAdvancedPlayerFeat();
+        thenFeatHasDefaultFooter();
+    }
+
+    @Test
+    public void expectsStrongTagInAdvancedClassFeat() {
+        givenScrapedAdvancedClassFeat();
+        whenTransformToAdvancedClassFeat();
+        thenFeatHasCorrectDetails();
+    }
+
+    private void thenFeatHasCorrectDetails() {
+        Assert.assertEquals(1, result.getFeatDetails().size());
+        Assert.assertEquals("bar", result.getFeatDetails().get(0).getName());
+        Assert.assertEquals("baz", result.getFeatDetails().get(0).getText());
+    }
+
+    private void whenTransformToAdvancedClassFeat() {
+        result = transformer.transformAdvancedClassFeat(elements);
+    }
+
+    @Test
+    public void handlesEmbeddedRulesInAdvancedPlayerFeat() {
+        Assert.fail();
+    }
+
+    @Test
+    public void handlesParagraphsWithNoTitleInAdvancedPlayerFeat() {
+        Assert.fail();
+    }
+
+    @Test
+    public void handlesParagraphsWithNoTitleInAdvancedClassFeat() {
+        Assert.fail();
+    }
+
+    private void givenScrapedAdvancedClassFeat() {
+        elements.add(new Element("h2").text("foo"));
+        elements.add(new Element("p").text("some text"));
+        elements.add(new Element("p")
+                .appendChild(new Element("strong").text("bar"))
+                .appendChild(new TextNode("baz")));
+    }
+
+    private void whenTransformToAdvancedPlayerFeat() {
+        result = transformer.transformAdvancedPlayerFeat(elements);
     }
 
     private void thenFeatHasDefaultFooter() {
@@ -68,11 +126,11 @@ public class DefaultFeatTransformerTests {
         filterOut("stat-block-1");
     }
 
-    private void whenTransformToFeat() {
+    private void whenTransformToCoreFeat() {
         result = transformer.transformCoreFeat(elements);
     }
 
-    private void thenCoreFeatHasNoDetails() {
+    private void thenResultHasNoDetails() {
         Assert.assertTrue(result.getFeatDetails().isEmpty());
     }
 

@@ -7,14 +7,16 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DefaultFeatTransformer implements FeatTransformer {
+
     @Override
     public Feat transformCoreFeat(List<Element> elements) {
         String name = getValidName(elements);
         String description = getValidDescription(elements);
-        List<FeatDetail> details = getValidDetails(elements);
+        List<FeatDetail> details = getDetails(elements, e -> e.hasClass("stat-block-1"));
         String footer = getOptionalFooter(elements);
         return Feat.builder()
                 .name(name)
@@ -23,6 +25,30 @@ public class DefaultFeatTransformer implements FeatTransformer {
                 .footer(footer)
                 .source("Core Rulebook")
                 .build();
+    }
+
+    @Override
+    public Feat transformAdvancedClassFeat(List<Element> elements) {
+        String name = getValidName(elements);
+        String description = getValidDescription(elements);
+        List<FeatDetail> details = getDetails(elements,
+                e -> !e.children().isEmpty()
+                        && e.child(0).tagName().equals("strong"));
+        String footer = getOptionalFooter(elements);
+        return Feat.builder()
+                .name(name)
+                .featDetails(details)
+                .description(description)
+                .footer(footer)
+                .source("Advanced Class Guide")
+                .build();
+    }
+
+    @Override
+    public Feat transformAdvancedPlayerFeat(List<Element> elements) {
+        Feat result = transformCoreFeat(elements);
+        result.setSource("Advanced Player's Guide");
+        return result;
     }
 
     private String getValidDescription(List<Element> elements) {
@@ -43,9 +69,9 @@ public class DefaultFeatTransformer implements FeatTransformer {
                 .orElse("Scraped with love by Hippokleides, Glory Horse");
     }
 
-    private List<FeatDetail> getValidDetails(List<Element> elements) {
+    private List<FeatDetail> getDetails(List<Element> elements, Predicate<Element> filter) {
         List<Element> detailParents = elements.stream()
-                .filter(e -> e.hasClass("stat-block-1"))
+                .filter(filter)
                 .collect(Collectors.toList());
         return detailParents.stream()
                 .map(element -> FeatDetail.builder()

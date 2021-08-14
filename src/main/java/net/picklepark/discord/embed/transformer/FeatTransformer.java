@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FeatTransformer {
     public Feat transformCoreFeat(List<Element> elements);
+    public Feat transformAdvancedPlayerFeat(List<Element> elements);
+    public Feat transformAdvancedClassFeat(List<Element> elements);
 }
