@@ -3,6 +3,7 @@ package net.picklepark.discord.embed.transformer;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
+import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
@@ -83,7 +84,10 @@ public class DefaultFeatTransformer implements FeatTransformer {
 
     private String getDetailText(Element element) {
         dropFirstChild(element);
-        return element.text();
+        String text = element.text();
+        if (text.charAt(0) == ':')
+            text = text.substring(1).strip();
+        return text;
     }
 
     private void dropFirstChild(Element element) {

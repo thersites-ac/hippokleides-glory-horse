@@ -46,12 +46,22 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
 
     @Override
     public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException {
-        return null;
+        logger.info("Scraping {}", id);
+        List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_PLAYER_FEATS);
+        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
+        Feat feat = transformer.transformAdvancedPlayerFeat(elements);
+        logger.info("Feat: {}", feat.toString());
+        return renderer.renderFeat(feat);
     }
 
     @Override
     public MessageEmbed embedAdvancedClassFeat(String id) throws IOException {
-        return null;
+        logger.info("Scraping {}", id);
+        List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_CLASS_FEATS);
+        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
+        Feat feat = transformer.transformAdvancedClassFeat(elements);
+        logger.info("Feat: {}", feat.toString());
+        return renderer.renderFeat(feat);
     }
 
 }

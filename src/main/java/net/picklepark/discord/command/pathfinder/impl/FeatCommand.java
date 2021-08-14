@@ -7,13 +7,19 @@ import net.picklepark.discord.embed.LegacyPrdEmbedder;
 import net.picklepark.discord.embed.renderer.DefaultRenderer;
 import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class FeatCommand implements DiscordCommand {
+    private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
+
     private final String elementId;
     private final LegacyPrdEmbedder legacyPrdEmbedder;
     private final GuildMessageReceivedEvent event;
+
+    private MessageEmbed foundFeat = null;
 
     public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
         legacyPrdEmbedder = new LegacyPrdEmbedder(new DefaultElementScraper(), new DefaultRenderer(), new DefaultFeatTransformer());
@@ -22,8 +28,39 @@ public class FeatCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute() throws IOException {
-        MessageEmbed embed = legacyPrdEmbedder.embedCoreFeat(elementId);
-        event.getChannel().sendMessageEmbeds(embed).queue();
+    public void execute() {
+        tryCoreFeat();
+        if (foundFeat == null)
+            tryAdvancedPlayerFeat();
+        if (foundFeat == null)
+            tryAdvancedClassFeat();
+        if (foundFeat == null)
+            event.getChannel().sendMessage("Sorry, I couldn't find that feat").queue();
+        else
+            event.getChannel().sendMessageEmbeds(foundFeat).queue();
+    }
+
+    private void tryAdvancedClassFeat() {
+        try {
+            foundFeat = legacyPrdEmbedder.embedAdvancedClassFeat(elementId);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+
+    private void tryAdvancedPlayerFeat() {
+        try {
+            foundFeat = legacyPrdEmbedder.embedAdvancedPlayerFeat(elementId);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+
+    private void tryCoreFeat() {
+        try {
+            foundFeat = legacyPrdEmbedder.embedCoreFeat(elementId);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
     }
 }

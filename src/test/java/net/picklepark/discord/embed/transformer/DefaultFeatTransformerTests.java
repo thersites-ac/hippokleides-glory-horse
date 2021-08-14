@@ -86,6 +86,11 @@ public class DefaultFeatTransformerTests {
         Assert.fail();
     }
 
+    @Test
+    public void handlesStatBlock2forAdvancedPlayerFeats() {
+        Assert.fail();
+    }
+
     private void givenScrapedAdvancedClassFeat() {
         elements.add(new Element("h2").text("foo"));
         elements.add(new Element("p").text("some text"));
