@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 
 
-public class EmbedRendererImpl implements EmbedRenderer {
+public class DefaultRenderer implements EmbedRenderer {
     @Override
     public MessageEmbed renderFeat(Feat feat) {
         EmbedBuilder builder = new EmbedBuilder()

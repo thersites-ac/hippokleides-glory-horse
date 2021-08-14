@@ -14,18 +14,18 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(JUnit4.class)
-public class EmbedRendererImplTests {
+public class DefaultRendererTests {
 
-    private EmbedRendererImpl renderer;
+    private DefaultRenderer renderer;
 
     @Before
     public void setup() {
-        renderer = new EmbedRendererImpl();
+        renderer = new DefaultRenderer();
     }
 
     @Test
     public void canCreate() {
-        new EmbedRendererImpl();
+        new DefaultRenderer();
     }
 
     @Test

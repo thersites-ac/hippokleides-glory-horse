@@ -6,5 +6,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ElementScraper {
-    List<Element> scrapeCoreFeat(String id) throws IOException;
+    List<Element> scrapeFeatNodes(String id, String url) throws IOException;
 }

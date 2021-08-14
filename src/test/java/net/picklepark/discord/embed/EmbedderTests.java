@@ -3,7 +3,7 @@ package net.picklepark.discord.embed;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
-import net.picklepark.discord.embed.renderer.EmbedRendererImpl;
+import net.picklepark.discord.embed.renderer.DefaultRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
@@ -27,7 +27,7 @@ public class EmbedderTests {
     @Before
     public void setup() {
         makeElementsValid();
-        embedder = new Embedder(new MockElementScraper(), new EmbedRendererImpl());
+        embedder = new Embedder(new MockElementScraper(), new DefaultRenderer());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class EmbedderTests {
 
     private class MockElementScraper implements ElementScraper {
         @Override
-        public List<Element> scrapeCoreFeat(String id) {
+        public List<Element> scrapeFeatNodes(String id, String url) {
             return elements;
         }
     }

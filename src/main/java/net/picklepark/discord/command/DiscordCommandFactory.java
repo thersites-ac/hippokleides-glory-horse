@@ -41,7 +41,8 @@ public class DiscordCommandFactory {
     }
 
     private boolean isAuthorized(GuildMessageReceivedEvent event) {
-        return authorizedUsers.contains(event.getAuthor().getAsTag());
+        return true;
+//        return authorizedUsers.contains(event.getAuthor().getAsTag());
     }
 
     private DiscordCommand buildCommand(GuildMessageReceivedEvent event) {

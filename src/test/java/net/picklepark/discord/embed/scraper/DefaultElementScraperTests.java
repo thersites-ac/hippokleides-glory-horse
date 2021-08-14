@@ -11,30 +11,30 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 
 @RunWith(JUnit4.class)
-public class ElementScraperImplTests {
+public class DefaultElementScraperTests {
 
     private Document result;
     private Exception exception;
 
     @Test(expected = IOException.class)
     public void propagatesBadUrlException() throws IOException {
-        ElementScraperImpl failure = new ElementScraperImpl(new ThrowFetcher());
+        DefaultElementScraper failure = new DefaultElementScraper(new ThrowFetcher());
         exception = new IOException();
-        failure.scrapeCoreFeat("foo");
+        failure.scrapeFeatNodes("foo", "internet");
     }
 
     @Test(expected = NotFoundException.class)
     public void throwsExceptionWhenElementNotFound() throws IOException {
-        ElementScraperImpl mock = new ElementScraperImpl(new MockFetcher());
+        DefaultElementScraper mock = new DefaultElementScraper(new MockFetcher());
         result = new Document("foo");
-        mock.scrapeCoreFeat("foo");
+        mock.scrapeFeatNodes("foo", "internet");
     }
 
     @Test(expected = NullDocumentException.class)
     public void throwsExceptionWhenFetcherReturnsNull() throws IOException {
-        ElementScraperImpl mock = new ElementScraperImpl(new MockFetcher());
+        DefaultElementScraper mock = new DefaultElementScraper(new MockFetcher());
         result = null;
-        mock.scrapeCoreFeat("foo");
+        mock.scrapeFeatNodes("foo", "internet");
     }
 
     private class ThrowFetcher implements DocumentFetcher {

@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
-public class DocumentFetcherImpl implements DocumentFetcher {
+public class DefaultDocumentFetcher implements DocumentFetcher {
     @Override
     public Document fetch(String url) throws IOException {
         return Jsoup.connect(url).get();

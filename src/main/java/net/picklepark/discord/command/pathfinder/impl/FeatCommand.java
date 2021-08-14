@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.embed.Embedder;
-import net.picklepark.discord.embed.renderer.EmbedRendererImpl;
-import net.picklepark.discord.embed.scraper.ElementScraperImpl;
+import net.picklepark.discord.embed.renderer.DefaultRenderer;
+import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public class FeatCommand implements DiscordCommand {
     private final GuildMessageReceivedEvent event;
 
     public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
-        embedder = new Embedder(new ElementScraperImpl(), new EmbedRendererImpl());
+        embedder = new Embedder(new DefaultElementScraper(), new DefaultRenderer());
         this.elementId = elementId;
         this.event = event;
     }

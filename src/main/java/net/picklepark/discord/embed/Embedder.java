@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Embedder {
+    private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
+    private static final String ADVANCED_CLASS_FEATS = "https://legacy.aonprd.com/advancedClassGuide/feats.html";
+    private static final String ADVANCED_PLAYER_FEATS = "https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html";
 
     private ElementScraper scraper;
     private EmbedRenderer renderer;
@@ -28,7 +31,7 @@ public class Embedder {
     }
 
     public MessageEmbed embedCoreFeat(String id) throws IOException {
-        List<Element> elements = scraper.scrapeCoreFeat(id);
+        List<Element> elements = scraper.scrapeFeatNodes(id, CORE_FEATS);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
         Feat feat = transformCoreFeat(elements);
         logger.info("Feat: {}", feat.toString());

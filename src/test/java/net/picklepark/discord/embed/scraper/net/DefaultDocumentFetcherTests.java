@@ -7,20 +7,20 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 
 @RunWith(JUnit4.class)
-public class DocumentFetcherImplTests {
+public class DefaultDocumentFetcherTests {
 
     @Test
     public void canCreate() {
-        new DocumentFetcherImpl();
+        new DefaultDocumentFetcher();
     }
 
     @Test
     public void canFetch() throws IOException {
-        new DocumentFetcherImpl().fetch("http://www.google.com");
+        new DefaultDocumentFetcher().fetch("http://www.google.com");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsBadUrlException() throws IOException {
-        new DocumentFetcherImpl().fetch("foo");
+        new DefaultDocumentFetcher().fetch("foo");
     }
 }
