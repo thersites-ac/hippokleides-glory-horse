@@ -5,6 +5,7 @@ import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.renderer.DefaultRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
+import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.junit.Assert;
@@ -19,25 +20,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RunWith(JUnit4.class)
-public class EmbedderTests {
+public class LegacyPrdEmbedderTests {
 
     private List<Element> elements;
-    private Embedder embedder;
+    private LegacyPrdEmbedder legacyPrdEmbedder;
 
     @Before
     public void setup() {
-        makeElementsValid();
-        embedder = new Embedder(new MockElementScraper(), new DefaultRenderer());
+        makeValidElements();
+        legacyPrdEmbedder = new LegacyPrdEmbedder(new MockElementScraper(), new DefaultRenderer(), new DefaultFeatTransformer());
     }
 
     @Test
     public void canCreateAndRun() throws IOException {
-        new Embedder(new MockElementScraper(), new MockRenderer()).embedCoreFeat("foo");
+        new LegacyPrdEmbedder(new MockElementScraper(), new MockRenderer(), new DefaultFeatTransformer()).embedCoreFeat("foo");
     }
 
     @Test
     public void createsValidEmbedWithRealRenderer() throws IOException {
-        MessageEmbed embed = embedder.embedCoreFeat("foo");
+        MessageEmbed embed = legacyPrdEmbedder.embedCoreFeat("foo");
         Assert.assertEquals("foo", embed.getTitle());
         Assert.assertEquals("some text", embed.getDescription());
         Assert.assertEquals("bar", embed.getFields().get(0).getName());
@@ -50,7 +51,7 @@ public class EmbedderTests {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-1"))
                 .collect(Collectors.toList());
-        MessageEmbed embed = embedder.embedCoreFeat("foo");
+        MessageEmbed embed = legacyPrdEmbedder.embedCoreFeat("foo");
         Assert.assertTrue(embed.getFields().isEmpty());
     }
 
@@ -59,18 +60,18 @@ public class EmbedderTests {
         elements = elements.stream()
                 .filter(e -> !e.hasClass("stat-block-2"))
                 .collect(Collectors.toList());
-        MessageEmbed embed = embedder.embedCoreFeat("foo");
+        MessageEmbed embed = legacyPrdEmbedder.embedCoreFeat("foo");
         Assert.assertEquals("Scraped with love by Hippokleides, Glory Horse", embed.getFooter().getText());
     }
 
     @Test
     public void unwrapsExtraNodesInDetail() throws IOException {
         extendDetailElement();
-        MessageEmbed embed = embedder.embedCoreFeat("foo");
+        MessageEmbed embed = legacyPrdEmbedder.embedCoreFeat("foo");
         Assert.assertEquals("bazextra", embed.getFields().get(0).getValue());
     }
 
-    private void makeElementsValid() {
+    private void makeValidElements() {
         elements = new ArrayList<>();
         elements.add(new Element("h2").text("foo"));
         elements.add(new Element("p").text("some text"));

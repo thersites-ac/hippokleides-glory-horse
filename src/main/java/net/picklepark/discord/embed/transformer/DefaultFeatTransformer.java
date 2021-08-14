@@ -1,44 +1,17 @@
-package net.picklepark.discord.embed;
+package net.picklepark.discord.embed.transformer;
 
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
-import net.picklepark.discord.embed.renderer.EmbedRenderer;
-import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Embedder {
-    private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
-    private static final String ADVANCED_CLASS_FEATS = "https://legacy.aonprd.com/advancedClassGuide/feats.html";
-    private static final String ADVANCED_PLAYER_FEATS = "https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html";
-
-    private ElementScraper scraper;
-    private EmbedRenderer renderer;
-    private static final Logger logger = LoggerFactory.getLogger(Embedder.class);
-
-    public Embedder(ElementScraper scraper, EmbedRenderer renderer) {
-        this.scraper = scraper;
-        this.renderer = renderer;
-    }
-
-    public MessageEmbed embedCoreFeat(String id) throws IOException {
-        List<Element> elements = scraper.scrapeFeatNodes(id, CORE_FEATS);
-        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformCoreFeat(elements);
-        logger.info("Feat: {}", feat.toString());
-        return renderer.renderFeat(feat);
-    }
-
-    private Feat transformCoreFeat(List<Element> elements) {
+public class DefaultFeatTransformer implements FeatTransformer {
+    @Override
+    public Feat transformCoreFeat(List<Element> elements) {
         String name = getValidName(elements);
         String description = getValidDescription(elements);
         List<FeatDetail> details = getValidDetails(elements);
@@ -102,4 +75,5 @@ public class Embedder {
     private void validateName(List<Element> name) {
         if (name.size() != 1) throw new ScrapedElementValidationException("name");
     }
+
 }
