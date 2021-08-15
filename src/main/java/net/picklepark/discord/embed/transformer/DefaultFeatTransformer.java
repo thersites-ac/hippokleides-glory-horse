@@ -2,23 +2,27 @@ package net.picklepark.discord.embed.transformer;
 
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
+import net.picklepark.discord.embed.model.Subrule;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
-import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class DefaultFeatTransformer implements FeatTransformer {
 
+    private static final String STAT_BLOCK_1 = "stat-block-1";
+    private static final String STAT_BLOCK_2 = "stat-block-2";
+
+    private Queue<Element> elements;
+
     @Override
     public Feat transformCoreFeat(List<Element> elements) {
-        String name = getValidName(elements);
-        String description = getValidDescription(elements);
-        List<FeatDetail> details = getDetails(elements, e -> e.hasClass("stat-block-1"));
-        String footer = getOptionalFooter(elements);
+        initializeElements(elements);
+        String name = getValidName();
+        String description = getValidDescription();
+        List<FeatDetail> details = getDetails(e -> e.hasClass(STAT_BLOCK_1));
+        String footer = getOptionalFooter();
         return Feat.builder()
                 .name(name)
                 .featDetails(details)
@@ -28,14 +32,17 @@ public class DefaultFeatTransformer implements FeatTransformer {
                 .build();
     }
 
+    private void initializeElements(List<Element> elements) {
+        this.elements = new LinkedList<>(elements);
+    }
+
     @Override
     public Feat transformAdvancedClassFeat(List<Element> elements) {
-        String name = getValidName(elements);
-        String description = getValidDescription(elements);
-        List<FeatDetail> details = getDetails(elements,
-                e -> !e.children().isEmpty()
-                        && e.child(0).tagName().equals("strong"));
-        String footer = getOptionalFooter(elements);
+        initializeElements(elements);
+        String name = getValidName();
+        String description = getValidDescription();
+        List<FeatDetail> details = getDetails(e -> !e.children().isEmpty() && e.child(0).tagName().equals("strong"));
+        String footer = getOptionalFooter();
         return Feat.builder()
                 .name(name)
                 .featDetails(details)
@@ -52,34 +59,63 @@ public class DefaultFeatTransformer implements FeatTransformer {
         return result;
     }
 
-    private String getValidDescription(List<Element> elements) {
-        Optional<Element> descriptor = elements.stream()
-                .filter(e -> e.classNames().isEmpty() && e.tagName().equals("p"))
-                .findFirst();
-        if (descriptor.isPresent())
-            return descriptor.get().text();
-        else
+    private String getValidDescription() {
+        Element descriptor = elements.poll();
+        validateDescriptor(descriptor);
+        return descriptor.text();
+    }
+
+    private void validateDescriptor(Element descriptor) {
+        if (descriptor == null || !descriptor.classNames().isEmpty() || ! descriptor.tagName().equals("p"))
             throw new ScrapedElementValidationException("description");
     }
 
-    private String getOptionalFooter(List<Element> elements) {
-        return elements.stream()
-                .filter(e -> e.hasClass("stat-block-2"))
-                .map(Element::text)
-                .findFirst()
-                .orElse("Scraped with love by Hippokleides, Glory Horse");
+    private String getOptionalFooter() {
+        Element footerElement = elements.poll();
+        if (footerElement != null && footerElement.hasClass(STAT_BLOCK_2))
+            return footerElement.text();
+        else
+            return "Scraped with love by Hippokleides, Glory Horse";
     }
 
-    private List<FeatDetail> getDetails(List<Element> elements, Predicate<Element> filter) {
-        List<Element> detailParents = elements.stream()
-                .filter(filter)
-                .collect(Collectors.toList());
-        return detailParents.stream()
-                .map(element -> FeatDetail.builder()
-                        .name(element.child(0).text())
-                        .text(getDetailText(element))
-                        .build())
-                .collect(Collectors.toList());
+    private List<FeatDetail> getDetails(Predicate<Element> filter) {
+        List<FeatDetail> result = new ArrayList<>();
+        while (elements.peek() != null && filter.test(elements.peek()))
+            result.add(consumeDetail());
+        return result;
+    }
+
+    private FeatDetail consumeDetail() {
+        Element detailMain = elements.remove();
+        return FeatDetail.builder()
+                .name(detailMain.child(0).text())
+                .text(getDetailText(detailMain))
+                .subrules(extractAllSubrules())
+                .build();
+    }
+
+    private List<Subrule> extractAllSubrules() {
+        List<Subrule> result = new ArrayList<>();
+        while (topElementIsSubrule())
+            result.add(consumeSubrule());
+        return result;
+    }
+
+    private Subrule consumeSubrule() {
+        Element subruleElement = elements.remove();
+        return Subrule.builder()
+                .name(subruleElement.child(0).text())
+                .text(getDetailText(subruleElement))
+                .build();
+    }
+
+    private boolean topElementIsSubrule() {
+        Element element = elements.peek();
+        return element != null
+                && element.tagName().equals("p")
+                && element.hasClass(STAT_BLOCK_2)
+                && element.childrenSize() > 0
+                && element.child(0).tagName().equals("i");
     }
 
     private String getDetailText(Element element) {
@@ -94,16 +130,15 @@ public class DefaultFeatTransformer implements FeatTransformer {
         element.childNodes().get(0).remove();
     }
 
-    private String getValidName(List<Element> elements) {
-        List<Element> name = elements.stream()
-                .filter(e -> e.tagName().equals("h2"))
-                .collect(Collectors.toList());
+    private String getValidName() {
+        Element name = elements.poll();
         validateName(name);
-        return name.get(0).text();
+        return name.text();
     }
 
-    private void validateName(List<Element> name) {
-        if (name.size() != 1) throw new ScrapedElementValidationException("name");
+    private void validateName(Element name) {
+        if (name == null || !name.tagName().equals("h2"))
+            throw new ScrapedElementValidationException("name");
     }
 
 }

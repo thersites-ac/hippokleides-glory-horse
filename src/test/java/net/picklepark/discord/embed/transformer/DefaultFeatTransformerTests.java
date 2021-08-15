@@ -1,6 +1,8 @@
 package net.picklepark.discord.embed.transformer;
 
 import net.picklepark.discord.embed.model.Feat;
+import net.picklepark.discord.embed.model.FeatDetail;
+import net.picklepark.discord.embed.model.Subrule;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.junit.Assert;
@@ -16,9 +18,9 @@ import java.util.stream.Collectors;
 @RunWith(JUnit4.class)
 public class DefaultFeatTransformerTests {
 
-    List<Element> elements;
-    FeatTransformer transformer;
-    Feat result;
+    private List<Element> elements;
+    private FeatTransformer transformer;
+    private Feat result;
 
     @Before
     public void setup() {
@@ -63,8 +65,8 @@ public class DefaultFeatTransformerTests {
 
     private void thenFeatHasCorrectDetails() {
         Assert.assertEquals(1, result.getFeatDetails().size());
-        Assert.assertEquals("bar", result.getFeatDetails().get(0).getName());
-        Assert.assertEquals("baz", result.getFeatDetails().get(0).getText());
+        Assert.assertEquals("detail name", result.getFeatDetails().get(0).getName());
+        Assert.assertEquals("detail body", result.getFeatDetails().get(0).getText());
     }
 
     private void whenTransformToAdvancedClassFeat() {
@@ -73,7 +75,40 @@ public class DefaultFeatTransformerTests {
 
     @Test
     public void handlesEmbeddedRulesInAdvancedPlayerFeat() {
-        Assert.fail();
+        givenScrapedElementHasEmbeddedRules();
+        whenTransformToAdvancedPlayerFeat();
+        thenRulesAppearInFeatDetails();
+        thenFeatHasCorrectFooter();
+    }
+
+    private void thenFeatHasCorrectFooter() {
+        Assert.assertEquals("footer", result.getFooter());
+    }
+
+    private void thenRulesAppearInFeatDetails() {
+        Assert.assertEquals(1, result.getFeatDetails().size());
+        List<Subrule> subrules = result.getFeatDetails().get(0).getSubrules();
+        Assert.assertEquals(2, subrules.size());
+        Assert.assertEquals("rule name", subrules.get(0).getName());
+        Assert.assertEquals("rule body", subrules.get(0).getText());
+        Assert.assertEquals("another rule name", subrules.get(1).getName());
+        Assert.assertEquals("another rule body", subrules.get(1).getText());
+    }
+
+    private void givenScrapedElementHasEmbeddedRules() {
+        elements.add(new Element("h2").text("title"));
+        elements.add(new Element("p").text("some text"));
+        elements.add(new Element("p").addClass("stat-block-1")
+                .appendChild(new Element("b").text("detail name"))
+                .appendChild(new TextNode("detail body")));
+        elements.add(new Element("p").addClass("stat-block-2")
+                .appendChild(new Element("i").text("rule name"))
+                .appendChild(new TextNode("rule body")));
+        elements.add(new Element("p").addClass("stat-block-2")
+                .appendChild(new Element("i").text("another rule name"))
+                .appendChild(new TextNode("another rule body")));
+        elements.add(new Element("p").addClass("stat-block-2").text("footer"));
+        insertInBody();
     }
 
     @Test
@@ -92,11 +127,17 @@ public class DefaultFeatTransformerTests {
     }
 
     private void givenScrapedAdvancedClassFeat() {
-        elements.add(new Element("h2").text("foo"));
+        elements.add(new Element("h2").text("title"));
         elements.add(new Element("p").text("some text"));
         elements.add(new Element("p")
-                .appendChild(new Element("strong").text("bar"))
-                .appendChild(new TextNode("baz")));
+                .appendChild(new Element("strong").text("detail name"))
+                .appendChild(new TextNode("detail body")));
+        insertInBody();
+    }
+
+    private void insertInBody() {
+        Element parent = new Element("body");
+        elements.forEach(parent::appendChild);
     }
 
     private void whenTransformToAdvancedPlayerFeat() {
@@ -119,13 +160,15 @@ public class DefaultFeatTransformerTests {
     }
 
     private void givenScrapedCoreFeat() {
-        elements.add(new Element("h2").text("foo"));
+        elements.add(new Element("h2").text("title"));
         elements.add(new Element("p").text("some text"));
         elements.add(new Element("p").addClass("stat-block-1")
-                .appendChild(new Element("b").text("bar"))
-                .appendChild(new TextNode("baz")));
-        elements.add(new Element("p").addClass("stat-block-2").text("quux"));
+                .appendChild(new Element("b").text("detail name"))
+                .appendChild(new TextNode("detail body")));
+        elements.add(new Element("p").addClass("stat-block-2").text("footer"));
+        insertInBody();
     }
+
     private void givenScrapedElementsHaveNoDetailBlocks() {
         givenScrapedCoreFeat();
         filterOut("stat-block-1");

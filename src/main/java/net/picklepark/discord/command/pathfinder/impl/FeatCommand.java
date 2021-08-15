@@ -10,8 +10,6 @@ import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 
@@ -19,12 +17,13 @@ public class FeatCommand implements DiscordCommand {
     private final LegacyPrdEmbedder legacyPrdEmbedder;
     private final GuildMessageReceivedEvent event;
 
-    private MessageEmbed foundFeat = null;
+    private MessageEmbed foundFeat;
 
     public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
         legacyPrdEmbedder = new LegacyPrdEmbedder(new DefaultElementScraper(), new DefaultRenderer(), new DefaultFeatTransformer());
         this.elementId = elementId;
         this.event = event;
+        foundFeat = null;
     }
 
     @Override
