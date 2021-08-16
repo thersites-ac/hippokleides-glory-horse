@@ -2,11 +2,9 @@ package net.picklepark.discord.embed;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
-import net.picklepark.discord.embed.model.FeatDetail;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.transformer.FeatTransformer;
-import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class LegacyPrdEmbedder implements PathfinderEmbedder {
     private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
@@ -39,9 +35,14 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
         logger.info("Scraping {}", id);
         List<Element> elements = scraper.scrapeFeatNodes(id, CORE_FEATS);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformCoreFeat(elements);
+        Feat feat = transformer.transformFeat(elements);
         logger.info("Feat: {}", feat.toString());
-        return renderer.renderFeat(feat);
+        return makeEmbed(feat, CORE_FEATS, id, "Core Rulebook");
+    }
+
+    private MessageEmbed makeEmbed(Feat feat, String baseUrl, String id, String author) {
+        String url = baseUrl + "#" + id;
+        return renderer.renderFeat(feat, url, author);
     }
 
     @Override
@@ -49,9 +50,9 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
         logger.info("Scraping {}", id);
         List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_PLAYER_FEATS);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformAdvancedPlayerFeat(elements);
+        Feat feat = transformer.transformFeat(elements);
         logger.info("Feat: {}", feat.toString());
-        return renderer.renderFeat(feat);
+        return makeEmbed(feat, ADVANCED_PLAYER_FEATS, id, "Advanced Player's Guide");
     }
 
     @Override
@@ -59,9 +60,9 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
         logger.info("Scraping {}", id);
         List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_CLASS_FEATS);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformAdvancedClassFeat(elements);
+        Feat feat = transformer.transformFeat(elements);
         logger.info("Feat: {}", feat.toString());
-        return renderer.renderFeat(feat);
+        return makeEmbed(feat, ADVANCED_CLASS_FEATS, id, "Advanced Class Guide");
     }
 
 }

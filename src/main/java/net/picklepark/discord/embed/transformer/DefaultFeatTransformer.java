@@ -2,120 +2,92 @@ package net.picklepark.discord.embed.transformer;
 
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
-import net.picklepark.discord.embed.model.Subrule;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class DefaultFeatTransformer implements FeatTransformer {
 
-    private static final String STAT_BLOCK_1 = "stat-block-1";
-    private static final String STAT_BLOCK_2 = "stat-block-2";
+    private static final String BENEFIT = "Benefit";
+    private static final String BENEFITS = "Benefits";
+    private static final String NORMAL = "Normal";
+    private static final String PREREQUISITE = "Prerequisite";
+    private static final String PREREQUISITES = "Prerequisites";
+    private static final String SPECIAL = "Special";
 
     private Queue<Element> elements;
+    private boolean consumeSubparagraphs = true;
 
     @Override
-    public Feat transformCoreFeat(List<Element> elements) {
+    public Feat transformFeat(List<Element> elements) {
         initializeElements(elements);
-        String name = getValidName();
-        String description = getValidDescription();
-        List<FeatDetail> details = getDetails(e -> e.hasClass(STAT_BLOCK_1));
-        String footer = getOptionalFooter();
+        String name = nextName();
+        String description = nextDescription();
+        List<FeatDetail> details = nextDetails();
+        checkEverythingUsedUp();
         return Feat.builder()
                 .name(name)
                 .featDetails(details)
                 .description(description)
-                .footer(footer)
-                .source("Core Rulebook")
                 .build();
+    }
+
+    private void checkEverythingUsedUp() {
+        if (!elements.isEmpty()) {
+            String message = "Scraped unconsumed data: " + new Elements(elements).html();
+            throw new ScrapedElementValidationException(message);
+        }
     }
 
     private void initializeElements(List<Element> elements) {
         this.elements = new LinkedList<>(elements);
     }
 
-    @Override
-    public Feat transformAdvancedClassFeat(List<Element> elements) {
-        initializeElements(elements);
-        String name = getValidName();
-        String description = getValidDescription();
-        List<FeatDetail> details = getDetails(e -> !e.children().isEmpty() && e.child(0).tagName().equals("strong"));
-        String footer = getOptionalFooter();
-        return Feat.builder()
-                .name(name)
-                .featDetails(details)
-                .description(description)
-                .footer(footer)
-                .source("Advanced Class Guide")
-                .build();
-    }
-
-    @Override
-    public Feat transformAdvancedPlayerFeat(List<Element> elements) {
-        Feat result = transformCoreFeat(elements);
-        result.setSource("Advanced Player's Guide");
-        return result;
-    }
-
-    private String getValidDescription() {
-        Element descriptor = elements.poll();
+    private String nextDescription() {
+        if (nextElementIsDetail())
+            throw new ScrapedElementValidationException("Missing description");
+        Element descriptor = elements.remove();
         validateDescriptor(descriptor);
         return descriptor.text();
     }
 
     private void validateDescriptor(Element descriptor) {
-        if (descriptor == null || !descriptor.classNames().isEmpty() || ! descriptor.tagName().equals("p"))
-            throw new ScrapedElementValidationException("description");
+        if (descriptor == null || ! descriptor.tagName().equals("p"))
+            throw new ScrapedElementValidationException("Invalid description");
     }
 
-    private String getOptionalFooter() {
-        Element footerElement = elements.poll();
-        if (footerElement != null && footerElement.hasClass(STAT_BLOCK_2))
-            return footerElement.text();
-        else
-            return "Scraped with love by Hippokleides, Glory Horse";
-    }
-
-    private List<FeatDetail> getDetails(Predicate<Element> filter) {
+    private List<FeatDetail> nextDetails() {
         List<FeatDetail> result = new ArrayList<>();
-        while (elements.peek() != null && filter.test(elements.peek()))
-            result.add(consumeDetail());
+        while (nextElementIsDetail())
+            result.add(nextDetail());
         return result;
     }
 
-    private FeatDetail consumeDetail() {
+    private boolean nextElementIsDetail() {
+        Element next = elements.peek();
+        if (next == null || next.children().isEmpty())
+            return false;
+        else {
+            String text = next.child(0).text();
+            return text.contains(BENEFIT)
+                    || text.contains(BENEFITS)
+                    || text.contains(NORMAL)
+                    || text.contains(PREREQUISITE)
+                    || text.contains(PREREQUISITES)
+                    || text.contains(SPECIAL);
+        }
+    }
+
+    private FeatDetail nextDetail() {
         Element detailMain = elements.remove();
+        String mainText = detailMain.child(0).text();
+        consumeSubparagraphs = mainText.contains(BENEFIT);
         return FeatDetail.builder()
                 .name(detailMain.child(0).text())
                 .text(getDetailText(detailMain))
-                .subrules(extractAllSubrules())
                 .build();
-    }
-
-    private List<Subrule> extractAllSubrules() {
-        List<Subrule> result = new ArrayList<>();
-        while (topElementIsSubrule())
-            result.add(consumeSubrule());
-        return result;
-    }
-
-    private Subrule consumeSubrule() {
-        Element subruleElement = elements.remove();
-        return Subrule.builder()
-                .name(subruleElement.child(0).text())
-                .text(getDetailText(subruleElement))
-                .build();
-    }
-
-    private boolean topElementIsSubrule() {
-        Element element = elements.peek();
-        return element != null
-                && element.tagName().equals("p")
-                && element.hasClass(STAT_BLOCK_2)
-                && element.childrenSize() > 0
-                && element.child(0).tagName().equals("i");
     }
 
     private String getDetailText(Element element) {
@@ -123,14 +95,28 @@ public class DefaultFeatTransformer implements FeatTransformer {
         String text = element.text();
         if (text.charAt(0) == ':')
             text = text.substring(1).strip();
+        List<Element> subparagraphs = nextSubparagraphs();
+        return formatDetail(text, subparagraphs);
+    }
+
+    private String formatDetail(String text, List<Element> subparagraphs) {
+        for (Element e: subparagraphs)
+            text += "\n" + e.text();
         return text;
+    }
+
+    private List<Element> nextSubparagraphs() {
+        List<Element> subparagraphs = new ArrayList<>();
+        while (consumeSubparagraphs && !elements.isEmpty() && !nextElementIsDetail())
+            subparagraphs.add(elements.remove());
+        return subparagraphs;
     }
 
     private void dropFirstChild(Element element) {
         element.childNodes().get(0).remove();
     }
 
-    private String getValidName() {
+    private String nextName() {
         Element name = elements.poll();
         validateName(name);
         return name.text();
@@ -138,7 +124,7 @@ public class DefaultFeatTransformer implements FeatTransformer {
 
     private void validateName(Element name) {
         if (name == null || !name.tagName().equals("h2"))
-            throw new ScrapedElementValidationException("name");
+            throw new ScrapedElementValidationException("Invalid name");
     }
 
 }
