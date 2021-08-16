@@ -32,37 +32,31 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
 
     @Override
     public MessageEmbed embedCoreFeat(String id) throws IOException {
+        return embedFrom(id, CORE_FEATS);
+    }
+
+    @Override
+    public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException {
+        return embedFrom(id, ADVANCED_PLAYER_FEATS);
+    }
+
+    @Override
+    public MessageEmbed embedAdvancedClassFeat(String id) throws IOException {
+        return embedFrom(id, ADVANCED_CLASS_FEATS);
+    }
+
+    private MessageEmbed embedFrom(String id, String url) throws IOException {
         logger.info("Scraping {}", id);
-        List<Element> elements = scraper.scrapeFeatNodes(id, CORE_FEATS);
+        List<Element> elements = scraper.scrapeFeatNodes(id, url);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
         Feat feat = transformer.transformFeat(elements);
         logger.info("Feat: {}", feat.toString());
-        return makeEmbed(feat, CORE_FEATS, id, "Core Rulebook");
+        return makeEmbed(feat, url, id, "Core Rulebook");
     }
 
     private MessageEmbed makeEmbed(Feat feat, String baseUrl, String id, String author) {
         String url = baseUrl + "#" + id;
         return renderer.renderFeat(feat, url, author);
-    }
-
-    @Override
-    public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException {
-        logger.info("Scraping {}", id);
-        List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_PLAYER_FEATS);
-        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformFeat(elements);
-        logger.info("Feat: {}", feat.toString());
-        return makeEmbed(feat, ADVANCED_PLAYER_FEATS, id, "Advanced Player's Guide");
-    }
-
-    @Override
-    public MessageEmbed embedAdvancedClassFeat(String id) throws IOException {
-        logger.info("Scraping {}", id);
-        List<Element> elements = scraper.scrapeFeatNodes(id, ADVANCED_CLASS_FEATS);
-        logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformFeat(elements);
-        logger.info("Feat: {}", feat.toString());
-        return makeEmbed(feat, ADVANCED_CLASS_FEATS, id, "Advanced Class Guide");
     }
 
 }
