@@ -20,9 +20,9 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
 
     private static final Logger logger = LoggerFactory.getLogger(LegacyPrdEmbedder.class);
 
-    private ElementScraper scraper;
-    private EmbedRenderer renderer;
-    private FeatTransformer transformer;
+    private final ElementScraper scraper;
+    private final EmbedRenderer renderer;
+    private final FeatTransformer transformer;
 
     public LegacyPrdEmbedder(ElementScraper scraper, EmbedRenderer renderer, FeatTransformer transformer) {
         this.scraper = scraper;

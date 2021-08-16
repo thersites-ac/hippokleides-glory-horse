@@ -11,10 +11,8 @@ import java.util.*;
 public class DefaultFeatTransformer implements FeatTransformer {
 
     private static final String BENEFIT = "Benefit";
-    private static final String BENEFITS = "Benefits";
     private static final String NORMAL = "Normal";
     private static final String PREREQUISITE = "Prerequisite";
-    private static final String PREREQUISITES = "Prerequisites";
     private static final String SPECIAL = "Special";
 
     private Queue<Element> elements;
@@ -72,10 +70,8 @@ public class DefaultFeatTransformer implements FeatTransformer {
         else {
             String text = next.child(0).text();
             return text.contains(BENEFIT)
-                    || text.contains(BENEFITS)
                     || text.contains(NORMAL)
                     || text.contains(PREREQUISITE)
-                    || text.contains(PREREQUISITES)
                     || text.contains(SPECIAL);
         }
     }
