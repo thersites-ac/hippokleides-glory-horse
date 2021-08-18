@@ -32,26 +32,26 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
 
     @Override
     public MessageEmbed embedCoreFeat(String id) throws IOException {
-        return embedFrom(id, CORE_FEATS);
+        return embedWithSource(id, CORE_FEATS, "Core Rulebook");
     }
 
     @Override
     public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException {
-        return embedFrom(id, ADVANCED_PLAYER_FEATS);
+        return embedWithSource(id, ADVANCED_PLAYER_FEATS, "Advanced Player's Guide");
     }
 
     @Override
     public MessageEmbed embedAdvancedClassFeat(String id) throws IOException {
-        return embedFrom(id, ADVANCED_CLASS_FEATS);
+        return embedWithSource(id, ADVANCED_CLASS_FEATS, "Advanced Class Guide");
     }
 
-    private MessageEmbed embedFrom(String id, String url) throws IOException {
+    private MessageEmbed embedWithSource(String id, String url, String source) throws IOException {
         logger.info("Scraping {}", id);
         List<Element> elements = scraper.scrapeFeatNodes(id, url);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
         Feat feat = transformer.transformFeat(elements);
         logger.info("Feat: {}", feat.toString());
-        return makeEmbed(feat, url, id, "Core Rulebook");
+        return makeEmbed(feat, url, id, source);
     }
 
     private MessageEmbed makeEmbed(Feat feat, String baseUrl, String id, String author) {
