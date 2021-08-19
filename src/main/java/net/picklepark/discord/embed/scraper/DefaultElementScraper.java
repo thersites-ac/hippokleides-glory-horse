@@ -49,7 +49,22 @@ public class DefaultElementScraper implements ElementScraper {
     }
 
     private List<Element> extractSpellElements(String name, Document page) {
-        throw new RuntimeException("IMPLEMENT ME!!!!");
+        List<Element> elements = new ArrayList<>();
+        String id = convertToId(name);
+        Element element = page.getElementById(id);
+        if (element == null)
+            throw new NotFoundException(name, page.baseUri());
+        elements.add(element);
+        element = element.nextElementSibling();
+        while (element != null && ! element.hasAttr("id")) {
+            elements.add(element);
+            element = element.nextElementSibling();
+        }
+        return elements;
+    }
+
+    private String convertToId(String name) {
+        return name.replace(' ', '-').toLowerCase();
     }
 
     private String extractSuffix(Element link) {
