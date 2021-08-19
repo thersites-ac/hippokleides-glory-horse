@@ -7,6 +7,7 @@ import net.picklepark.discord.embed.renderer.DefaultRenderer;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.transformer.FeatTransformer;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Assert;
 import org.junit.Before;
@@ -111,6 +112,11 @@ public class LegacyPrdEmbedderTests {
         @Override
         public List<Element> scrapeFeatNodes(String id, String url) {
             return scraperReturns;
+        }
+
+        @Override
+        public List<Element> scrapeCoreSpell(String spellName) {
+            return null;
         }
     }
 
