@@ -1,6 +1,7 @@
 package net.picklepark.discord.embed.transformer;
 
 import net.picklepark.discord.embed.model.Feat;
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
@@ -17,12 +18,16 @@ import java.util.List;
 public class DefaultFeatTransformerTests {
 
     private List<Element> elements;
+    private ScrapeResult input;
     private Transformer<Feat> transformer;
     private Feat result;
 
     @Before
     public void setup() {
         elements = new ArrayList<>();
+        input = ScrapeResult.builder()
+                .elements(elements)
+                .build();
         transformer = new DefaultFeatTransformer();
     }
 
@@ -54,7 +59,7 @@ public class DefaultFeatTransformerTests {
     }
 
     private void givenAllElementsHaveClass(String cssClass) {
-        elements.forEach(e -> e.addClass(cssClass));
+        input.getElements().forEach(e -> e.addClass(cssClass));
     }
 
     @Test
@@ -94,7 +99,7 @@ public class DefaultFeatTransformerTests {
     }
 
     private void whenTransformToFeat() {
-        result = transformer.transform(elements);
+        result = transformer.transform(input);
     }
 
     private void thenAllFieldsAreCorrect() {

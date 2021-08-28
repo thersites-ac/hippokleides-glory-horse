@@ -3,11 +3,13 @@ package net.picklepark.discord.embed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
+import net.picklepark.discord.embed.model.ScrapeResult;
+import net.picklepark.discord.embed.model.Spell;
 import net.picklepark.discord.embed.renderer.FeatRenderer;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
+import net.picklepark.discord.embed.renderer.SpellRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.transformer.Transformer;
-import org.jsoup.nodes.Element;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,70 +18,73 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 @RunWith(JUnit4.class)
 public class LegacyPrdEmbedderTests {
 
-    private Feat transformerReturns;
+    private Feat feat;
+    private Spell spell;
     private MessageEmbed rendererReturns;
-    private List<Element> scraperReturns;
+    private ScrapeResult scraperReturns;
     private MessageEmbed result;
     private LegacyPrdEmbedder legacyPrdEmbedder;
 
     @Before
     public void setup() {
-        legacyPrdEmbedder = new LegacyPrdEmbedder(new MockElementScraper(), new FeatRenderer(), new MockFeatTransformer());
+        legacyPrdEmbedder = new LegacyPrdEmbedder(new MockElementScraper(), new FeatRenderer(), new MockFeatTransformer(), new SpellRenderer(), new MockSpellTransformer());
         rendererReturns = new EmbedBuilder()
                 .setDescription("foo")
                 .build();
-        scraperReturns = new ArrayList<>();
+        scraperReturns = ScrapeResult.builder()
+                .elements(new ArrayList<>())
+                .build();
     }
 
     @Test
     public void addsSourceToCoreFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedCoreFeat("whirlwind-attack");
         thenResultHasSource("Core Rulebook");
     }
 
     @Test
     public void addsSourceToAdvancedPlayerFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedAdvancedPlayerFeat("whirlwind-attack");
         thenResultHasSource("Advanced Player's Guide");
     }
 
     @Test
     public void addsSourceToAdvancedClassFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedAdvancedClassFeat("whirlwind-attack");
         thenResultHasSource("Advanced Class Guide");
     }
 
     @Test
     public void addsAuthorLinkToCoreFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedCoreFeat("whirlwind-attack");
         thenResultHasAuthorLink("https://legacy.aonprd.com/coreRulebook/feats.html#whirlwind-attack");
     }
 
     @Test
     public void addsAuthorLinkToAdvancedClassFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedAdvancedClassFeat("whirlwind-attack");
         thenResultHasAuthorLink("https://legacy.aonprd.com/advancedClassGuide/feats.html#whirlwind-attack");
     }
 
     @Test
     public void addsAuthorLinkToAdvancedPlayerFeat() throws IOException {
-        givenTransformerReturns("whirlwind-attack");
+        givenFeatTransformerReturns("whirlwind-attack");
         whenEmbedAdvancedPlayerFeat("whirlwind-attack");
         thenResultHasAuthorLink("https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html#whirlwind-attack");
     }
 
-    private void givenTransformerReturns(String input) {
-       transformerReturns = Feat.builder()
+    private void givenFeatTransformerReturns(String input) {
+       feat = Feat.builder()
                .name(input)
                .description(input)
                .featDetails(new ArrayList<>())
@@ -103,19 +108,18 @@ public class LegacyPrdEmbedderTests {
     }
 
     private void thenResultHasAuthorLink(String url) {
-        Assert.assertEquals(url,
-                result.getAuthor().getUrl());
+        Assert.assertEquals(url, result.getAuthor().getUrl());
     }
 
     private class MockElementScraper implements ElementScraper {
         @Override
-        public List<Element> scrapeFeatNodes(String id, String url) {
+        public ScrapeResult scrapeFeatNodes(String id, String url) {
             return scraperReturns;
         }
 
         @Override
-        public List<Element> scrapeCoreSpell(String spellName) {
-            return null;
+        public ScrapeResult scrapeCoreSpell(String spellName) {
+            return scraperReturns;
         }
     }
 
@@ -128,9 +132,15 @@ public class LegacyPrdEmbedderTests {
 
     private class MockFeatTransformer implements Transformer<Feat> {
         @Override
-        public Feat transform(List<Element> elements) {
-            return transformerReturns;
+        public Feat transform(ScrapeResult elements) {
+            return feat;
         }
     }
 
+    private class MockSpellTransformer implements Transformer<Spell> {
+        @Override
+        public Spell transform(ScrapeResult elements) {
+            return spell;
+        }
+    }
 }

@@ -9,6 +9,13 @@ import java.util.Map;
 public class SpellRenderer implements EmbedRenderer<Spell> {
 
     @Override
+    public MessageEmbed render(Spell input) {
+        String url = input.getUrl();
+        String source = input.getSource();
+        return render(input, url, source);
+    }
+
+    @Override
     public MessageEmbed render(Spell input, String url, String author) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(input.getName());
@@ -16,6 +23,7 @@ public class SpellRenderer implements EmbedRenderer<Spell> {
             builder.addField(pair.getKey(), pair.getValue(), true);
         }
         builder.addField("Spell Description", input.getDescription(), false);
+        builder.setAuthor(author, url);
         return builder.build();
     }
 }

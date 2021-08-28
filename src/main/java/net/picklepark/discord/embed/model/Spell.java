@@ -11,4 +11,6 @@ public class Spell {
     private String name;
     private Map<String, String> qualifiers;
     private String description;
+    private String url;
+    private String source;
 }

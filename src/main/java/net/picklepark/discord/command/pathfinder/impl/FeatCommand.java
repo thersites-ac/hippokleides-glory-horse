@@ -5,8 +5,10 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.embed.LegacyPrdEmbedder;
 import net.picklepark.discord.embed.renderer.FeatRenderer;
+import net.picklepark.discord.embed.renderer.SpellRenderer;
 import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
+import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +22,7 @@ public class FeatCommand implements DiscordCommand {
     private MessageEmbed foundFeat;
 
     public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
-        legacyPrdEmbedder = new LegacyPrdEmbedder(new DefaultElementScraper(), new FeatRenderer(), new DefaultFeatTransformer());
+        legacyPrdEmbedder = new LegacyPrdEmbedder(new DefaultElementScraper(), new FeatRenderer(), new DefaultFeatTransformer(), new SpellRenderer(), new DefaultSpellTransformer());
         this.elementId = elementId;
         this.event = event;
         foundFeat = null;

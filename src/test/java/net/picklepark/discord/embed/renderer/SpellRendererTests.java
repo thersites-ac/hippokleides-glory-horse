@@ -45,6 +45,34 @@ public class SpellRendererTests {
         thenInitialFieldsAreQualifiers();
     }
 
+    @Test
+    public void spellSourceBecomeMessageAuthor() {
+        givenScrapedSpellWithSourceData();
+        whenRender();
+        thenEmbedAuthorMatches();
+    }
+
+    @Test
+    public void spellUrlBecomesMessageAuthorUrl() {
+        givenScrapedSpellWithSourceData();
+        whenRender();
+        thenEmbedAuthorUrlMatches();
+    }
+
+    private void thenEmbedAuthorUrlMatches() {
+        Assert.assertEquals(spell.getUrl(), embed.getAuthor().getUrl());
+    }
+
+    private void thenEmbedAuthorMatches() {
+        Assert.assertEquals(spell.getSource(), embed.getAuthor().getName());
+    }
+
+    private void givenScrapedSpellWithSourceData() {
+        givenScrapedSpell();
+        spell.setSource("foo");
+        spell.setUrl("http://www.bar.com");
+    }
+
     private void thenInitialFieldsAreQualifiers() {
         Map<String, String> qualifiers = spell.getQualifiers();
         List<MessageEmbed.Field> fields = embed.getFields();
@@ -74,7 +102,7 @@ public class SpellRendererTests {
     }
 
     private void whenRender() {
-        embed = renderer.render(spell, "http://www.somewhere.com", "Me");
+        embed = renderer.render(spell);
     }
 
     private void thenEmbedTitleIsSpellName() {

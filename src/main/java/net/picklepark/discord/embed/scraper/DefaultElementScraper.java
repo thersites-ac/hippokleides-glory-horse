@@ -1,5 +1,6 @@
 package net.picklepark.discord.embed.scraper;
 
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
 import net.picklepark.discord.embed.scraper.net.DefaultDocumentFetcher;
 import net.picklepark.discord.exception.NotFoundException;
@@ -14,7 +15,7 @@ import java.util.List;
 public class DefaultElementScraper implements ElementScraper {
     private static final String H2 = "h2";
     private static final String CORE_SPELL_LIST = "https://legacy.aonprd.com/coreRulebook/spellLists.html";
-    private static final String urlPrefix = "https://legacy.aonprd.com/coreRulebook/";
+    private static final String coreRulebookUrl = "https://legacy.aonprd.com/coreRulebook/";
 
     private final DocumentFetcher fetcher;
 
@@ -27,22 +28,31 @@ public class DefaultElementScraper implements ElementScraper {
     }
 
     @Override
-    public List<Element> scrapeFeatNodes(String id, String url) throws IOException {
+    public ScrapeResult scrapeFeatNodes(String id, String url) throws IOException {
         Element element = getRootFeatElement(id, url);
         List<Element> elements = new ArrayList<>();
         do {
             elements.add(element);
             element = element.nextElementSibling();
         } while (null != element && !element.tagName().equals(H2));
-        return elements;
+        return ScrapeResult.builder()
+                .elements(elements)
+                .url(url)
+                .build();
     }
 
     @Override
-    public List<Element> scrapeCoreSpell(String name) throws IOException {
+    public ScrapeResult scrapeCoreSpell(String name) throws IOException {
        Element link = findIndexTagFor(name);
        String suffix = extractSuffix(link);
-       Document page = fetcher.fetch(urlPrefix + suffix);
-       return extractSpellElements(name, page);
+       String spellUrl = coreRulebookUrl + suffix;
+       Document page = fetcher.fetch(spellUrl);
+       List<Element> elements = extractSpellElements(name, page);
+       return ScrapeResult.builder()
+               .elements(elements)
+               .source("Core Rulebook")
+               .url(spellUrl)
+               .build();
     }
 
     private List<Element> extractSpellElements(String name, Document page) {

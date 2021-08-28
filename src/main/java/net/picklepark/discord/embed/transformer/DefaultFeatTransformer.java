@@ -2,6 +2,7 @@ package net.picklepark.discord.embed.transformer;
 
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.model.FeatDetail;
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -19,8 +20,8 @@ public class DefaultFeatTransformer implements Transformer<Feat> {
     private boolean consumeSubparagraphs = true;
 
     @Override
-    public Feat transform(List<Element> elements) {
-        initializeElements(elements);
+    public Feat transform(ScrapeResult result) {
+        initializeElements(result.getElements());
         String name = nextName();
         String description = nextDescription();
         List<FeatDetail> details = nextDetails();

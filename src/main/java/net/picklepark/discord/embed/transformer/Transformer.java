@@ -1,10 +1,7 @@
 package net.picklepark.discord.embed.transformer;
 
-import net.picklepark.discord.embed.model.Feat;
-import org.jsoup.nodes.Element;
-
-import java.util.List;
+import net.picklepark.discord.embed.model.ScrapeResult;
 
 public interface Transformer<T> {
-    public T transform(List<Element> elements);
+    public T transform(ScrapeResult result);
 }

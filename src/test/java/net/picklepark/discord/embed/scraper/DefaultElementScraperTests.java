@@ -1,11 +1,11 @@
 package net.picklepark.discord.embed.scraper;
 
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
 import net.picklepark.discord.exception.NotFoundException;
 import net.picklepark.discord.exception.NullDocumentException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
-import java.util.List;
 
 @RunWith(JUnit4.class)
 public class DefaultElementScraperTests {
@@ -21,7 +20,7 @@ public class DefaultElementScraperTests {
     private Document fetcherOutput;
     private Exception exception;
     private ElementScraper scraper;
-    private List<Element> result;
+    private ScrapeResult result;
 
     @Test(expected = IOException.class)
     public void propagatesBadUrlException() throws IOException {
@@ -51,9 +50,31 @@ public class DefaultElementScraperTests {
         thenResultComesFromSpellPage();
     }
 
+    @Test
+    public void recordsUrl() throws IOException {
+        givenMockFetcherReturnsCoreSpellPageSnippets();
+        whenScrapeMagicMissile();
+        thenUrlIsMagicMissilePage();
+    }
+
+    @Test
+    public void recordsSouce() throws IOException {
+        givenMockFetcherReturnsCoreSpellPageSnippets();
+        whenScrapeMagicMissile();
+        thenSourceIsCoreRulebook();
+    }
+
+    private void thenSourceIsCoreRulebook() {
+        Assert.assertEquals("Core Rulebook", result.getSource());
+    }
+
+    private void thenUrlIsMagicMissilePage() {
+        Assert.assertEquals("https://legacy.aonprd.com/coreRulebook/spells/magicMissile.html#magic-missile", result.getUrl());
+    }
+
     private void thenResultComesFromSpellPage() {
         String spellContent = magicMissileHtml().text();
-        String scrapedContent = new Elements(result).text();
+        String scrapedContent = new Elements(result.getElements()).text();
         Assert.assertEquals(spellContent, scrapedContent);
     }
 
@@ -80,14 +101,14 @@ public class DefaultElementScraperTests {
 
     private class MockFetcher implements DocumentFetcher {
         @Override
-        public Document fetch(String url) throws IOException {
+        public Document fetch(String url) {
             return fetcherOutput;
         }
     }
 
     private class MockSpellFetcher implements DocumentFetcher {
         @Override
-        public Document fetch(String url) throws IOException {
+        public Document fetch(String url) {
             if (url.contains("spellLists.html"))
                 return coreSpellListHtml();
             else

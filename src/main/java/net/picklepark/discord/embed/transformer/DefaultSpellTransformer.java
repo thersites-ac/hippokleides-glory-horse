@@ -1,5 +1,6 @@
 package net.picklepark.discord.embed.transformer;
 
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.embed.model.Spell;
 import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Element;
@@ -14,8 +15,8 @@ public class DefaultSpellTransformer implements Transformer<Spell> {
     private List<Element> elements;
 
     @Override
-    public Spell transform(List<Element> elements) {
-        this.elements = elements;
+    public Spell transform(ScrapeResult result) {
+        this.elements = result.getElements();
         String name = consumeName();
         Map<String, String> qualifiers = consumeQualifiers();
         String description = consumeDescription();
@@ -23,6 +24,8 @@ public class DefaultSpellTransformer implements Transformer<Spell> {
                 .name(name)
                 .qualifiers(qualifiers)
                 .description(description)
+                .url(result.getUrl())
+                .source(result.getSource())
                 .build();
     }
 

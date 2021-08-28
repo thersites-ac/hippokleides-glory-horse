@@ -1,5 +1,6 @@
 package net.picklepark.discord.embed.transformer;
 
+import net.picklepark.discord.embed.model.ScrapeResult;
 import net.picklepark.discord.embed.model.Spell;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
@@ -17,12 +18,17 @@ import java.util.Map;
 public class DefaultSpellTransformerTests {
 
     private Transformer<Spell> transformer;
-    private List<Element> input;
+    private List<Element> elements;
+    private ScrapeResult input;
     private Spell spell;
 
     @Before
-    public void canCreate() {
+    public void setup() {
         transformer = new DefaultSpellTransformer();
+        elements = new ArrayList<>();
+        input = ScrapeResult.builder()
+                .elements(elements)
+                .build();
     }
 
     @Test
@@ -39,6 +45,24 @@ public class DefaultSpellTransformerTests {
         thenOutputHasCorrectQualifiers();
     }
 
+    @Test
+    public void recordsSourceData() {
+        givenScaperReportedSourceData();
+        whenParseSpell();
+        thenOutputHasSourceData();
+    }
+
+    private void thenOutputHasSourceData() {
+        Assert.assertEquals(input.getSource(), spell.getSource());
+        Assert.assertEquals(input.getUrl(), spell.getUrl());
+    }
+
+    private void givenScaperReportedSourceData() {
+        givenValidElements();
+        input.setSource("foo");
+        input.setUrl("bar");
+    }
+
     private void thenOutputHasCorrectQualifiers() {
         Map<String, String> qualifiers = spell.getQualifiers();
         Assert.assertEquals("sorcerer/wizard 1", qualifiers.get("Level"));
@@ -47,7 +71,7 @@ public class DefaultSpellTransformerTests {
 
     private void givenSloppyElements() {
         givenValidElements();
-        input.get(1)
+        elements.get(1)
                 .appendChild(new Element("b").text("Level"))
                 .appendChild(new TextNode("sorcerer/wizard 1"));
     }
@@ -59,13 +83,12 @@ public class DefaultSpellTransformerTests {
     }
 
     private void givenValidElements() {
-        input = new ArrayList<>();
-        input.add(new Element("p")
+        elements.add(new Element("p")
                 .appendChild(new Element("b").text("Magic Missile")));
-        input.add(new Element("p").addClass("stat-block-1")
+        elements.add(new Element("p").addClass("stat-block-1")
                 .appendChild(new Element("b").text("School"))
                 .appendChild(new TextNode("evocation")));
-        input.add(new Element("p").text("Description: a great spell"));
+        elements.add(new Element("p").text("Description: a great spell"));
     }
 
     private void whenParseSpell() {
