@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -22,25 +23,41 @@ public class DefaultElementScraperTests {
     private ElementScraper scraper;
     private ScrapeResult result;
 
+    @Before
+    public void setup() {
+        scraper = new DefaultElementScraper(new MockFetcher());
+    }
+
     @Test(expected = IOException.class)
     public void propagatesBadUrlException() throws IOException {
-        DefaultElementScraper failure = new DefaultElementScraper(new ThrowFetcher());
-        exception = new IOException();
-        failure.scrapeFeatNodes("foo", "internet");
+        givenScraperThrowsIOException();
+        whenScrapeFeatFromPage("");
     }
 
     @Test(expected = NotFoundException.class)
     public void throwsExceptionWhenElementNotFound() throws IOException {
-        DefaultElementScraper mock = new DefaultElementScraper(new MockFetcher());
-        fetcherOutput = new Document("foo");
-        mock.scrapeFeatNodes("foo", "internet");
+        givenFetcherReturnsEmptyDocument();
+        whenScrapeFeatFromPage("");
     }
 
     @Test(expected = NullDocumentException.class)
     public void throwsExceptionWhenFetcherReturnsNull() throws IOException {
-        DefaultElementScraper mock = new DefaultElementScraper(new MockFetcher());
-        fetcherOutput = null;
-        mock.scrapeFeatNodes("foo", "internet");
+        givenFetcherReturnsNull();
+        whenScrapeFeatFromPage("");
+    }
+
+    @Test
+    public void doesNotRecordFeatSource() throws IOException {
+        givenMockFetcherReturnsFeat("arcane-armor-mastery");
+        whenScrapeFeatFromPage("internet");
+        thenResultHasNullSource();
+    }
+
+    @Test
+    public void recordsFeatUrl() throws IOException {
+        givenMockFetcherReturnsFeat("arcane-armor-mastery");
+        whenScrapeFeatFromPage("internet");
+        thenResultHasUrl("internet#arcane-armor-mastery");
     }
 
     @Test
@@ -51,17 +68,50 @@ public class DefaultElementScraperTests {
     }
 
     @Test
-    public void recordsUrl() throws IOException {
+    public void recordsSpellUrl() throws IOException {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenUrlIsMagicMissilePage();
     }
 
     @Test
-    public void recordsSouce() throws IOException {
+    public void recordsSpellSouce() throws IOException {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenSourceIsCoreRulebook();
+    }
+
+    private void givenFetcherReturnsNull() {
+        fetcherOutput = null;
+    }
+
+    private void givenFetcherReturnsEmptyDocument() {
+        fetcherOutput = new Document("foo");
+    }
+
+    private void givenScraperThrowsIOException() {
+        scraper = new DefaultElementScraper(new ThrowFetcher());
+        exception = new IOException();
+    }
+
+    private void thenResultHasNullSource() {
+        Assert.assertNull(result.getSource());
+    }
+
+    private void thenResultHasUrl(String url) {
+        Assert.assertEquals(url, result.getUrl());
+    }
+
+    private void whenScrapeFeatFromPage(String url) throws IOException {
+        result = scraper.scrapeFeatNodes("arcane-armor-mastery", url);
+    }
+
+    private void givenMockFetcherReturnsFeat(String name) {
+        String html = "\t\t\t\t<h2 id=\"" + name + "\">Arcane Armor Mastery (Combat)</h2>\n" +
+                "\t\t\t\t<p>You have mastered the ability to cast spells while wearing armor.</p>\n" +
+                "\t\t\t\t<p class=\"stat-block-1\"><b>Prerequisites:</b> <a href =\"#arcane-armor-training\" >Arcane Armor Training</a>, Medium Armor Proficiency, caster level 7th.</p>\n" +
+                "\t\t\t\t<p class=\"stat-block-1\"><b>Benefit:</b> As a swift action, reduce the arcane spell failure chance due to the armor you are wearing by 20% for any spells you cast this round. This bonus replaces, and does not stack with, the bonus granted by <a href =\"#arcane-armor-training\" >Arcane Armor Training</a>.</p>\n";
+        fetcherOutput = Jsoup.parse(html);
     }
 
     private void thenSourceIsCoreRulebook() {

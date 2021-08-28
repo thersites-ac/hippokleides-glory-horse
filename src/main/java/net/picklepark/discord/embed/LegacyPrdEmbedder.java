@@ -66,15 +66,11 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
     private MessageEmbed embedWithSource(String id, String url, String source) throws IOException {
         logger.info("Scraping {}", id);
         ScrapeResult result = scraper.scrapeFeatNodes(id, url);
+        result.setSource(source);
         logger.info("Elements: {}", Arrays.toString(result.getElements().toArray()));
         Feat feat = featTransformer.transform(result);
         logger.info("Feat: {}", feat.toString());
-        return makeEmbed(feat, url, id, source);
-    }
-
-    private MessageEmbed makeEmbed(Feat feat, String baseUrl, String id, String author) {
-        String url = baseUrl + "#" + id;
-        return featRenderer.render(feat, url, author);
+        return featRenderer.render(feat);
     }
 
 }

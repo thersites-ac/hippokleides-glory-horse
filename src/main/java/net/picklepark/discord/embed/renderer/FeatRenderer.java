@@ -8,11 +8,11 @@ import net.picklepark.discord.embed.model.Feat;
 public class FeatRenderer implements EmbedRenderer<Feat> {
 
     @Override
-    public MessageEmbed render(Feat feat, String url, String author) {
+    public MessageEmbed render(Feat feat) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(feat.getName())
                 .setDescription(feat.getDescription())
-                .setAuthor(author, url);
+                .setAuthor(feat.getSource(), feat.getUrl());
         feat.getFeatDetails().forEach(detail -> builder.addField(detail.getName(), detail.getText(), false));
         return builder.build();
     }

@@ -51,6 +51,30 @@ public class DefaultFeatTransformerTests {
         ignoresClass("stat-block-2");
     }
 
+    @Test
+    public void handlesEmbeddedBenefits() {
+        givenScrapedFeat();
+        givenScrapedElementHasBenefits();
+        whenTransformToFeat();
+        thenBenefitsAppearInFeatDetails();
+    }
+
+    @Test
+    public void transfersUrl() {
+        givenScrapedFeatFrom("foo.com");
+        whenTransformToFeat();
+        thenResultUrlIs("foo.com");
+    }
+
+    private void thenResultUrlIs(String url) {
+        Assert.assertEquals(url, result.getUrl());
+    }
+
+    private void givenScrapedFeatFrom(String url) {
+        givenScrapedFeat();
+        input.setUrl(url);
+    }
+
     private void ignoresClass(String cssClass) {
         givenScrapedFeat();
         givenAllElementsHaveClass(cssClass);
@@ -60,14 +84,6 @@ public class DefaultFeatTransformerTests {
 
     private void givenAllElementsHaveClass(String cssClass) {
         input.getElements().forEach(e -> e.addClass(cssClass));
-    }
-
-    @Test
-    public void handlesEmbeddedBenefits() {
-        givenScrapedFeat();
-        givenScrapedElementHasBenefits();
-        whenTransformToFeat();
-        thenBenefitsAppearInFeatDetails();
     }
 
     private void givenScrapedFeat() {

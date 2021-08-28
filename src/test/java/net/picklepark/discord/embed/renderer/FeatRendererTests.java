@@ -36,7 +36,7 @@ public class FeatRendererTests {
                 .name("foo")
                 .featDetails(new ArrayList<>())
                 .build();
-        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat);
         Assert.assertEquals("foo", embed.getTitle());
     }
 
@@ -48,7 +48,7 @@ public class FeatRendererTests {
         Feat feat = Feat.builder()
                 .featDetails(details)
                 .build();
-        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat);
         Assert.assertEquals("foo", embed.getFields().get(0).getName());
         Assert.assertEquals("bar", embed.getFields().get(0).getValue());
         Assert.assertEquals("baz", embed.getFields().get(1).getName());
@@ -61,7 +61,7 @@ public class FeatRendererTests {
                 .featDetails(new ArrayList<>())
                 .description("foo")
                 .build();
-        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat);
         Assert.assertEquals("foo", embed.getDescription());
     }
 

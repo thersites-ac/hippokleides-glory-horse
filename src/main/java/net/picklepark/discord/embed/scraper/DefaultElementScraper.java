@@ -28,7 +28,8 @@ public class DefaultElementScraper implements ElementScraper {
     }
 
     @Override
-    public ScrapeResult scrapeFeatNodes(String id, String url) throws IOException {
+    public ScrapeResult scrapeFeatNodes(String name, String url) throws IOException {
+        String id = convertToId(name);
         Element element = getRootFeatElement(id, url);
         List<Element> elements = new ArrayList<>();
         do {
@@ -37,7 +38,7 @@ public class DefaultElementScraper implements ElementScraper {
         } while (null != element && !element.tagName().equals(H2));
         return ScrapeResult.builder()
                 .elements(elements)
-                .url(url)
+                .url(url + "#" + id)
                 .build();
     }
 

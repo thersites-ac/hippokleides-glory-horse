@@ -29,6 +29,7 @@ public class DefaultFeatTransformer implements Transformer<Feat> {
         return Feat.builder()
                 .name(name)
                 .featDetails(details)
+                .url(result.getUrl())
                 .description(description)
                 .build();
     }

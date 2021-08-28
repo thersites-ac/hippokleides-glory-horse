@@ -12,18 +12,14 @@ public class SpellRenderer implements EmbedRenderer<Spell> {
     public MessageEmbed render(Spell input) {
         String url = input.getUrl();
         String source = input.getSource();
-        return render(input, url, source);
-    }
-
-    @Override
-    public MessageEmbed render(Spell input, String url, String author) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(input.getName());
         for (Map.Entry<String, String> pair: input.getQualifiers().entrySet()) {
             builder.addField(pair.getKey(), pair.getValue(), true);
         }
         builder.addField("Spell Description", input.getDescription(), false);
-        builder.setAuthor(author, url);
+        builder.setAuthor(source, url);
         return builder.build();
     }
+
 }

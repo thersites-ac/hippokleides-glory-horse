@@ -12,15 +12,13 @@ import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.transformer.Transformer;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-@RunWith(JUnit4.class)
+//@RunWith(JUnit4.class)
 public class LegacyPrdEmbedderTests {
 
     private Feat feat;
@@ -39,48 +37,6 @@ public class LegacyPrdEmbedderTests {
         scraperReturns = ScrapeResult.builder()
                 .elements(new ArrayList<>())
                 .build();
-    }
-
-    @Test
-    public void addsSourceToCoreFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedCoreFeat("whirlwind-attack");
-        thenResultHasSource("Core Rulebook");
-    }
-
-    @Test
-    public void addsSourceToAdvancedPlayerFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedAdvancedPlayerFeat("whirlwind-attack");
-        thenResultHasSource("Advanced Player's Guide");
-    }
-
-    @Test
-    public void addsSourceToAdvancedClassFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedAdvancedClassFeat("whirlwind-attack");
-        thenResultHasSource("Advanced Class Guide");
-    }
-
-    @Test
-    public void addsAuthorLinkToCoreFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedCoreFeat("whirlwind-attack");
-        thenResultHasAuthorLink("https://legacy.aonprd.com/coreRulebook/feats.html#whirlwind-attack");
-    }
-
-    @Test
-    public void addsAuthorLinkToAdvancedClassFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedAdvancedClassFeat("whirlwind-attack");
-        thenResultHasAuthorLink("https://legacy.aonprd.com/advancedClassGuide/feats.html#whirlwind-attack");
-    }
-
-    @Test
-    public void addsAuthorLinkToAdvancedPlayerFeat() throws IOException {
-        givenFeatTransformerReturns("whirlwind-attack");
-        whenEmbedAdvancedPlayerFeat("whirlwind-attack");
-        thenResultHasAuthorLink("https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html#whirlwind-attack");
     }
 
     private void givenFeatTransformerReturns(String input) {
@@ -125,7 +81,7 @@ public class LegacyPrdEmbedderTests {
 
     private class MockRenderer implements EmbedRenderer<Feat> {
         @Override
-        public MessageEmbed render(Feat feat, String url, String author) {
+        public MessageEmbed render(Feat feat) {
             return rendererReturns;
         }
     }
