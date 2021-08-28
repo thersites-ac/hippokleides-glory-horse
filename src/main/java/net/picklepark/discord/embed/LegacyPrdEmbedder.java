@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
-import net.picklepark.discord.embed.transformer.FeatTransformer;
+import net.picklepark.discord.embed.transformer.Transformer;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +21,13 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
     private static final Logger logger = LoggerFactory.getLogger(LegacyPrdEmbedder.class);
 
     private final ElementScraper scraper;
-    private final EmbedRenderer renderer;
-    private final FeatTransformer transformer;
+    private final EmbedRenderer<Feat> renderer;
+    private final Transformer<Feat> featTransformer;
 
-    public LegacyPrdEmbedder(ElementScraper scraper, EmbedRenderer renderer, FeatTransformer transformer) {
+    public LegacyPrdEmbedder(ElementScraper scraper, EmbedRenderer<Feat> renderer, Transformer<Feat> transformer) {
         this.scraper = scraper;
         this.renderer = renderer;
-        this.transformer = transformer;
+        this.featTransformer = transformer;
     }
 
     @Override
@@ -49,14 +49,14 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
         logger.info("Scraping {}", id);
         List<Element> elements = scraper.scrapeFeatNodes(id, url);
         logger.info("Elements: {}", Arrays.toString(elements.toArray()));
-        Feat feat = transformer.transformFeat(elements);
+        Feat feat = featTransformer.transform(elements);
         logger.info("Feat: {}", feat.toString());
         return makeEmbed(feat, url, id, source);
     }
 
     private MessageEmbed makeEmbed(Feat feat, String baseUrl, String id, String author) {
         String url = baseUrl + "#" + id;
-        return renderer.renderFeat(feat, url, author);
+        return renderer.render(feat, url, author);
     }
 
 }

@@ -14,20 +14,20 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(JUnit4.class)
-public class DefaultRendererTests {
+public class FeatRendererTests {
 
     private Feat feat;
     private MessageEmbed embed;
-    private DefaultRenderer renderer;
+    private FeatRenderer renderer;
 
     @Before
     public void setup() {
-        renderer = new DefaultRenderer();
+        renderer = new FeatRenderer();
     }
 
     @Test
     public void canCreate() {
-        new DefaultRenderer();
+        new FeatRenderer();
     }
 
     @Test
@@ -36,7 +36,7 @@ public class DefaultRendererTests {
                 .name("foo")
                 .featDetails(new ArrayList<>())
                 .build();
-        MessageEmbed embed = renderer.renderFeat(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
         Assert.assertEquals("foo", embed.getTitle());
     }
 
@@ -48,7 +48,7 @@ public class DefaultRendererTests {
         Feat feat = Feat.builder()
                 .featDetails(details)
                 .build();
-        MessageEmbed embed = renderer.renderFeat(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
         Assert.assertEquals("foo", embed.getFields().get(0).getName());
         Assert.assertEquals("bar", embed.getFields().get(0).getValue());
         Assert.assertEquals("baz", embed.getFields().get(1).getName());
@@ -61,7 +61,7 @@ public class DefaultRendererTests {
                 .featDetails(new ArrayList<>())
                 .description("foo")
                 .build();
-        MessageEmbed embed = renderer.renderFeat(feat, "https://www.legacy.aonprd.com", "baz");
+        MessageEmbed embed = renderer.render(feat, "https://www.legacy.aonprd.com", "baz");
         Assert.assertEquals("foo", embed.getDescription());
     }
 

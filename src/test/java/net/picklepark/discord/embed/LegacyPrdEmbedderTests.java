@@ -3,11 +3,10 @@ package net.picklepark.discord.embed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.embed.model.Feat;
-import net.picklepark.discord.embed.renderer.DefaultRenderer;
+import net.picklepark.discord.embed.renderer.FeatRenderer;
 import net.picklepark.discord.embed.renderer.EmbedRenderer;
 import net.picklepark.discord.embed.scraper.ElementScraper;
-import net.picklepark.discord.embed.transformer.FeatTransformer;
-import org.jsoup.nodes.Document;
+import net.picklepark.discord.embed.transformer.Transformer;
 import org.jsoup.nodes.Element;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +29,7 @@ public class LegacyPrdEmbedderTests {
 
     @Before
     public void setup() {
-        legacyPrdEmbedder = new LegacyPrdEmbedder(new MockElementScraper(), new DefaultRenderer(), new MockTransformer());
+        legacyPrdEmbedder = new LegacyPrdEmbedder(new MockElementScraper(), new FeatRenderer(), new MockFeatTransformer());
         rendererReturns = new EmbedBuilder()
                 .setDescription("foo")
                 .build();
@@ -120,16 +119,16 @@ public class LegacyPrdEmbedderTests {
         }
     }
 
-    private class MockRenderer implements EmbedRenderer {
+    private class MockRenderer implements EmbedRenderer<Feat> {
         @Override
-        public MessageEmbed renderFeat(Feat feat, String url, String author) {
+        public MessageEmbed render(Feat feat, String url, String author) {
             return rendererReturns;
         }
     }
 
-    private class MockTransformer implements FeatTransformer {
+    private class MockFeatTransformer implements Transformer<Feat> {
         @Override
-        public Feat transformFeat(List<Element> elements) {
+        public Feat transform(List<Element> elements) {
             return transformerReturns;
         }
     }

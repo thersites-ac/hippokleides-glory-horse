@@ -4,15 +4,12 @@ import net.picklepark.discord.embed.scraper.net.DocumentFetcher;
 import net.picklepark.discord.embed.scraper.net.DefaultDocumentFetcher;
 import net.picklepark.discord.exception.NotFoundException;
 import net.picklepark.discord.exception.NullDocumentException;
-import net.picklepark.discord.exception.ScrapedElementValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class DefaultElementScraper implements ElementScraper {
     private static final String H2 = "h2";

@@ -5,6 +5,6 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 
-public interface FeatTransformer {
-    public Feat transformFeat(List<Element> elements);
+public interface Transformer<T> {
+    public T transform(List<Element> elements);
 }

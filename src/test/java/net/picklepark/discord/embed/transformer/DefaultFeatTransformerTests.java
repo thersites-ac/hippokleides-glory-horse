@@ -17,7 +17,7 @@ import java.util.List;
 public class DefaultFeatTransformerTests {
 
     private List<Element> elements;
-    private FeatTransformer transformer;
+    private Transformer<Feat> transformer;
     private Feat result;
 
     @Before
@@ -94,7 +94,7 @@ public class DefaultFeatTransformerTests {
     }
 
     private void whenTransformToFeat() {
-        result = transformer.transformFeat(elements);
+        result = transformer.transform(elements);
     }
 
     private void thenAllFieldsAreCorrect() {

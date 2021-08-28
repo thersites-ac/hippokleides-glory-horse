@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 
 import java.util.*;
 
-public class DefaultFeatTransformer implements FeatTransformer {
+public class DefaultFeatTransformer implements Transformer<Feat> {
 
     private static final String BENEFIT = "Benefit";
     private static final String NORMAL = "Normal";
@@ -19,7 +19,7 @@ public class DefaultFeatTransformer implements FeatTransformer {
     private boolean consumeSubparagraphs = true;
 
     @Override
-    public Feat transformFeat(List<Element> elements) {
+    public Feat transform(List<Element> elements) {
         initializeElements(elements);
         String name = nextName();
         String description = nextDescription();

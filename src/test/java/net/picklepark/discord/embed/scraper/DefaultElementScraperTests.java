@@ -6,6 +6,7 @@ import net.picklepark.discord.exception.NullDocumentException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +52,12 @@ public class DefaultElementScraperTests {
     }
 
     private void thenResultComesFromSpellPage() {
-        Assert.fail();
+        String spellContent = magicMissileHtml().text();
+        String scrapedContent = new Elements(result).text();
+        Assert.assertEquals(spellContent, scrapedContent);
     }
 
     private void givenMockFetcherReturnsCoreSpellPageSnippets() {
-        magicMissileHtml();
         scraper = new DefaultElementScraper(new MockSpellFetcher());
     }
 
