@@ -6,6 +6,7 @@ import net.picklepark.discord.exception.NotFoundException;
 import net.picklepark.discord.exception.NullDocumentException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +23,7 @@ public class DefaultElementScraperTests {
     private Exception exception;
     private ElementScraper scraper;
     private ScrapeResult result;
+    private String magicMissileHtml;
 
     @Before
     public void setup() {
@@ -65,6 +67,18 @@ public class DefaultElementScraperTests {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenResultComesFromSpellPage();
+    }
+
+    @Test
+    public void stopsScrapingAtDiv() throws IOException {
+        givenMockFetcherReturnsExtendedSpellPage();
+        whenScrapeMagicMissile();
+        thenResultDoesNotHaveDiv();
+    }
+
+    private void thenResultDoesNotHaveDiv() {
+        for (Element e: result.getElements())
+            Assert.assertNotEquals("div", e.tagName());
     }
 
     @Test
@@ -129,7 +143,23 @@ public class DefaultElementScraperTests {
     }
 
     private void givenMockFetcherReturnsCoreSpellPageSnippets() {
+        magicMissileHtml = "\t\t\t\t<p id=\"magic-missile\" class=\"stat-block-title\"><b>Magic Missile</b></p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>School</b> evocation [force]; <b>Level</b> sorcerer/wizard 1</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Casting Time</b> 1 standard action</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Components</b> V, S</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Range </b>medium (100 ft. + 10 ft./level)</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Targets</b> up to five creatures, no two of which can be more than 15 ft. apart</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Duration</b> instantaneous</p>\n" +
+                        "\t\t\t\t<p class=\"stat-block-1\"><b>Saving Throw</b> none; <b><a href = \"../glossary.html#spell-resistance\" >Spell Resistance</a></b> yes</p>\n" +
+                        "\t\t\t\t<p>A missile of magical energy darts forth from your fingertip and strikes its target, dealing 1d4+1 points of force damage.</p>\n" +
+                        "\t\t\t\t<p>The missile strikes unerringly, even if the target is in melee combat, so long as it has less than total cover or total concealment. Specific parts of a creature can't be singled out. Objects are not damaged by the spell.</p>\n" +
+                        "\t\t\t\t<p>For every two caster levels beyond 1st, you gain an additional missile&mdash;two at 3rd level, three at 5th, four at 7th, and the maximum of five missiles at 9th level or higher. If you shoot multiple missiles, you can have them strike a single creature or several creatures. A single missile can strike only one creature. You must designate targets before you check for <a href = \"../glossary.html#spell-resistance\" >spell resistance</a> or roll damage.</p>\n";
         scraper = new DefaultElementScraper(new MockSpellFetcher());
+    }
+
+    private void givenMockFetcherReturnsExtendedSpellPage() {
+        givenMockFetcherReturnsCoreSpellPageSnippets();
+        magicMissileHtml += "<div class=\"footer\">foo</div>";
     }
 
     private void whenScrapeMagicMissile() throws IOException {
@@ -167,18 +197,7 @@ public class DefaultElementScraperTests {
     }
 
     private Document magicMissileHtml() {
-        String magicMissile = "\t\t\t\t<p id=\"magic-missile\" class=\"stat-block-title\"><b>Magic Missile</b></p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>School</b> evocation [force]; <b>Level</b> sorcerer/wizard 1</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Casting Time</b> 1 standard action</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Components</b> V, S</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Range </b>medium (100 ft. + 10 ft./level)</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Targets</b> up to five creatures, no two of which can be more than 15 ft. apart</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Duration</b> instantaneous</p>\n" +
-                "\t\t\t\t<p class=\"stat-block-1\"><b>Saving Throw</b> none; <b><a href = \"../glossary.html#spell-resistance\" >Spell Resistance</a></b> yes</p>\n" +
-                "\t\t\t\t<p>A missile of magical energy darts forth from your fingertip and strikes its target, dealing 1d4+1 points of force damage.</p>\n" +
-                "\t\t\t\t<p>The missile strikes unerringly, even if the target is in melee combat, so long as it has less than total cover or total concealment. Specific parts of a creature can't be singled out. Objects are not damaged by the spell.</p>\n" +
-                "\t\t\t\t<p>For every two caster levels beyond 1st, you gain an additional missile&mdash;two at 3rd level, three at 5th, four at 7th, and the maximum of five missiles at 9th level or higher. If you shoot multiple missiles, you can have them strike a single creature or several creatures. A single missile can strike only one creature. You must designate targets before you check for <a href = \"../glossary.html#spell-resistance\" >spell resistance</a> or roll damage.</p>\n";
-        return Jsoup.parse(magicMissile);
+        return Jsoup.parse(magicMissileHtml);
     }
 
     private Document coreSpellListHtml() {

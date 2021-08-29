@@ -12,8 +12,6 @@ import net.picklepark.discord.embed.scraper.ElementScraper;
 import net.picklepark.discord.embed.transformer.Transformer;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -53,18 +53,46 @@ public class DefaultSpellTransformer implements Transformer<Spell> {
         Map<String, String> qualifiers = new HashMap<>();
         while (chunk.childrenSize() > 0) {
             String key = consumeBoldNode(chunk);
-            String value = consumeTextNode(chunk);
+            String value = consumeOtherNodes(chunk);
             qualifiers.put(key, value);
         }
         return qualifiers;
     }
 
-    private String consumeTextNode(Element chunk) {
+    private String consumeOtherNodes(Element chunk) {
+        String value = "";
+        while (consumeNextChild(chunk))
+            value += consumeSingleNonboldNode(chunk);
+        return value;
+    }
+
+    private boolean consumeNextChild(Element chunk) {
+        if (chunk.childNodeSize() == 0)
+            return false;
+        Node childNode = chunk.childNode(0);
+        if (! (childNode instanceof Element))
+            return true;
+        else {
+            Element e = (Element) childNode;
+            return !e.tagName().equals("b");
+        }
+    }
+
+    private String consumeSingleNonboldNode(Element chunk) {
         Node node = chunk.childNode(0);
+        String result;
+        if (node instanceof Element) {
+            Element e = (Element) node;
+            if (e.tagName().equals("b"))
+                throw new ScrapedElementValidationException("Found bold element but expected spell qualifier description: " + chunk.html());
+            else
+                result = e.text();
+        } else if (node instanceof TextNode)
+            result = ((TextNode) node).text();
+        else
+            throw new ScrapedElementValidationException("Invalid node type: " + chunk.html());
         node.remove();
-        if (! (node instanceof TextNode))
-            throw new ScrapedElementValidationException("First child is not a text node: " + chunk.html());
-        return ((TextNode) node).text();
+        return result;
     }
 
     private String consumeBoldNode(Element chunk) {

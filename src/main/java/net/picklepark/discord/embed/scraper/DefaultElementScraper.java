@@ -64,7 +64,7 @@ public class DefaultElementScraper implements ElementScraper {
             throw new NotFoundException(name, page.baseUri());
         elements.add(element);
         element = element.nextElementSibling();
-        while (element != null && ! element.hasAttr("id")) {
+        while (element != null && ! element.hasAttr("id") && ! element.hasClass("footer")) {
             elements.add(element);
             element = element.nextElementSibling();
         }

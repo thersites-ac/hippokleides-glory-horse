@@ -12,6 +12,8 @@ import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 
@@ -21,10 +23,10 @@ public class FeatCommand implements DiscordCommand {
 
     private MessageEmbed foundFeat;
 
-    public FeatCommand(String elementId, GuildMessageReceivedEvent event) {
-        legacyPrdEmbedder = new LegacyPrdEmbedder(new DefaultElementScraper(), new FeatRenderer(), new DefaultFeatTransformer(), new SpellRenderer(), new DefaultSpellTransformer());
+    public FeatCommand(String elementId, GuildMessageReceivedEvent event, LegacyPrdEmbedder embedder) {
         this.elementId = elementId;
         this.event = event;
+        this.legacyPrdEmbedder = embedder;
         foundFeat = null;
     }
 

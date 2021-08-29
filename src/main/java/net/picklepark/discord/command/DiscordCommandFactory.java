@@ -9,15 +9,25 @@ import net.picklepark.discord.command.audio.impl.*;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
 import net.picklepark.discord.command.pathfinder.impl.FeatCommand;
+import net.picklepark.discord.command.pathfinder.impl.SpellCommand;
+import net.picklepark.discord.embed.LegacyPrdEmbedder;
+import net.picklepark.discord.embed.renderer.FeatRenderer;
+import net.picklepark.discord.embed.renderer.SpellRenderer;
+import net.picklepark.discord.embed.scraper.DefaultElementScraper;
+import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
+import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DiscordCommandFactory {
 
     private static final String RAM_RANCH_URL = "https://www.youtube.com/watch?v=MADvxFXWvwE";
+    private static final LegacyPrdEmbedder legacyPrdEmbedder = new LegacyPrdEmbedder(
+                    new DefaultElementScraper(),
+                    new FeatRenderer(),
+                    new DefaultFeatTransformer(),
+                    new SpellRenderer(),
+                    new DefaultSpellTransformer());
 
     private static final DiscordCommand NOOP = new NoopCommand();
 
@@ -71,10 +81,18 @@ public class DiscordCommandFactory {
         } else if ("~gtfo".equals(command[0])) {
             return new DisconnectCommand(context);
         } else if ("~feat".equals(command[0])) {
-            return new FeatCommand(command[1], event);
+            return new FeatCommand(argOf(command), event, legacyPrdEmbedder);
+        } else if ("~spell".equals(command[0])) {
+            return new SpellCommand(argOf(command), event, legacyPrdEmbedder);
+        } else if ("~help".equals(command[0])) {
+            return new HelpCommand(event);
         } else {
             return NOOP;
         }
+    }
+
+    private String argOf(String[] command) {
+        return String.join(" ", Arrays.asList(command).subList(1, command.length));
     }
 
     private AudioContext getContext(GuildMessageReceivedEvent event) {
