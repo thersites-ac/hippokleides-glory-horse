@@ -6,3 +6,6 @@ gradlew.bat
 gradle
 /bot.iml
 out
+.project
+.settings/
+bin

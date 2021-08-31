@@ -16,6 +16,8 @@ import net.picklepark.discord.embed.renderer.SpellRenderer;
 import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
 import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
+import net.picklepark.discord.service.RecordingService;
+import net.picklepark.discord.service.impl.LocalRecordingService;
 
 import java.util.*;
 
@@ -34,6 +36,7 @@ public class DiscordCommandFactory {
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildPlayer> guildPlayers;
     private final List<String> authorizedUsers;
+    private final RecordingService recordingService;
 
     public DiscordCommandFactory() {
         playerManager = new DefaultAudioPlayerManager();
@@ -41,6 +44,7 @@ public class DiscordCommandFactory {
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
         this.authorizedUsers = Arrays.asList("pvhagg#7133", "pvhagg#1387");
+        this.recordingService = new LocalRecordingService();
     }
 
     public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) {
@@ -86,6 +90,10 @@ public class DiscordCommandFactory {
             return new SpellCommand(argOf(command), event, legacyPrdEmbedder);
         } else if ("~help".equals(command[0])) {
             return new HelpCommand(event);
+        } else if ("~record".equals(command[0])) {
+            return new RecordCommand(event, recordingService);
+        } else if ("~clip".equals(command[0])) {
+            return new WriteAudioCommand(event, recordingService);
         } else {
             return NOOP;
         }
