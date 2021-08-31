@@ -10,6 +10,10 @@ import java.util.LinkedList;
 
 public class LocalRecordingService implements RecordingService {
 
+    public static final int PACKETS_PER_SECOND = 50;
+    public static final int SECONDS_TO_STORE = 60;
+    public static final int MAX_STORED_PACKETS = PACKETS_PER_SECOND * SECONDS_TO_STORE;
+
     private LinkedList<byte[]> combined;
     private boolean recording = false;
     private final Logger logger = LoggerFactory.getLogger(LocalRecordingService.class);
@@ -37,11 +41,13 @@ public class LocalRecordingService implements RecordingService {
     }
 
     @Override
-    public void receive(CombinedAudio combinedAudio) throws NotRecordingException {
+    public void receive(CombinedAudio audio) throws NotRecordingException {
         if (!recording)
             throw new NotRecordingException();
-        byte[] audioData = combinedAudio.getAudioData(1);
+        byte[] audioData = audio.getAudioData(1);
         combined.addLast(audioData);
+        if (combined.size() > MAX_STORED_PACKETS)
+            combined.removeFirst();
     }
 
 }
