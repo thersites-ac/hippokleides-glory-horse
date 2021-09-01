@@ -11,28 +11,40 @@ public class DiscontinuousAudioArray {
     public static final int BYTES_PER_MS = 192;
     public static final int MS_PER_PACKET = 20;
     public static final int PACKET_SIZE = BYTES_PER_MS * MS_PER_PACKET;
+    private final long maxInterval;
 
     private Logger logger = LoggerFactory.getLogger(DiscontinuousAudioArray.class);
 
     private final LinkedList<TimestampedPacket> audio;
 
-    private int silences;
-
     public DiscontinuousAudioArray() {
         audio = new LinkedList<>();
-        silences = 0;
+        maxInterval = 60000L;
+    }
+
+    public DiscontinuousAudioArray(long recordDuration) {
+        this.maxInterval = recordDuration;
+        audio = new LinkedList<>();
     }
 
     public void store(byte[] data) {
-        if (isSilence(data)) {
-            silences++;
+        removeOldData();
+        if (isSilence(data))
             audio.add(TimestampedPacket.silence());
-        }
-        else {
-            silences = 0;
-            TimestampedPacket packet = new TimestampedPacket(data);
-            audio.add(packet);
-        }
+        else
+            audio.add(new TimestampedPacket(data));
+    }
+
+    private void removeOldData() {
+        long now = System.currentTimeMillis();
+        while (firstPacketIsOldFor(now))
+            audio.removeFirst();
+    }
+
+    private boolean firstPacketIsOldFor(long now) {
+        if (audio.isEmpty())
+            return false;
+        return now - audio.getFirst().timestamp > maxInterval;
     }
 
     private boolean isSilence(byte[] data) {
@@ -58,6 +70,12 @@ public class DiscontinuousAudioArray {
         public TimestampedPacket(byte[] data) {
             this.data = data;
             timestamp = System.currentTimeMillis();
+            isSilence = false;
+        }
+
+        public TimestampedPacket(byte[] data, long timestamp) {
+            this.data = data;
+            this.timestamp = timestamp;
             isSilence = false;
         }
 

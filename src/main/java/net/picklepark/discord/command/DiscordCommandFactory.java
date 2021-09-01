@@ -16,6 +16,7 @@ import net.picklepark.discord.embed.renderer.SpellRenderer;
 import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
 import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
+import net.picklepark.discord.exception.CannotFindUserException;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.impl.LocalRecordingService;
 
@@ -47,7 +48,7 @@ public class DiscordCommandFactory {
         this.recordingService = new LocalRecordingService();
     }
 
-    public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) {
+    public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
         if (isAuthorized(event))
             return buildCommand(event);
         else
@@ -59,7 +60,7 @@ public class DiscordCommandFactory {
 //        return authorizedUsers.contains(event.getAuthor().getAsTag());
     }
 
-    private DiscordCommand buildCommand(GuildMessageReceivedEvent event) {
+    private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
 
         String[] command = event.getMessage().getContentRaw().split(" ");
         AudioContext context = getContext(event);
@@ -93,7 +94,7 @@ public class DiscordCommandFactory {
         } else if ("~record".equals(command[0])) {
             return new RecordCommand(event, recordingService);
         } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(event, recordingService);
+            return new WriteAudioCommand(event, recordingService, argOf(command));
         } else {
             return NOOP;
         }

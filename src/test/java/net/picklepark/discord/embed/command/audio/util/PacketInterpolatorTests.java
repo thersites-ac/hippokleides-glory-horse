@@ -42,15 +42,20 @@ public class PacketInterpolatorTests {
     }
 
     @Test
-    public void interpolatesOnCommand() throws InterruptedException {
+    public void interpolatesCommand() throws InterruptedException {
         givenSilenceSeparatedPackets();
         whenInterpolate();
         thenGetSevenPackets();
     }
 
-    @Test
-    public void dropsDataOverOneMinute() {
-        Assert.fail();
+    private void thenResultOnlyHasLastMinute() {
+        Assert.assertEquals(PACKET_SIZE, result.length);
+    }
+
+    private void givenDataContainsStretchedOutAudio() {
+        givenOnePacketOfSound();
+        data.add(new DiscontinuousAudioArray.TimestampedPacket(input, 0L));
+        data.add(new DiscontinuousAudioArray.TimestampedPacket(input, 61000L));
     }
 
 

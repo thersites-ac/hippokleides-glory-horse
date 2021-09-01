@@ -1,15 +1,17 @@
 package net.picklepark.discord.command.audio.impl;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import net.dv8tion.jda.api.audio.CombinedAudio;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.command.audio.impl.handler.NoopHandler;
+import net.picklepark.discord.exception.CannotFindUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -17,33 +19,59 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 public class WriteAudioCommand implements DiscordCommand {
 
+    private static final String FORMAT = "%s-%s.wav";
+    private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
+
     private final RecordingService recordingService;
     private final GuildMessageReceivedEvent event;
+    private final User user;
 
-    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService) {
+    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user) throws CannotFindUserException {
         this.recordingService = recordingService;
         this.event = event;
+        this.user = determineUser(user);
+    }
+
+    private User determineUser(String user) throws CannotFindUserException {
+        List<Member> users = event.getChannel().getGuild().getMembersByNickname(user, true);
+        if (users.isEmpty()) {
+            event.getChannel().sendMessage("No one is named " + user).queue();
+            throw new CannotFindUserException(user);
+        } else if (users.size() > 1) {
+            event.getChannel().sendMessage("Too many damn users named " + user).queue();
+            throw new CannotFindUserException(user);
+        } else
+            return users.get(0).getUser();
     }
 
     @Override
     public void execute() throws IOException {
         try {
             event.getGuild().getAudioManager().setReceivingHandler(new NoopHandler());
-            byte[] data = recordingService.getUser(event.getAuthor());
+            byte[] data = recordingService.getUser(user);
+            recordingService.stopRecording();
             writeAudioData(data);
         } catch (NotRecordingException e) {
-            e.printStackTrace();
+            event.getChannel().sendMessage("I never even had a chance").queue();
         }
     }
 
     private void writeAudioData(byte[] data) throws IOException {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
-        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new File("demo.wav"));
+        String filename = makeName(user);
+        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new File(filename));
+    }
+
+    private String makeName(User user) {
+        return String.format(FORMAT, new Date().toString(), user.getName())
+                .replace(':', '-')
+                .replace(' ', '_');
     }
 
     public static byte[] flatten(List<byte[]> data) {

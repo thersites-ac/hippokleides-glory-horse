@@ -28,16 +28,28 @@ public class DiscontinuousAudioArrayTests {
     }
 
     @Test
-    public void dropsDataOverOneMinute() {
-        Assert.fail();
+    public void canSetMaximumRecordingLength() throws InterruptedException {
+        givenShortMaxRecordingLength();
+        whenInterpolateLongAudio();
+        thenResultDropsOldPackets();
     }
 
-    private void givenDataIsSilence() {
-        Arrays.fill(data, (byte) 0);
+    private void givenShortMaxRecordingLength() {
+        discontinuousAudioArray = new DiscontinuousAudioArray(40);
+    }
+
+    private void whenInterpolateLongAudio() throws InterruptedException {
+        whenProvideAudio();
+        Thread.sleep(41);
+        whenProvideAudio();
     }
 
     private void whenProvideAudio() {
         discontinuousAudioArray.store(data);
+    }
+
+    private void thenResultDropsOldPackets() {
+        Assert.assertEquals(DiscontinuousAudioArray.PACKET_SIZE, discontinuousAudioArray.retrieve().length);
     }
 
     private void thenCanRetrieveIt() {

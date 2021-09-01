@@ -39,7 +39,7 @@ public class PacketInterpolator {
             if (packet.isSilence) {
                 continuousSilences++;
                 last = packet;
-            } else if (continuousSilences > 5) {
+            } else if (continuousSilences >= 5) {
                 total += countSilencesInInterval(last.timestamp, packet.timestamp);
                 continuousSilences = 0;
             }
@@ -48,7 +48,7 @@ public class PacketInterpolator {
     }
 
     private int countSilencesInInterval(long lastTimestamp, long timestamp) {
-        return (int) ((timestamp - lastTimestamp + 20) / MS_PER_PACKET);
+        return (int) ((timestamp - lastTimestamp) / MS_PER_PACKET);
     }
 
     public byte[] interpolate() {

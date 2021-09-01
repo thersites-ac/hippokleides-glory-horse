@@ -18,8 +18,12 @@ public class RecordCommand implements DiscordCommand {
     @Override
     public void execute() {
         ensureConnected();
-        recordingService.beginRecording();
-        event.getGuild().getAudioManager().setReceivingHandler(new DemultiplexingHandler(recordingService));
+        if (recordingService.isRecording())
+            event.getChannel().sendMessage("I'm already recording. Leave me alone.").queue();
+        else {
+            recordingService.beginRecording();
+            event.getGuild().getAudioManager().setReceivingHandler(new DemultiplexingHandler(recordingService));
+        }
     }
 
     private void ensureConnected() {

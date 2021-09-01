@@ -52,6 +52,28 @@ public class LocalRecordingService implements RecordingService {
     }
 
     @Override
+    public void receive(CombinedAudio audio) throws NotRecordingException {
+        if (!recording)
+            throw new NotRecordingException();
+        byte[] audioData = audio.getAudioData(1);
+        combined.addLast(audioData);
+        if (combined.size() > MAX_STORED_PACKETS)
+            combined.removeFirst();
+    }
+
+    @Override
+    public boolean isRecording() {
+        return recording;
+    }
+
+    @Override
+    public void stopRecording() {
+        recording = true;
+        userRecordings = null;
+        combined = null;
+    }
+
+    @Override
     public byte[] getCombined() throws NotRecordingException {
         if (!recording)
             throw new NotRecordingException();
@@ -65,16 +87,6 @@ public class LocalRecordingService implements RecordingService {
             ptr += data.length;
         }
         return all;
-    }
-
-    @Override
-    public void receive(CombinedAudio audio) throws NotRecordingException {
-        if (!recording)
-            throw new NotRecordingException();
-        byte[] audioData = audio.getAudioData(1);
-        combined.addLast(audioData);
-        if (combined.size() > MAX_STORED_PACKETS)
-            combined.removeFirst();
     }
 
 }

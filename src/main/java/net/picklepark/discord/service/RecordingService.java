@@ -11,4 +11,6 @@ public interface RecordingService {
     public void receive(CombinedAudio combinedAudio) throws NotRecordingException;
     public byte[] getUser(User user) throws NotRecordingException;
     public void receive(UserAudio userAudio) throws NotRecordingException;
+    public boolean isRecording();
+    public void stopRecording();
 }
