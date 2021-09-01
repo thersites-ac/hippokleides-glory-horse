@@ -1,12 +1,16 @@
 package net.picklepark.discord.service.impl;
 
 import net.dv8tion.jda.api.audio.CombinedAudio;
+import net.dv8tion.jda.api.audio.UserAudio;
+import net.dv8tion.jda.api.entities.User;
+import net.picklepark.discord.command.audio.util.DiscontinuousAudioArray;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalRecordingService implements RecordingService {
 
@@ -15,6 +19,8 @@ public class LocalRecordingService implements RecordingService {
     public static final int MAX_STORED_PACKETS = PACKETS_PER_SECOND * SECONDS_TO_STORE;
 
     private LinkedList<byte[]> combined;
+    private ConcurrentHashMap<Long, DiscontinuousAudioArray> userRecordings;
+
     private boolean recording = false;
     private final Logger logger = LoggerFactory.getLogger(LocalRecordingService.class);
 
@@ -22,6 +28,27 @@ public class LocalRecordingService implements RecordingService {
     public void beginRecording() {
         recording = true;
         combined = new LinkedList<>();
+        userRecordings = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public byte[] getUser(User user) throws NotRecordingException {
+        if (!recording)
+            throw new NotRecordingException();
+        long id = user.getIdLong();
+        if (userRecordings.containsKey(id))
+            return userRecordings.get(id).retrieve();
+        else
+            return new byte[0];
+    }
+
+    @Override
+    public void receive(UserAudio userAudio) throws NotRecordingException {
+        if (!recording)
+            throw new NotRecordingException();
+        long id = userAudio.getUser().getIdLong();
+        userRecordings.computeIfAbsent(id, meh -> new DiscontinuousAudioArray());
+        userRecordings.get(id).store(userAudio.getAudioData(1));
     }
 
     @Override

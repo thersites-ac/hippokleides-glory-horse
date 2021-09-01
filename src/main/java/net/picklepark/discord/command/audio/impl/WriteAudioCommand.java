@@ -2,8 +2,10 @@ package net.picklepark.discord.command.audio.impl;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.audio.CombinedAudio;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.command.audio.impl.handler.NoopHandler;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 
@@ -30,15 +32,8 @@ public class WriteAudioCommand implements DiscordCommand {
     @Override
     public void execute() throws IOException {
         try {
-            event.getGuild().getAudioManager().setReceivingHandler(new AudioReceiveHandler() {
-                @Override
-                public boolean canReceiveCombined() {
-                    return false;
-                }
-                @Override
-                public void handleCombinedAudio(@Nonnull CombinedAudio combinedAudio) {}
-            });
-            byte[] data = recordingService.getCombined();
+            event.getGuild().getAudioManager().setReceivingHandler(new NoopHandler());
+            byte[] data = recordingService.getUser(event.getAuthor());
             writeAudioData(data);
         } catch (NotRecordingException e) {
             e.printStackTrace();
