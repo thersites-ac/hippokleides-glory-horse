@@ -4,6 +4,7 @@ import net.picklepark.discord.command.audio.util.DiscontinuousAudioArray.Timesta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.OutputStream;
 import java.util.List;
 
 import static net.picklepark.discord.command.audio.util.DiscontinuousAudioArray.MS_PER_PACKET;

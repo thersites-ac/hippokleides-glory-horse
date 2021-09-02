@@ -27,6 +27,10 @@ public class DiscontinuousAudioArray {
         audio = new LinkedList<>();
     }
 
+    public byte[] retrieve() {
+        return new PacketInterpolator(audio).interpolate();
+    }
+
     public void store(byte[] data) {
         removeOldData();
         if (isSilence(data))
@@ -50,11 +54,6 @@ public class DiscontinuousAudioArray {
     private boolean isSilence(byte[] data) {
         return Arrays.equals(data, TimestampedPacket.SILENCE_DATA);
     }
-
-    public byte[] retrieve() {
-        return new PacketInterpolator(audio).interpolate();
-    }
-
 
     public static class TimestampedPacket {
         public static final byte[] SILENCE_DATA = new byte[PACKET_SIZE];

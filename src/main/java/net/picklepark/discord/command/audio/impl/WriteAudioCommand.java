@@ -1,14 +1,16 @@
 package net.picklepark.discord.command.audio.impl;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.command.audio.impl.handler.NoopHandler;
 import net.picklepark.discord.exception.CannotFindUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
+import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.impl.AwsStorageService;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +21,30 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";
+    private static final String BASE_URL = "http://pickle-park.s3-website.us-east-2.amazonaws.com";
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
 
     private final RecordingService recordingService;
     private final GuildMessageReceivedEvent event;
     private final User user;
+    private final StorageService storageService;
+
+    private URI location;
 
     public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user) throws CannotFindUserException {
         this.recordingService = recordingService;
         this.event = event;
         this.user = determineUser(user);
+        storageService = new AwsStorageService();
     }
 
     private User determineUser(String user) throws CannotFindUserException {
@@ -56,8 +66,22 @@ public class WriteAudioCommand implements DiscordCommand {
             byte[] data = recordingService.getUser(user);
             recordingService.stopRecording();
             writeAudioData(data);
+            sendCropLink();
         } catch (NotRecordingException e) {
             event.getChannel().sendMessage("I never even had a chance").queue();
+        }
+    }
+
+    private void sendCropLink() {
+        String param = Base64.getEncoder().encodeToString(location.toString().getBytes());
+        try {
+            URI cropLink = new URIBuilder(BASE_URL)
+                    .addParameter("uri", param)
+                    .build();
+            event.getChannel().sendMessage("OK, now go to " + cropLink.toString() + " to trim it.").queue();
+        } catch (URISyntaxException e) {
+            event.getChannel().sendMessage("I did something incomprehensible, sorry").queue();
+            e.printStackTrace();
         }
     }
 
@@ -65,7 +89,9 @@ public class WriteAudioCommand implements DiscordCommand {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
         String filename = makeName(user);
-        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new File(filename));
+        File output = new File(filename);
+        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
+        location = storageService.store(output);
     }
 
     private String makeName(User user) {

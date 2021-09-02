@@ -48,17 +48,6 @@ public class PacketInterpolatorTests {
         thenGetSevenPackets();
     }
 
-    private void thenResultOnlyHasLastMinute() {
-        Assert.assertEquals(PACKET_SIZE, result.length);
-    }
-
-    private void givenDataContainsStretchedOutAudio() {
-        givenOnePacketOfSound();
-        data.add(new DiscontinuousAudioArray.TimestampedPacket(input, 0L));
-        data.add(new DiscontinuousAudioArray.TimestampedPacket(input, 61000L));
-    }
-
-
     private void thenGetSevenPackets() {
         Assert.assertEquals(7 * PACKET_SIZE, result.length);
     }
