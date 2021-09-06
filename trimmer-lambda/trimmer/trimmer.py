@@ -14,16 +14,14 @@ class Trimmer:
         print(self._frames_per_ms)
 
     def init_output_file(self, filename):
-        self._output = wave.open(self.output_file_name(filename), 'wb')
+        parts = filename.split('.')
+        self._output_name = parts[0] + '-trimmed.wav'
+        self._output = wave.open(self._output_name, 'wb')
         self._output.setnchannels(self._channels)
         self._output.setsampwidth(self._samplewidth)
         self._output.setframerate(self._framerate)
         self._output.setnframes(0)
         self._output.setcomptype(self._input.getcomptype(), self._input.getcompname())
-
-    def output_file_name(self, input_name):
-        parts = input_name.split('.')
-        return parts[0] + '-trimmed.wav'
 
     def count_frames(self, ms):
         result = int(ms * self._frames_per_ms)
@@ -41,3 +39,11 @@ class Trimmer:
     def close(self):
         self._input.close()
         self._output.close()
+        return self._output_name
+
+# usage:
+#
+# mytrimmer = Trimmer('some_file.wav')
+# mytrimmer.skip(10000)
+# mytrimmer.copy(10000)
+# mytrimmer.close()

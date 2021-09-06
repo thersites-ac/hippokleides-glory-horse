@@ -10,6 +10,7 @@ import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.service.impl.AwsStorageService;
+import net.picklepark.discord.service.model.Coordinates;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class WriteAudioCommand implements DiscordCommand {
     private final StorageService storageService;
 
     private URL location;
+    private String key;
 
     public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user) throws CannotFindUserException {
         this.recordingService = recordingService;
@@ -74,10 +76,12 @@ public class WriteAudioCommand implements DiscordCommand {
     }
 
     private void sendCropLink() {
-        String param = Base64.getEncoder().encodeToString(location.toString().getBytes());
+        String uriParam = Base64.getEncoder().encodeToString(location.toString().getBytes());
+        String keyParam = Base64.getEncoder().encodeToString(key.getBytes());
         try {
             URI cropLink = new URIBuilder(BASE_URL)
-                    .addParameter("uri", param)
+                    .addParameter("uri", uriParam)
+                    .addParameter("key", keyParam)
                     .build();
             event.getChannel().sendMessage("OK, now go to " + cropLink.toString() + " to trim it.").queue();
         } catch (URISyntaxException e) {
@@ -92,7 +96,9 @@ public class WriteAudioCommand implements DiscordCommand {
         String filename = "recordings/" + makeName(user);
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
-        location = storageService.store(output);
+        Coordinates coordinates = storageService.store(output);
+        location = coordinates.getUrl();
+        key = coordinates.getKey();
     }
 
     private String makeName(User user) {

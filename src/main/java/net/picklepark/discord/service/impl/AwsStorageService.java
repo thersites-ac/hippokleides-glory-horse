@@ -1,6 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.model.Coordinates;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -36,9 +37,13 @@ public class AwsStorageService implements StorageService {
     }
 
     @Override
-    public URL store(File file) {
+    public Coordinates store(File file) {
         String key = upload(file);
-        return presingedUrlFor(key);
+        URL url = presingedUrlFor(key);
+        return Coordinates.builder()
+                .key(key)
+                .url(url)
+                .build();
     }
 
     private String upload(File file) {
