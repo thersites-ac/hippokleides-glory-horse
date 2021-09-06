@@ -1,8 +1,9 @@
 package net.picklepark.discord.service;
 
 import java.io.File;
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public interface StorageService {
-    public URI store(File file);
+    public URL store(File file) throws MalformedURLException;
 }

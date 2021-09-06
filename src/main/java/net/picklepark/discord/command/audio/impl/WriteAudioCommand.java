@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class WriteAudioCommand implements DiscordCommand {
     private final User user;
     private final StorageService storageService;
 
-    private URI location;
+    private URL location;
 
     public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user) throws CannotFindUserException {
         this.recordingService = recordingService;
@@ -88,7 +89,7 @@ public class WriteAudioCommand implements DiscordCommand {
     private void writeAudioData(byte[] data) throws IOException {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
-        String filename = makeName(user);
+        String filename = "recordings/" + makeName(user);
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
         location = storageService.store(output);
