@@ -8,3 +8,6 @@ the [legacy PRD](https://legacy.aonprd.com/) as well.
 * different authorization for different commands
   * in general, abstract the data hardcoded in the command factory into annotations
 * better error messages/handling (e.g. not found)
+* Lambda should assign a new id to each generated clip to avoid collision
+* use the user's clip name in the request
+* error handling in the Python thing
