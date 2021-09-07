@@ -7,6 +7,7 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.command.audio.impl.handler.NoopHandler;
 import net.picklepark.discord.exception.CannotFindUserException;
 import net.picklepark.discord.exception.NotRecordingException;
+import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.service.impl.AwsStorageService;
@@ -43,11 +44,11 @@ public class WriteAudioCommand implements DiscordCommand {
     private URL location;
     private String key;
 
-    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user) throws CannotFindUserException {
+    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user, StorageService storageService) throws CannotFindUserException {
         this.recordingService = recordingService;
         this.event = event;
         this.user = determineUser(user);
-        storageService = new AwsStorageService();
+        this.storageService = storageService;
     }
 
     private User determineUser(String user) throws CannotFindUserException {

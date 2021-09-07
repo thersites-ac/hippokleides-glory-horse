@@ -17,8 +17,12 @@ import net.picklepark.discord.embed.scraper.DefaultElementScraper;
 import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
 import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
 import net.picklepark.discord.exception.CannotFindUserException;
+import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.RecordingService;
+import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.impl.AwsStorageService;
 import net.picklepark.discord.service.impl.LocalRecordingService;
+import net.picklepark.discord.service.impl.SqsPollingService;
 
 import java.util.*;
 
@@ -38,14 +42,19 @@ public class DiscordCommandFactory {
     private final Map<Long, GuildPlayer> guildPlayers;
     private final List<String> authorizedUsers;
     private final RecordingService recordingService;
+    private final PollingService pollingService;
+    private final StorageService storageService;
 
     public DiscordCommandFactory() {
         playerManager = new DefaultAudioPlayerManager();
         guildPlayers = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
-        this.authorizedUsers = Arrays.asList("pvhagg#7133", "pvhagg#1387");
-        this.recordingService = new LocalRecordingService();
+
+        authorizedUsers = Arrays.asList("pvhagg#7133", "pvhagg#1387");
+        storageService = new AwsStorageService();
+        recordingService = new LocalRecordingService();
+        pollingService = new SqsPollingService(null);
     }
 
     public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
@@ -62,7 +71,10 @@ public class DiscordCommandFactory {
 
     private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
 
-        String[] command = event.getMessage().getContentRaw().split(" ");
+        pollingService.expect("");
+
+        String rawCommand = event.getMessage().getContentRaw();
+        String[] command = rawCommand.split(" ");
         AudioContext context = getContext(event);
 
         if ("~queue".equals(command[0]) && command.length == 2) {
@@ -94,10 +106,20 @@ public class DiscordCommandFactory {
         } else if ("~record".equals(command[0])) {
             return new RecordCommand(event, recordingService);
         } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(event, recordingService, argOf(command));
+            return new WriteAudioCommand(event, recordingService, argOf(command), storageService);
+        } else if ('~' == rawCommand.charAt(0)){
+            return fetchFromPollingService(rawCommand);
         } else {
             return NOOP;
         }
+    }
+
+    private DiscordCommand fetchFromPollingService(String rawCommand) {
+        DiscordCommand command = pollingService.lookup(rawCommand);
+        if (command != null)
+            return command;
+        else
+            return NOOP;
     }
 
     private String argOf(String[] command) {
