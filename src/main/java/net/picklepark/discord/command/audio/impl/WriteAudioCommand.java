@@ -67,7 +67,7 @@ public class WriteAudioCommand implements DiscordCommand {
         try {
             event.getGuild().getAudioManager().setReceivingHandler(new NoopHandler());
             byte[] data = recordingService.getUser(user);
-            recordingService.stopRecording();
+//            recordingService.stopRecording();
             writeAudioData(data);
             sendCropLink();
         } catch (NotRecordingException e) {

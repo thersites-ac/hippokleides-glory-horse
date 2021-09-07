@@ -1,8 +1,8 @@
 {
-  "body": "{\"start\":20,\"end\":30,\"key\":\"test-recording.wav\", \"title\":\"stuff\"}",
+  "body": "",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
-  "httpMethod": "POST",
+  "httpMethod": "OPTIONS",
   "isBase64Encoded": false,
   "pathParameters": {
     "proxy": "/path/to/resource"

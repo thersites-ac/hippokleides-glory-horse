@@ -4,16 +4,30 @@ import os
 from trimmer import Trimmer
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        print('options call')
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST',
+                'Access-Control-Allow-Headers': '*'
+            }
+        }
+
     body = json.loads(event['body'])
+
+    print('invoked with payload:', body)
 
     key = body['key']
     start = body['start']
     end = body['end']
+    title = body['title']
 
     dest = '/tmp/' + key
 
-    s3 = boto3.resource('s3')
-    s3.meta.client.download_file('discord-recordings', key, dest)
+    s3 = boto3.client('s3')
+    s3.download_file('discord-recordings', key, dest)
 
     skip_ms = int(start * 1000)
     copy_ms = int((end - start) * 1000)
@@ -25,12 +39,20 @@ def lambda_handler(event, context):
 
     trimmed_key = os.path.basename(result)
 
-    print(result, trimmed_key)
-    s3.meta.client.upload_file(result, 'discord-output', trimmed_key)
+    s3.upload_file(result, 'discord-output', trimmed_key, 
+            ExtraArgs = { 'Tagging': 'title=' + title })
+
+    print('successfully uploaded as', trimmed_key, 'with title', title)
 
     return {
-        "statusCode": 200,
-        "body": json.dumps({
-            key: trimmed_key
-        })
+        'statusCode': 200,
+        'body': json.dumps({
+            'key': trimmed_key,
+            'title': title
+        }),
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS, POST',
+            'Access-Control-Allow-Headers': '*'
+        }
     }
