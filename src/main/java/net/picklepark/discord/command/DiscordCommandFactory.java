@@ -23,11 +23,14 @@ import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.service.impl.AwsStorageService;
 import net.picklepark.discord.service.impl.LocalRecordingService;
 import net.picklepark.discord.service.impl.SqsPollingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class DiscordCommandFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(DiscordCommandFactory.class);
     private static final String RAM_RANCH_URL = "https://www.youtube.com/watch?v=MADvxFXWvwE";
     private static final LegacyPrdEmbedder legacyPrdEmbedder = new LegacyPrdEmbedder(
                     new DefaultElementScraper(),
@@ -54,7 +57,7 @@ public class DiscordCommandFactory {
         authorizedUsers = Arrays.asList("pvhagg#7133", "pvhagg#1387");
         storageService = new AwsStorageService();
         recordingService = new LocalRecordingService();
-        pollingService = new SqsPollingService(null);
+        pollingService = new SqsPollingService(storageService);
     }
 
     public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
@@ -70,8 +73,6 @@ public class DiscordCommandFactory {
     }
 
     private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
-
-        pollingService.expect("");
 
         String rawCommand = event.getMessage().getContentRaw();
         String[] command = rawCommand.split(" ");
@@ -106,19 +107,21 @@ public class DiscordCommandFactory {
         } else if ("~record".equals(command[0])) {
             return new RecordCommand(event, recordingService);
         } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(event, recordingService, argOf(command), storageService);
-        } else if ('~' == rawCommand.charAt(0)){
-            return fetchFromPollingService(rawCommand);
+            return new WriteAudioCommand(event, recordingService, argOf(command), storageService, pollingService);
+        } else if ('~' == rawCommand.charAt(0)) {
+            return fetchFromPollingService(rawCommand, context);
         } else {
             return NOOP;
         }
     }
 
-    private DiscordCommand fetchFromPollingService(String rawCommand) {
-        DiscordCommand command = pollingService.lookup(rawCommand);
-        if (command != null)
+    private DiscordCommand fetchFromPollingService(String rawCommand, AudioContext context) {
+        String unprefixedCommand = rawCommand.substring(1);
+        DiscordCommand command = pollingService.lookup(unprefixedCommand, context);
+        if (command != null) {
+            logger.info("Dynamic command");
             return command;
-        else
+        } else
             return NOOP;
     }
 

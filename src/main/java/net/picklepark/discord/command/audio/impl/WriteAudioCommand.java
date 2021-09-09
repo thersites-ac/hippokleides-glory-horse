@@ -40,15 +40,17 @@ public class WriteAudioCommand implements DiscordCommand {
     private final GuildMessageReceivedEvent event;
     private final User user;
     private final StorageService storageService;
+    private final PollingService pollingService;
 
     private URL location;
     private String key;
 
-    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user, StorageService storageService) throws CannotFindUserException {
+    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user, StorageService storageService, PollingService pollingService) throws CannotFindUserException {
         this.recordingService = recordingService;
         this.event = event;
         this.user = determineUser(user);
         this.storageService = storageService;
+        this.pollingService = pollingService;
     }
 
     private User determineUser(String user) throws CannotFindUserException {
@@ -68,7 +70,6 @@ public class WriteAudioCommand implements DiscordCommand {
         try {
             event.getGuild().getAudioManager().setReceivingHandler(new NoopHandler());
             byte[] data = recordingService.getUser(user);
-//            recordingService.stopRecording();
             writeAudioData(data);
             sendCropLink();
         } catch (NotRecordingException e) {
@@ -94,12 +95,14 @@ public class WriteAudioCommand implements DiscordCommand {
     private void writeAudioData(byte[] data) throws IOException {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
-        String filename = "recordings/" + makeName(user);
+        String baseName = makeName(user);
+        String filename = "recordings/" + baseName;
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
         Coordinates coordinates = storageService.store(output);
         location = coordinates.getUrl();
         key = coordinates.getKey();
+        pollingService.expect(baseName);
     }
 
     private String makeName(User user) {
