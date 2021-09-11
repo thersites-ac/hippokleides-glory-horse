@@ -2,7 +2,7 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.model.ScrapeResult;
 import net.picklepark.discord.service.DocumentFetcher;
-import net.picklepark.discord.exception.NotFoundException;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.exception.NullDocumentException;
 import net.picklepark.discord.service.ElementScraper;
 import org.jsoup.nodes.Document;
@@ -61,7 +61,7 @@ public class DefaultElementScraper implements ElementScraper {
         String id = convertToId(name);
         Element element = page.getElementById(id);
         if (element == null)
-            throw new NotFoundException(name, page.baseUri());
+            throw new ResourceNotFoundException(name, page.baseUri());
         elements.add(element);
         element = element.nextElementSibling();
         while (element != null && ! element.hasAttr("id") && ! element.hasClass("footer")) {
@@ -84,7 +84,7 @@ public class DefaultElementScraper implements ElementScraper {
         return index.getElementsByTag("a").stream()
                 .filter(e -> e.text().equalsIgnoreCase(spellName))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(spellName, CORE_SPELL_LIST));
+                .orElseThrow(() -> new ResourceNotFoundException(spellName, CORE_SPELL_LIST));
     }
 
     private Element getRootFeatElement(String id, String url) throws IOException {
@@ -93,7 +93,7 @@ public class DefaultElementScraper implements ElementScraper {
             throw new NullDocumentException(url);
         Element element = document.getElementById(id);
         if (element == null) {
-            throw new NotFoundException(id, url);
+            throw new ResourceNotFoundException(id, url);
         }
         return element;
     }

@@ -8,9 +8,6 @@ import net.picklepark.discord.command.audio.util.GuildPlayer;
 
 public abstract class DiscordAudioCommand implements DiscordCommand {
 
-    @Override
-    public abstract void execute();
-
     protected final TextChannel channel;
     protected final GuildPlayer guildPlayer;
     protected final AudioPlayerManager playerManager;
@@ -19,10 +16,6 @@ public abstract class DiscordAudioCommand implements DiscordCommand {
         this.channel = context.channel;
         this.guildPlayer = context.guildPlayer;
         this.playerManager = context.playerManager;
-    }
-
-    protected void acknowledge(String message) {
-        channel.sendMessage(message).queue();
     }
 
 }

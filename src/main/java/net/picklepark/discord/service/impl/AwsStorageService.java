@@ -1,6 +1,6 @@
 package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.exception.NotFoundException;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
@@ -98,7 +98,7 @@ public class AwsStorageService implements StorageService {
                     .build();
         }
 
-        throw new NotFoundException(objectKey, "s3://" + bucketName + "/" + objectKey);
+        throw new ResourceNotFoundException(objectKey, "s3://" + bucketName + "/" + objectKey);
     }
 
     private String upload(File file) {

@@ -1,5 +1,6 @@
 package net.picklepark.discord.command.audio;
 
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.audio.DiscordAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
 
@@ -10,8 +11,8 @@ public class GetVolumeAudioCommand extends DiscordAudioCommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(DiscordActions actions) {
         int volume = guildPlayer.player.getVolume();
-        acknowledge("Current volume is " + volume);
+        actions.send("Current volume is " + volume);
     }
 }

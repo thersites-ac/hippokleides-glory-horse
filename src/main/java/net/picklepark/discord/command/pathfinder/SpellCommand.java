@@ -2,6 +2,7 @@ package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
 import org.slf4j.Logger;
@@ -14,37 +15,35 @@ public class SpellCommand implements DiscordCommand {
 
     private final String spell;
     private final LegacyPrdEmbedder embedder;
-    private final GuildMessageReceivedEvent event;
     private MessageEmbed result;
 
     public SpellCommand(String spell, GuildMessageReceivedEvent event, LegacyPrdEmbedder embedder) {
         this.embedder = embedder;
         this.spell = spell;
-        this.event = event;
         result = null;
     }
 
     @Override
-    public void execute() throws IOException {
-        scrapeSpell();
-        sendResult();
+    public void execute(DiscordActions actions) {
+        scrapeSpell(actions);
+        sendResult(actions);
     }
 
-    private void sendResult() {
+    private void sendResult(DiscordActions actions) {
         if (result != null)
-            event.getChannel().sendMessageEmbeds(result).queue();
+            actions.send(result);
     }
 
-    private void scrapeSpell() {
+    private void scrapeSpell(DiscordActions actions) {
         try {
             result = embedder.embedSpell(spell);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
-            event.getChannel().sendMessage("I found the spell, but it's too big to send to Discord in one embed. Bug Aaron to fix this.").queue();
+            actions.send("I found the spell, but it's too big to send to Discord in one embed. Bug Aaron to fix this.");
         } catch (Exception e) {
             logger.warn("Could not scrape {}", spell);
             e.printStackTrace();
-            event.getChannel().sendMessage("Sorry, I couldn't find that.").queue();
+            actions.send("Sorry, I couldn't find that.");
         }
     }
 }

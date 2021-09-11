@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.managers.AudioManager;
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
 import org.slf4j.Logger;
@@ -12,8 +13,9 @@ import org.slf4j.LoggerFactory;
 
 public class QueueAudioCommand extends DiscordAudioCommand {
 
-    private final String uri;
     private static final Logger logger = LoggerFactory.getLogger(QueueAudioCommand.class);
+
+    private final String uri;
 
     public QueueAudioCommand(String uri, AudioContext context) {
         super(context);
@@ -22,9 +24,9 @@ public class QueueAudioCommand extends DiscordAudioCommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(DiscordActions actions) {
         playerManager.loadItemOrdered(guildPlayer, uri, new ResultHandler(guildPlayer));
-        acknowledge("Queued " + uri);
+        actions.send("Queued " + uri);
     }
 
     private void ensureConnected(AudioManager audioManager) {

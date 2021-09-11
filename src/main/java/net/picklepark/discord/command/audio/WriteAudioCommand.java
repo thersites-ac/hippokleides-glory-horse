@@ -1,11 +1,10 @@
 package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.handler.NoopHandler;
-import net.picklepark.discord.exception.CannotFindUserException;
+import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.RecordingService;
@@ -36,47 +35,34 @@ public class WriteAudioCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
 
     private final RecordingService recordingService;
-    private final GuildMessageReceivedEvent event;
-    private final User user;
     private final StorageService storageService;
     private final PollingService pollingService;
+    private final String username;
 
     private URL location;
     private String key;
 
-    public WriteAudioCommand(GuildMessageReceivedEvent event, RecordingService recordingService, String user, StorageService storageService, PollingService pollingService) throws CannotFindUserException {
+    public WriteAudioCommand(RecordingService recordingService, String username, StorageService storageService, PollingService pollingService) {
+        this.username = username;
         this.recordingService = recordingService;
-        this.event = event;
-        this.user = determineUser(user);
         this.storageService = storageService;
         this.pollingService = pollingService;
     }
 
-    private User determineUser(String user) throws CannotFindUserException {
-        List<Member> users = event.getChannel().getGuild().getMembersByNickname(user, true);
-        if (users.isEmpty()) {
-            event.getChannel().sendMessage("No one is named " + user).queue();
-            throw new CannotFindUserException(user);
-        } else if (users.size() > 1) {
-            event.getChannel().sendMessage("Too many damn users named " + user).queue();
-            throw new CannotFindUserException(user);
-        } else
-            return users.get(0).getUser();
-    }
-
     @Override
-    public void execute() throws IOException {
+    public void execute(DiscordActions actions) throws IOException {
         try {
-            event.getGuild().getAudioManager().setReceivingHandler(new NoopHandler());
+            actions.setReceivingHandler(new NoopHandler());
+            var user = actions.lookupUser(username);
             byte[] data = recordingService.getUser(user);
             writeAudioData(data);
-            sendCropLink();
-        } catch (NotRecordingException e) {
-            event.getChannel().sendMessage("I never even had a chance").queue();
+            sendCropLink(actions);
+        } catch (NotRecordingException | NoSuchUserException e) {
+            actions.send("I never even had a chance");
         }
     }
 
-    private void sendCropLink() {
+    private void sendCropLink(DiscordActions actions) {
         String uriParam = Base64.getEncoder().encodeToString(location.toString().getBytes());
         String keyParam = Base64.getEncoder().encodeToString(key.getBytes());
         try {
@@ -84,9 +70,9 @@ public class WriteAudioCommand implements DiscordCommand {
                     .addParameter("uri", uriParam)
                     .addParameter("key", keyParam)
                     .build();
-            event.getChannel().sendMessage("OK, now go to " + cropLink.toString() + " to trim it.").queue();
+            actions.send("OK, now go to " + cropLink.toString() + " to trim it.");
         } catch (URISyntaxException e) {
-            event.getChannel().sendMessage("I did something incomprehensible, sorry").queue();
+            actions.send("I did something incomprehensible, sorry");
             e.printStackTrace();
         }
     }
@@ -94,7 +80,7 @@ public class WriteAudioCommand implements DiscordCommand {
     private void writeAudioData(byte[] data) throws IOException {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
-        String baseName = makeName(user);
+        String baseName = makeName(username);
         String filename = "recordings/" + baseName;
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
@@ -104,8 +90,8 @@ public class WriteAudioCommand implements DiscordCommand {
         pollingService.expect(baseName);
     }
 
-    private String makeName(User user) {
-        return String.format(FORMAT, new Date().toString(), user.getName())
+    private String makeName(String username) {
+        return String.format(FORMAT, new Date().toString(), username)
                 .replace(':', '-')
                 .replace(' ', '_');
     }

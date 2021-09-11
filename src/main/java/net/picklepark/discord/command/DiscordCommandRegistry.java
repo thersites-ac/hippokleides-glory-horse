@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.audio.*;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
@@ -18,7 +19,7 @@ import net.picklepark.discord.service.impl.SpellRenderer;
 import net.picklepark.discord.service.impl.DefaultElementScraper;
 import net.picklepark.discord.service.impl.DefaultFeatTransformer;
 import net.picklepark.discord.service.impl.DefaultSpellTransformer;
-import net.picklepark.discord.exception.CannotFindUserException;
+import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.StorageService;
@@ -28,11 +29,12 @@ import net.picklepark.discord.service.impl.SqsPollingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
-public class DiscordCommandFactory {
+public class DiscordCommandRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(DiscordCommandFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
     private static final String RAM_RANCH_URL = "https://www.youtube.com/watch?v=MADvxFXWvwE";
     private static final LegacyPrdEmbedder legacyPrdEmbedder = new LegacyPrdEmbedder(
                     new DefaultElementScraper(),
@@ -50,7 +52,7 @@ public class DiscordCommandFactory {
     private final PollingService pollingService;
     private final StorageService storageService;
 
-    public DiscordCommandFactory() {
+    public DiscordCommandRegistry() {
         playerManager = new DefaultAudioPlayerManager();
         guildPlayers = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(playerManager);
@@ -62,7 +64,7 @@ public class DiscordCommandFactory {
         pollingService = new SqsPollingService(storageService);
     }
 
-    public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
+    public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws NoSuchUserException {
         if (isAuthorized(event))
             return buildCommand(event);
         else
@@ -74,7 +76,7 @@ public class DiscordCommandFactory {
 //        return authorizedUsers.contains(event.getAuthor().getAsTag());
     }
 
-    private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws CannotFindUserException {
+    private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws NoSuchUserException {
 
         String rawCommand = event.getMessage().getContentRaw();
         String[] command = rawCommand.split(" ");
@@ -105,11 +107,11 @@ public class DiscordCommandFactory {
         } else if ("~spell".equals(command[0])) {
             return new SpellCommand(argOf(command), event, legacyPrdEmbedder);
         } else if ("~help".equals(command[0])) {
-            return new HelpCommand(event);
+            return new HelpCommand();
         } else if ("~record".equals(command[0])) {
             return new RecordCommand(event, recordingService);
         } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(event, recordingService, argOf(command), storageService, pollingService);
+            return new WriteAudioCommand(recordingService, argOf(command), storageService, pollingService);
         } else if ('~' == rawCommand.charAt(0)) {
             return fetchFromPollingService(rawCommand, context);
         } else {
@@ -143,5 +145,14 @@ public class DiscordCommandFactory {
             guildPlayers.put(guildId, guildPlayer);
         }
         return guildPlayer;
+    }
+
+    public void execute(GuildMessageReceivedEvent event) throws NoSuchUserException, IOException {
+        DiscordActions actions = buildActions(event);
+        buildAuthorizedCommand(event).execute(actions);
+    }
+
+    private DiscordActions buildActions(GuildMessageReceivedEvent event) {
+        return null;
     }
 }

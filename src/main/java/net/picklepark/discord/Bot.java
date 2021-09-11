@@ -3,7 +3,7 @@ package net.picklepark.discord;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.picklepark.discord.command.DiscordCommandFactory;
+import net.picklepark.discord.command.DiscordCommandRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +20,10 @@ public class Bot extends ListenerAdapter {
                 .build();
     }
 
-    private final DiscordCommandFactory factory;
+    private final DiscordCommandRegistry registry;
 
     private Bot() {
-        factory = new DiscordCommandFactory();
+        registry = new DiscordCommandRegistry();
     }
 
     @Override
@@ -34,9 +34,9 @@ public class Bot extends ListenerAdapter {
 
     private void executeAsCommand(GuildMessageReceivedEvent event) {
         try {
-            factory.buildAuthorizedCommand(event).execute();
+            registry.execute(event);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage(), ex);
             event.getChannel().sendMessage("Oh no, I'm broken!").queue();
         }
     }

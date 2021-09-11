@@ -1,6 +1,7 @@
 package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.managers.AudioManager;
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.audio.DiscordAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
 
@@ -11,7 +12,7 @@ public class DisconnectCommand extends DiscordAudioCommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(DiscordActions actions) {
         AudioManager manager = channel.getGuild().getAudioManager();
         if (manager.isConnected())
             manager.closeAudioConnection();
