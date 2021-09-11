@@ -1,10 +1,10 @@
-package net.picklepark.discord.command.audio.impl;
+package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.impl.handler.NoopHandler;
+import net.picklepark.discord.handler.NoopHandler;
 import net.picklepark.discord.exception.CannotFindUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.PollingService;

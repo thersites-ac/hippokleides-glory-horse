@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.pathfinder.impl;
+package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;

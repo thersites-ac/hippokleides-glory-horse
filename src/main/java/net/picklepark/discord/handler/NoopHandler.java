@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.audio.impl.handler;
+package net.picklepark.discord.handler;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 

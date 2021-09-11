@@ -1,6 +1,7 @@
-package net.picklepark.discord.command;
+package net.picklepark.discord.command.general;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.picklepark.discord.command.DiscordCommand;
 
 import java.io.IOException;
 

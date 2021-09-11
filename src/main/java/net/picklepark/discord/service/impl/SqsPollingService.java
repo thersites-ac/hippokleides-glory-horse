@@ -3,7 +3,7 @@ package net.picklepark.discord.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.impl.QueueAudioCommand;
+import net.picklepark.discord.command.audio.QueueAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.StorageService;

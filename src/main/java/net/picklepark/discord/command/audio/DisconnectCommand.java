@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.audio.impl;
+package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.command.audio.DiscordAudioCommand;

@@ -1,33 +1,34 @@
-package net.picklepark.discord.command.audio.impl.handler;
+package net.picklepark.discord.handler;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import net.dv8tion.jda.api.audio.UserAudio;
+import net.dv8tion.jda.api.audio.CombinedAudio;
 import net.picklepark.discord.service.RecordingService;
 
 import javax.annotation.Nonnull;
 
-public class DemultiplexingHandler implements AudioReceiveHandler {
+public class CombinedHandler implements AudioReceiveHandler {
 
     private final RecordingService recordingService;
     private boolean error;
 
-    public DemultiplexingHandler(RecordingService recordingService) {
+    public CombinedHandler(RecordingService recordingService) {
         this.recordingService = recordingService;
         error = false;
     }
 
     @Override
-    public boolean canReceiveUser() {
-        return !error;
+    public boolean canReceiveCombined() {
+        return error;
     }
 
     @Override
-    public void handleUserAudio(@Nonnull UserAudio userAudio) {
+    public void handleCombinedAudio(@Nonnull CombinedAudio combinedAudio) {
         try {
-            recordingService.receive(userAudio);
+            recordingService.receive(combinedAudio);
         } catch (Exception e) {
             e.printStackTrace();
             error = true;
         }
     }
+
 }

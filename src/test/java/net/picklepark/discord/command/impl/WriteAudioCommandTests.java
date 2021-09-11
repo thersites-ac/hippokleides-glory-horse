@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.impl;
 
-import net.picklepark.discord.command.audio.impl.WriteAudioCommand;
+import net.picklepark.discord.command.audio.WriteAudioCommand;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

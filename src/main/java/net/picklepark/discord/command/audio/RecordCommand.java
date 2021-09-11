@@ -1,8 +1,8 @@
-package net.picklepark.discord.command.audio.impl;
+package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.impl.handler.DemultiplexingHandler;
+import net.picklepark.discord.handler.DemultiplexingHandler;
 import net.picklepark.discord.service.RecordingService;
 
 public class RecordCommand implements DiscordCommand {

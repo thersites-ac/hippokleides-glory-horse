@@ -1,11 +1,10 @@
-package net.picklepark.discord.command.audio.impl;
+package net.picklepark.discord.command.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.picklepark.discord.command.audio.DiscordAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
 import org.slf4j.Logger;
