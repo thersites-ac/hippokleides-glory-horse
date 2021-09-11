@@ -3,16 +3,9 @@ package net.picklepark.discord.command.pathfinder.impl;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.embed.LegacyPrdEmbedder;
-import net.picklepark.discord.embed.renderer.FeatRenderer;
-import net.picklepark.discord.embed.renderer.SpellRenderer;
-import net.picklepark.discord.embed.scraper.DefaultElementScraper;
-import net.picklepark.discord.embed.transformer.DefaultFeatTransformer;
-import net.picklepark.discord.embed.transformer.DefaultSpellTransformer;
+import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);

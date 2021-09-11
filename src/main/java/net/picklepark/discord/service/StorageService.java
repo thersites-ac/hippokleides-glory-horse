@@ -1,7 +1,7 @@
 package net.picklepark.discord.service;
 
-import net.picklepark.discord.service.model.Coordinates;
-import net.picklepark.discord.service.model.LocalClip;
+import net.picklepark.discord.model.Coordinates;
+import net.picklepark.discord.model.LocalClip;
 
 import java.io.File;
 import java.net.MalformedURLException;

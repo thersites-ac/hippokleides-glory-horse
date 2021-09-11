@@ -2,12 +2,11 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.exception.NotFoundException;
 import net.picklepark.discord.service.StorageService;
-import net.picklepark.discord.service.model.Coordinates;
-import net.picklepark.discord.service.model.LocalClip;
+import net.picklepark.discord.model.Coordinates;
+import net.picklepark.discord.model.LocalClip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -16,10 +15,8 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
