@@ -1,20 +1,15 @@
 package net.picklepark.discord.command.audio;
 
-import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.audio.DiscordAudioCommand;
-import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.command.DiscordCommand;
 
-public class DisconnectCommand extends DiscordAudioCommand {
-
-    public DisconnectCommand(AudioContext context) {
-        super(context);
-    }
+@UserInput("gtfo")
+public class DisconnectCommand implements DiscordCommand {
 
     @Override
     public void execute(DiscordActions actions) {
-        AudioManager manager = channel.getGuild().getAudioManager();
-        if (manager.isConnected())
-            manager.closeAudioConnection();
+        actions.disconnect();
     }
+
 }

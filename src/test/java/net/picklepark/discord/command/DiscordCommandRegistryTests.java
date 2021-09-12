@@ -173,6 +173,28 @@ public class DiscordCommandRegistryTests {
         public String getArgument(String arg) {
             return null;
         }
+        @Override
+        public void setVolume(int volume) {
+        }
+        @Override
+        public void disconnect() {
+        }
+        @Override
+        public int getVolume() {
+            return 0;
+        }
+        @Override
+        public void pause() {
+        }
+        @Override
+        public void unpause() {
+        }
+        @Override
+        public void skip() {
+        }
+        @Override
+        public void queue(String uri) {
+        }
     }
 
 }

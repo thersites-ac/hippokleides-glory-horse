@@ -1,24 +1,26 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Catches;
 import net.picklepark.discord.annotation.SuccessMessage;
-import net.picklepark.discord.command.audio.DiscordAudioCommand;
-import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.command.DiscordCommand;
 
-@SuccessMessage("OK")
-public class ChangeVolumeAudioCommand extends DiscordAudioCommand {
+@UserInput("volume (?<volume>.+)")
+@SuccessMessage("Changed!")
+public class ChangeVolumeAudioCommand implements DiscordCommand {
 
-  public ChangeVolumeAudioCommand(String volume, AudioContext context) {
-    super(context);
-    this.volume = Integer.parseInt(volume);
-  }
+    @Override
+    public void execute(DiscordActions actions) {
+        int volume = Integer.parseInt(actions.getArgument("volume"));
+        actions.setVolume(volume);
+    }
 
-  @Override
-  public void execute(DiscordActions actions) {
-    guildPlayer.player.setVolume(volume);
-//    actions.send("OK");
-  }
+    @Catches(NumberFormatException.class)
+    public void badFormat(DiscordActions actions) {
+        actions.send("Do you know what integers are? Really, " + actions.getArgument("volume") + "?");
+    }
 
-  private int volume;
+
 
 }

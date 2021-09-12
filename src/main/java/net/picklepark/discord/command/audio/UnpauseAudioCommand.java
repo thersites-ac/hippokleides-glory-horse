@@ -1,19 +1,15 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.audio.DiscordAudioCommand;
-import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.command.DiscordCommand;
 
-public class UnpauseAudioCommand extends DiscordAudioCommand {
-
-  public UnpauseAudioCommand(AudioContext context) {
-    super(context);
-  }
+@UserInput("unpause")
+public class UnpauseAudioCommand implements DiscordCommand {
 
   @Override
   public void execute(DiscordActions actions) {
-    guildPlayer.player.setPaused(false);
-    actions.send("Unpaused");
+    actions.unpause();
   }
 
 }

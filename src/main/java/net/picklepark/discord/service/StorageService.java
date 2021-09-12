@@ -1,5 +1,6 @@
 package net.picklepark.discord.service;
 
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
 
@@ -9,5 +10,5 @@ import java.net.URISyntaxException;
 
 public interface StorageService {
     public Coordinates store(File file) throws MalformedURLException;
-    LocalClip download(String bucketName, String objectKey) throws URISyntaxException;
+    LocalClip download(String bucketName, String objectKey) throws URISyntaxException, ResourceNotFoundException;
 }

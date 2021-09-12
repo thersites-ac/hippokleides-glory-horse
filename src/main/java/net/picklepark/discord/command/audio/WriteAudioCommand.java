@@ -1,7 +1,9 @@
 package net.picklepark.discord.command.audio;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
+import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.handler.NoopHandler;
 import net.picklepark.discord.exception.NoSuchUserException;
@@ -14,6 +16,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -28,22 +31,20 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+@UserInput("clip (?<username>.+)")
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";
     private static final String BASE_URL = "http://pickle-park.s3-website.us-east-2.amazonaws.com";
+
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
 
     private final RecordingService recordingService;
     private final StorageService storageService;
     private final PollingService pollingService;
-    private final String username;
 
-    private URL location;
-    private String key;
-
-    public WriteAudioCommand(RecordingService recordingService, String username, StorageService storageService, PollingService pollingService) {
-        this.username = username;
+    @Inject
+    public WriteAudioCommand(RecordingService recordingService, StorageService storageService, PollingService pollingService) {
         this.recordingService = recordingService;
         this.storageService = storageService;
         this.pollingService = pollingService;
@@ -53,16 +54,17 @@ public class WriteAudioCommand implements DiscordCommand {
     public void execute(DiscordActions actions) throws IOException {
         try {
             actions.setReceivingHandler(new NoopHandler());
-            var user = actions.lookupUser(username);
+            String username = actions.getArgument("username");
+            User user = actions.lookupUser(username);
             byte[] data = recordingService.getUser(user);
-            writeAudioData(data);
-            sendCropLink(actions);
+            Coordinates coordinates = writeAudioData(data, username);
+            sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
         } catch (NotRecordingException | NoSuchUserException e) {
             actions.send("I never even had a chance");
         }
     }
 
-    private void sendCropLink(DiscordActions actions) {
+    private void sendCropLink(DiscordActions actions, URL location, String key) {
         String uriParam = Base64.getEncoder().encodeToString(location.toString().getBytes());
         String keyParam = Base64.getEncoder().encodeToString(key.getBytes());
         try {
@@ -77,7 +79,7 @@ public class WriteAudioCommand implements DiscordCommand {
         }
     }
 
-    private void writeAudioData(byte[] data) throws IOException {
+    private Coordinates writeAudioData(byte[] data, String username) throws IOException {
         InputStream in = new ByteArrayInputStream(data);
         AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
         String baseName = makeName(username);
@@ -85,9 +87,8 @@ public class WriteAudioCommand implements DiscordCommand {
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
         Coordinates coordinates = storageService.store(output);
-        location = coordinates.getUrl();
-        key = coordinates.getKey();
         pollingService.expect(baseName);
+        return coordinates;
     }
 
     private String makeName(String username) {

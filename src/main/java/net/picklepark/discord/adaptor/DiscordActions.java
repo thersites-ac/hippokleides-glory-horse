@@ -14,4 +14,11 @@ public interface DiscordActions {
     String userInput();
     void setPattern(String pattern);
     String getArgument(String arg);
+    void setVolume(int volume);
+    void disconnect();
+    int getVolume();
+    void pause();
+    void unpause();
+    void skip();
+    void queue(String uri);
 }

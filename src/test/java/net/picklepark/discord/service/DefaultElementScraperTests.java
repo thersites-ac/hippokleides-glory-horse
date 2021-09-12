@@ -31,46 +31,46 @@ public class DefaultElementScraperTests {
     }
 
     @Test(expected = IOException.class)
-    public void propagatesBadUrlException() throws IOException {
+    public void propagatesBadUrlException() throws IOException, ResourceNotFoundException {
         givenScraperThrowsIOException();
         whenScrapeFeatFromPage("");
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void throwsExceptionWhenElementNotFound() throws IOException {
+    public void throwsExceptionWhenElementNotFound() throws IOException, ResourceNotFoundException {
         givenFetcherReturnsEmptyDocument();
         whenScrapeFeatFromPage("");
     }
 
     @Test(expected = NullDocumentException.class)
-    public void throwsExceptionWhenFetcherReturnsNull() throws IOException {
+    public void throwsExceptionWhenFetcherReturnsNull() throws IOException, ResourceNotFoundException {
         givenFetcherReturnsNull();
         whenScrapeFeatFromPage("");
     }
 
     @Test
-    public void doesNotRecordFeatSource() throws IOException {
+    public void doesNotRecordFeatSource() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsFeat("arcane-armor-mastery");
         whenScrapeFeatFromPage("internet");
         thenResultHasNullSource();
     }
 
     @Test
-    public void recordsFeatUrl() throws IOException {
+    public void recordsFeatUrl() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsFeat("arcane-armor-mastery");
         whenScrapeFeatFromPage("internet");
         thenResultHasUrl("internet#arcane-armor-mastery");
     }
 
     @Test
-    public void scrapesSpell() throws IOException {
+    public void scrapesSpell() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenResultComesFromSpellPage();
     }
 
     @Test
-    public void stopsScrapingAtDiv() throws IOException {
+    public void stopsScrapingAtDiv() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsExtendedSpellPage();
         whenScrapeMagicMissile();
         thenResultDoesNotHaveDiv();
@@ -82,14 +82,14 @@ public class DefaultElementScraperTests {
     }
 
     @Test
-    public void recordsSpellUrl() throws IOException {
+    public void recordsSpellUrl() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenUrlIsMagicMissilePage();
     }
 
     @Test
-    public void recordsSpellSouce() throws IOException {
+    public void recordsSpellSouce() throws IOException, ResourceNotFoundException {
         givenMockFetcherReturnsCoreSpellPageSnippets();
         whenScrapeMagicMissile();
         thenSourceIsCoreRulebook();
@@ -116,7 +116,7 @@ public class DefaultElementScraperTests {
         Assert.assertEquals(url, result.getUrl());
     }
 
-    private void whenScrapeFeatFromPage(String url) throws IOException {
+    private void whenScrapeFeatFromPage(String url) throws IOException, ResourceNotFoundException {
         result = scraper.scrapeFeatNodes("arcane-armor-mastery", url);
     }
 
@@ -162,7 +162,7 @@ public class DefaultElementScraperTests {
         magicMissileHtml += "<div class=\"footer\">foo</div>";
     }
 
-    private void whenScrapeMagicMissile() throws IOException {
+    private void whenScrapeMagicMissile() throws IOException, ResourceNotFoundException {
         result = scraper.scrapeCoreSpell("magic missile");
     }
 

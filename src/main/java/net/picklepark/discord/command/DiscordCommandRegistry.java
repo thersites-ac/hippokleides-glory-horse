@@ -93,25 +93,25 @@ public class DiscordCommandRegistry {
         AudioContext context = getContext(event);
 
         if ("~queue".equals(command[0]) && command.length == 2) {
-            return new QueueAudioCommand(command[1], context);
+            return new QueueAudioCommand();
         } else if ("~skip".equals(command[0])) {
-            return new SkipAudioCommand(context);
+            return new SkipAudioCommand();
         } else if ("~volume".equals(command[0]) && command.length == 1) {
-            return new GetVolumeAudioCommand(context);
+            return new GetVolumeAudioCommand();
         } else if ("~volume".equals(command[0]) && command.length == 2) {
-            return new ChangeVolumeAudioCommand(command[1], context);
+            return new ChangeVolumeAudioCommand();
         } else if ("~louder".equals(command[0])) {
-            return new LouderAudioCommand(context);
+            return new LouderAudioCommand();
         } else if ("~softer".equals(command[0])) {
-            return new SofterAudioCommand(context);
+            return new SofterAudioCommand();
         } else if ("~pause".equals(command[0])) {
-            return new PauseAudioCommand(context);
+            return new PauseAudioCommand();
         } else if ("~unpause".equals(command[0])) {
-            return new UnpauseAudioCommand(context);
-        } else if ("~ramranch".equals(command[0])) {
-            return new QueueAudioCommand(RAM_RANCH_URL, context);
+            return new UnpauseAudioCommand();
+//        } else if ("~ramranch".equals(command[0])) {
+//            return new QueueAudioCommand(RAM_RANCH_URL, context);
         } else if ("~gtfo".equals(command[0])) {
-            return new DisconnectCommand(context);
+            return new DisconnectCommand();
         } else if ("~feat".equals(command[0])) {
             return new FeatCommand(legacyPrdEmbedder);
         } else if ("~spell".equals(command[0])) {
@@ -119,9 +119,9 @@ public class DiscordCommandRegistry {
         } else if ("~help".equals(command[0])) {
             return new HelpCommand();
         } else if ("~record".equals(command[0])) {
-            return new RecordCommand(event, recordingService);
+            return new RecordCommand(recordingService);
         } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(recordingService, argOf(command), storageService, pollingService);
+            return new WriteAudioCommand(recordingService, storageService, pollingService);
         } else if ('~' == rawCommand.charAt(0)) {
             return fetchFromPollingService(rawCommand, context);
         } else {
@@ -137,10 +137,6 @@ public class DiscordCommandRegistry {
             return command;
         } else
             return NOOP;
-    }
-
-    private String argOf(String[] command) {
-        return String.join(" ", Arrays.asList(command).subList(1, command.length));
     }
 
     private AudioContext getContext(GuildMessageReceivedEvent event) {
@@ -159,7 +155,8 @@ public class DiscordCommandRegistry {
 
     public void execute(GuildMessageReceivedEvent event) throws Exception {
         DiscordCommand command = buildAuthorizedCommand(event);
-        JdaDiscordActions actions = new JdaDiscordActions(event);
+        AudioContext context = getContext(event);
+        JdaDiscordActions actions = new JdaDiscordActions(event, context);
         command.execute(actions);
     }
 

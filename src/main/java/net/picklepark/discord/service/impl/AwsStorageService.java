@@ -63,7 +63,7 @@ public class AwsStorageService implements StorageService {
     }
 
     @Override
-    public LocalClip download(String bucketName, String objectKey) throws URISyntaxException {
+    public LocalClip download(String bucketName, String objectKey) throws URISyntaxException, ResourceNotFoundException {
         logger.info("Checking to download {}/{}", bucketName, objectKey);
         GetObjectTaggingRequest taggingRequest = GetObjectTaggingRequest.builder()
                 .bucket(bucketName)

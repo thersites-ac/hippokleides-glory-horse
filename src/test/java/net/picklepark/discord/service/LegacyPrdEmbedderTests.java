@@ -2,6 +2,7 @@ package net.picklepark.discord.service;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.impl.FeatRenderer;
 import net.picklepark.discord.service.EmbedRenderer;
 import net.picklepark.discord.service.impl.SpellRenderer;
@@ -46,15 +47,15 @@ public class LegacyPrdEmbedderTests {
                .build();
     }
 
-    private void whenEmbedCoreFeat(String feat) throws IOException {
+    private void whenEmbedCoreFeat(String feat) throws IOException, ResourceNotFoundException {
         result = legacyPrdEmbedder.embedCoreFeat(feat);
     }
 
-    private void whenEmbedAdvancedPlayerFeat(String feat) throws IOException {
+    private void whenEmbedAdvancedPlayerFeat(String feat) throws IOException, ResourceNotFoundException {
         result = legacyPrdEmbedder.embedAdvancedPlayerFeat(feat);
     }
 
-    private void whenEmbedAdvancedClassFeat(String feat) throws IOException {
+    private void whenEmbedAdvancedClassFeat(String feat) throws IOException, ResourceNotFoundException {
         result = legacyPrdEmbedder.embedAdvancedClassFeat(feat);
     }
 

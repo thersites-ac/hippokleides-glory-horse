@@ -3,8 +3,8 @@ package net.picklepark.discord.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.QueueAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.model.LocalClip;
@@ -89,7 +89,7 @@ public class SqsPollingService implements PollingService {
             notification = objectMapper.readValue(body, S3EventNotification.class);
             for (S3Event event: notification.getRecords())
                 process(event);
-        } catch (JsonProcessingException | URISyntaxException e) {
+        } catch (JsonProcessingException | URISyntaxException | ResourceNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -101,16 +101,16 @@ public class SqsPollingService implements PollingService {
         logger.info("Deleted {}", message.receiptHandle());
     }
 
-    private void process(S3Event event) throws URISyntaxException {
+    private void process(S3Event event) throws URISyntaxException, ResourceNotFoundException {
         String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         LocalClip clip = storageService.download(bucketName, objectKey);
-        Function<AudioContext, DiscordCommand> command = context -> makeCommand(clip.getPath(), context);
+        Function<AudioContext, DiscordCommand> command = context -> makeCommand(clip.getPath());
         clips.put(clip.getTitle(), command);
     }
 
-    private DiscordCommand makeCommand(String path, AudioContext context) {
-        return new QueueAudioCommand(path, context);
+    private DiscordCommand makeCommand(String path) {
+        return actions -> actions.queue(path);
     }
 
     private void resetPollCount() {
