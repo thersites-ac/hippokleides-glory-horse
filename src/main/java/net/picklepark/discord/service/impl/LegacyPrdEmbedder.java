@@ -12,6 +12,7 @@ import net.picklepark.discord.service.PathfinderEmbedder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
     private final EmbedRenderer<Spell> spellRenderer;
     private final Transformer<Spell> spellTransformer;
 
+    @Inject
     public LegacyPrdEmbedder(ElementScraper scraper,
                              EmbedRenderer<Feat> featRenderer,
                              Transformer<Feat> featTransformer,
