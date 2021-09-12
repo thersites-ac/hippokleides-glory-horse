@@ -3,6 +3,7 @@ package net.picklepark.discord.command.pathfinder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
 import org.slf4j.Logger;

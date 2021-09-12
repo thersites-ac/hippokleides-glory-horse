@@ -11,4 +11,5 @@ public interface DiscordActions {
     void setReceivingHandler(AudioReceiveHandler handler);
     void connect();
     User lookupUser(String user) throws NoSuchUserException;
+    String userInput();
 }

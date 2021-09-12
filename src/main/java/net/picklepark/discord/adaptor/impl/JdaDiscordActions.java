@@ -51,4 +51,9 @@ public class JdaDiscordActions implements DiscordActions {
             return users.get(0).getUser();
     }
 
+    @Override
+    public String userInput() {
+        return event.getMessage().getContentRaw();
+    }
+
 }

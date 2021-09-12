@@ -1,10 +1,10 @@
 package net.picklepark.discord.command.general;
 
+import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.adaptor.DiscordActions;
 
-import java.io.IOException;
-
+@UserInput("help")
 public class HelpCommand implements DiscordCommand {
 
     private static final String instructions = "Commands: ~queue [url], ~skip, ~volume (to get current), ~volume [n] (to set)," +

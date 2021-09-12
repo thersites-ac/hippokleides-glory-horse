@@ -6,6 +6,10 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.impl.JdaDiscordActions;
+import net.picklepark.discord.annotation.Catches;
+import net.picklepark.discord.annotation.SuccessMessage;
+import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.audio.*;
 import net.picklepark.discord.command.audio.util.AudioContext;
 import net.picklepark.discord.command.audio.util.GuildPlayer;
@@ -29,8 +33,11 @@ import net.picklepark.discord.service.impl.SqsPollingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DiscordCommandRegistry {
 
@@ -51,8 +58,11 @@ public class DiscordCommandRegistry {
     private final RecordingService recordingService;
     private final PollingService pollingService;
     private final StorageService storageService;
+    private char prefix;
+    private Map<String, DiscordCommand> handlers;
 
     public DiscordCommandRegistry() {
+        handlers = new ConcurrentHashMap<>();
         playerManager = new DefaultAudioPlayerManager();
         guildPlayers = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(playerManager);
@@ -147,12 +157,80 @@ public class DiscordCommandRegistry {
         return guildPlayer;
     }
 
-    public void execute(GuildMessageReceivedEvent event) throws NoSuchUserException, IOException {
-        DiscordActions actions = buildActions(event);
-        buildAuthorizedCommand(event).execute(actions);
+    public void execute(GuildMessageReceivedEvent event) throws Exception {
+        DiscordCommand command = buildAuthorizedCommand(event);
+        JdaDiscordActions actions = new JdaDiscordActions(event);
+        command.execute(actions);
     }
 
-    private DiscordActions buildActions(GuildMessageReceivedEvent event) {
-        return null;
+    public void execute(DiscordActions actions) throws Exception {
+        var message = actions.userInput();
+        if (hasPrefix(message)) {
+            DiscordCommand command = lookupAction(message);
+            executeInContext(command, actions);
+        }
+    }
+
+    private void executeInContext(DiscordCommand command, DiscordActions actions) throws Exception {
+        try {
+            command.execute(actions);
+            sendSuccess(command, actions);
+        } catch (Exception e) {
+            Optional<Method> handler = exceptionHandler(command, e);
+            handler.ifPresent(m -> {
+                attemptInvocation(m, command, actions);
+                logger.warn("Handled exception while executing " + command.getClass().getName(), e);
+            });
+            handler.orElseThrow(() -> e);
+        }
+    }
+
+    private void attemptInvocation(Method method, DiscordCommand command, DiscordActions actions) {
+        try {
+            method.invoke(command, actions);
+        } catch (IllegalAccessException e) {
+            logger.error("Inavlid access modifier for " + method.getName(), e);
+        } catch (InvocationTargetException e) {
+            logger.error("Invalid parameters for " + method.getName(), e);
+        }
+    }
+
+    private Optional<Method> exceptionHandler(DiscordCommand command, Exception e) {
+        return Arrays.stream(command.getClass().getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(Catches.class)
+                        && method.getAnnotation(Catches.class).value().equals(e.getClass()))
+                .findFirst();
+    }
+
+    private void sendSuccess(DiscordCommand command, DiscordActions actions) {
+        if (command.getClass().isAnnotationPresent(SuccessMessage.class))
+            actions.send(command.getClass().getAnnotation(SuccessMessage.class).value());
+    }
+
+    private DiscordCommand lookupAction(String message) {
+        var tail = message.substring(1);
+        return handlers.keySet().stream()
+                .filter(tail::matches)
+                .findFirst()
+                .map(s -> handlers.get(s))
+                .orElse(NOOP);
+    }
+
+    private boolean hasPrefix(String message) {
+        return message.charAt(0) == prefix;
+    }
+
+    public DiscordCommandRegistry register(DiscordCommand command) {
+        if (command.getClass().isAnnotationPresent(UserInput.class)) {
+            handlers.put(
+                    command.getClass().getAnnotation(UserInput.class).value(),
+                    command);
+        }
+        return this;
+    }
+
+    public DiscordCommandRegistry prefix(char prefix) {
+        this.prefix = prefix;
+        return this;
     }
 }

@@ -1,9 +1,11 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.command.audio.DiscordAudioCommand;
 import net.picklepark.discord.command.audio.util.AudioContext;
 
+@SuccessMessage("OK")
 public class ChangeVolumeAudioCommand extends DiscordAudioCommand {
 
   public ChangeVolumeAudioCommand(String volume, AudioContext context) {
@@ -14,7 +16,7 @@ public class ChangeVolumeAudioCommand extends DiscordAudioCommand {
   @Override
   public void execute(DiscordActions actions) {
     guildPlayer.player.setVolume(volume);
-    actions.send("OK");
+//    actions.send("OK");
   }
 
   private int volume;
