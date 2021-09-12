@@ -28,7 +28,7 @@ public class DefaultElementScraper implements ElementScraper {
     }
 
     @Override
-    public ScrapeResult scrapeFeatNodes(String name, String url) throws IOException {
+    public ScrapeResult scrapeFeatNodes(String name, String url) throws IOException, ResourceNotFoundException {
         String id = convertToId(name);
         Element element = getRootFeatElement(id, url);
         List<Element> elements = new ArrayList<>();
@@ -43,7 +43,7 @@ public class DefaultElementScraper implements ElementScraper {
     }
 
     @Override
-    public ScrapeResult scrapeCoreSpell(String name) throws IOException {
+    public ScrapeResult scrapeCoreSpell(String name) throws IOException, ResourceNotFoundException {
        Element link = findIndexTagFor(name);
        String suffix = extractSuffix(link);
        String spellUrl = coreRulebookUrl + suffix;
@@ -56,7 +56,7 @@ public class DefaultElementScraper implements ElementScraper {
                .build();
     }
 
-    private List<Element> extractSpellElements(String name, Document page) {
+    private List<Element> extractSpellElements(String name, Document page) throws ResourceNotFoundException {
         List<Element> elements = new ArrayList<>();
         String id = convertToId(name);
         Element element = page.getElementById(id);
@@ -79,7 +79,7 @@ public class DefaultElementScraper implements ElementScraper {
         return link.attributes().get("href");
     }
 
-    private Element findIndexTagFor(String spellName) throws IOException {
+    private Element findIndexTagFor(String spellName) throws IOException, ResourceNotFoundException {
         Document index = fetcher.fetch(CORE_SPELL_LIST);
         return index.getElementsByTag("a").stream()
                 .filter(e -> e.text().equalsIgnoreCase(spellName))
@@ -87,7 +87,7 @@ public class DefaultElementScraper implements ElementScraper {
                 .orElseThrow(() -> new ResourceNotFoundException(spellName, CORE_SPELL_LIST));
     }
 
-    private Element getRootFeatElement(String id, String url) throws IOException {
+    private Element getRootFeatElement(String id, String url) throws IOException, ResourceNotFoundException {
         Document document = fetcher.fetch(url);
         if (document == null)
             throw new NullDocumentException(url);

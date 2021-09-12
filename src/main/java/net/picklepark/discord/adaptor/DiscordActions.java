@@ -12,4 +12,6 @@ public interface DiscordActions {
     void connect();
     User lookupUser(String user) throws NoSuchUserException;
     String userInput();
+    void setPattern(String pattern);
+    String getArgument(String arg);
 }

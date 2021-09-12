@@ -9,9 +9,13 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.exception.NoSuchUserException;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JdaDiscordActions implements DiscordActions {
+
     private final GuildMessageReceivedEvent event;
+    private Matcher matcher;
 
     public JdaDiscordActions(GuildMessageReceivedEvent event) {
         this.event = event;
@@ -54,6 +58,16 @@ public class JdaDiscordActions implements DiscordActions {
     @Override
     public String userInput() {
         return event.getMessage().getContentRaw();
+    }
+
+    @Override
+    public void setPattern(String pattern) {
+        matcher = Pattern.compile(pattern).matcher(userInput());
+    }
+
+    @Override
+    public String getArgument(String arg) {
+        return matcher.group(arg);
     }
 
 }

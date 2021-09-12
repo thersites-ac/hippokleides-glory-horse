@@ -1,6 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.EmbedRenderer;
 import net.picklepark.discord.service.ElementScraper;
 import net.picklepark.discord.service.Transformer;
@@ -40,22 +41,22 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
     }
 
     @Override
-    public MessageEmbed embedCoreFeat(String id) throws IOException {
+    public MessageEmbed embedCoreFeat(String id) throws IOException, ResourceNotFoundException {
         return embedWithSource(id, CORE_FEATS, "Core Rulebook");
     }
 
     @Override
-    public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException {
+    public MessageEmbed embedAdvancedPlayerFeat(String id) throws IOException, ResourceNotFoundException {
         return embedWithSource(id, ADVANCED_PLAYER_FEATS, "Advanced Player's Guide");
     }
 
     @Override
-    public MessageEmbed embedAdvancedClassFeat(String id) throws IOException {
+    public MessageEmbed embedAdvancedClassFeat(String id) throws IOException, ResourceNotFoundException {
         return embedWithSource(id, ADVANCED_CLASS_FEATS, "Advanced Class Guide");
     }
 
     @Override
-    public MessageEmbed embedSpell(String id) throws IOException {
+    public MessageEmbed embedSpell(String id) throws IOException, ResourceNotFoundException {
         logger.info("Scraping {}", id);
         ScrapeResult result = scraper.scrapeCoreSpell(id);
         logger.info("Elements: {}", Arrays.toString(result.getElements().toArray()));
@@ -64,7 +65,7 @@ public class LegacyPrdEmbedder implements PathfinderEmbedder {
         return spellRenderer.render(spell);
     }
 
-    private MessageEmbed embedWithSource(String id, String url, String source) throws IOException {
+    private MessageEmbed embedWithSource(String id, String url, String source) throws IOException, ResourceNotFoundException {
         logger.info("Scraping {}", id);
         ScrapeResult result = scraper.scrapeFeatNodes(id, url);
         result.setSource(source);

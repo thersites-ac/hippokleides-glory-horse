@@ -1,49 +1,47 @@
 package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Catches;
+import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
+@UserInput("spell (?<spell>.+)")
 public class SpellCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(SpellCommand.class);
 
-    private final String spell;
     private final LegacyPrdEmbedder embedder;
-    private MessageEmbed result;
 
-    public SpellCommand(String spell, GuildMessageReceivedEvent event, LegacyPrdEmbedder embedder) {
+    @Inject
+    public SpellCommand(LegacyPrdEmbedder embedder) {
         this.embedder = embedder;
-        this.spell = spell;
-        result = null;
     }
 
     @Override
-    public void execute(DiscordActions actions) {
-        scrapeSpell(actions);
-        sendResult(actions);
+    public void execute(DiscordActions actions) throws IOException, ResourceNotFoundException {
+        MessageEmbed result = scrapeSpell(actions);
+        actions.send(result);
     }
 
-    private void sendResult(DiscordActions actions) {
-        if (result != null)
-            actions.send(result);
+    @Catches(IllegalArgumentException.class)
+    public void handleIllegalArgument(DiscordActions actions) {
+        actions.send("I found the spell, but it's too big to send to Discord in one embed. Bug Aaron to fix this.");
     }
 
-    private void scrapeSpell(DiscordActions actions) {
-        try {
-            result = embedder.embedSpell(spell);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
-            actions.send("I found the spell, but it's too big to send to Discord in one embed. Bug Aaron to fix this.");
-        } catch (Exception e) {
-            logger.warn("Could not scrape {}", spell);
-            e.printStackTrace();
-            actions.send("Sorry, I couldn't find that.");
-        }
+    @Catches(ResourceNotFoundException.class)
+    public void notFound(DiscordActions actions) {
+        actions.send("I couldn't find " + actions.getArgument("spell"));
+    }
+
+    private MessageEmbed scrapeSpell(DiscordActions actions) throws IOException, ResourceNotFoundException {
+        String spell = actions.getArgument("spell");
+        return embedder.embedSpell(spell);
     }
 }

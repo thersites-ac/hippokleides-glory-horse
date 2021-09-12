@@ -113,9 +113,9 @@ public class DiscordCommandRegistry {
         } else if ("~gtfo".equals(command[0])) {
             return new DisconnectCommand(context);
         } else if ("~feat".equals(command[0])) {
-            return new FeatCommand(argOf(command), event, legacyPrdEmbedder);
+            return new FeatCommand(legacyPrdEmbedder);
         } else if ("~spell".equals(command[0])) {
-            return new SpellCommand(argOf(command), event, legacyPrdEmbedder);
+            return new SpellCommand(legacyPrdEmbedder);
         } else if ("~help".equals(command[0])) {
             return new HelpCommand();
         } else if ("~record".equals(command[0])) {
@@ -173,6 +173,7 @@ public class DiscordCommandRegistry {
 
     private void executeInContext(DiscordCommand command, DiscordActions actions) throws Exception {
         try {
+            actions.setPattern(command.getClass().getAnnotation(UserInput.class).value());
             command.execute(actions);
             sendSuccess(command, actions);
         } catch (Exception e) {

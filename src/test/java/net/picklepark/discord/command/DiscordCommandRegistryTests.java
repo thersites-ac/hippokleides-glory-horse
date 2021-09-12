@@ -26,6 +26,7 @@ public class DiscordCommandRegistryTests {
 
     @Before
     public void setup() {
+        sentMessage = "init";
         executed = false;
         failureWasHandled = false;
         actions = new TestDiscordActions();
@@ -45,43 +46,36 @@ public class DiscordCommandRegistryTests {
 
     @Test
     public void usersUserInputAnnotation() throws Exception {
-        givenRegistryWithPrefixAndCommand();
+        givenRegistryWithPrefixAndCommand(new TestCommand());
         whenReceiveMessage("test");
         thenExecutedCommand();
     }
 
     @Test
     public void usesSuccessMessage() throws Exception {
-        givenRegistryWithPrefixAndCommand();
+        givenRegistryWithPrefixAndCommand(new TestCommand());
         whenReceiveMessage("test");
         thenSuccessMessageWasSent();
     }
 
     @Test
     public void usesFailureHandlers() throws Exception {
-        givenRegistryWithPrefixAndFailureCommand();
+        givenRegistryWithPrefixAndCommand(new FailCommand());
         whenReceiveMessage("fail");
         thenFailureWasHandled();
     }
 
-    private void thenFailureWasHandled() {
-        Assert.assertTrue(failureWasHandled);
+    @Test
+    public void succeedsSilentlyIfNoSuccessAnnotationPresent() throws Exception {
+        givenRegistryWithPrefixAndCommand(new SilentCommand());
+        whenReceiveMessage("silent");
+        thenNoMessageWasSent();
     }
 
-    private void givenRegistryWithPrefixAndFailureCommand() {
+    private void givenRegistryWithPrefixAndCommand(DiscordCommand command) {
         givenRegistry();
         givenSetPrefix();
-        registry.register(new FailCommand());
-    }
-
-    private void thenSuccessMessageWasSent() {
-        Assert.assertEquals(sentMessage, "OK");
-    }
-
-    private void givenRegistryWithPrefixAndCommand() {
-        givenRegistry();
-        givenRegisterCommand();
-        givenSetPrefix();
+        registry.register(command);
     }
 
     private void givenRegistry() {
@@ -103,6 +97,28 @@ public class DiscordCommandRegistryTests {
 
     private void thenExecutedCommand() {
         Assert.assertTrue(executed);
+    }
+
+    private void thenNoMessageWasSent() {
+        thenExecutedCommand();
+        Assert.assertEquals("init", sentMessage);
+    }
+
+    private void thenFailureWasHandled() {
+        Assert.assertTrue(failureWasHandled);
+    }
+
+    private void thenSuccessMessageWasSent() {
+        thenExecutedCommand();
+        Assert.assertEquals(sentMessage, "OK");
+    }
+
+    @UserInput("silent")
+    private class SilentCommand implements DiscordCommand {
+        @Override
+        public void execute(DiscordActions actions) throws Exception {
+            executed = true;
+        }
     }
 
     @UserInput("test")
@@ -149,6 +165,13 @@ public class DiscordCommandRegistryTests {
         @Override
         public String userInput() {
             return userInput;
+        }
+        @Override
+        public void setPattern(String value) {
+        }
+        @Override
+        public String getArgument(String arg) {
+            return null;
         }
     }
 

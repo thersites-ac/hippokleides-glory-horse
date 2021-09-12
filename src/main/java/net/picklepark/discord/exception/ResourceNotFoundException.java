@@ -1,6 +1,6 @@
 package net.picklepark.discord.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends Exception {
   private static final String format = "#%s not found in %s";
 
   public ResourceNotFoundException(String id, String uri) {
