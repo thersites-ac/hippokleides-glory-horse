@@ -1,6 +1,6 @@
 # trimmer-lambda
 
-Unless you're the me, this will fail:
+Unless you're me, this will fail:
 
 Install the AWS SAM CLI and do
         
