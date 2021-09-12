@@ -60,6 +60,7 @@ public class WriteAudioCommand implements DiscordCommand {
             Coordinates coordinates = writeAudioData(data, username);
             sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
         } catch (NotRecordingException | NoSuchUserException e) {
+            e.printStackTrace();
             actions.send("I never even had a chance");
         }
     }

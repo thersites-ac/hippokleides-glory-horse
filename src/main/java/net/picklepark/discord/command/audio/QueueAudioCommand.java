@@ -17,7 +17,6 @@ public class QueueAudioCommand implements DiscordCommand {
     public void execute(DiscordActions actions) {
         String uri = actions.getArgument("uri");
         actions.queue(uri);
-        actions.send("Queued " + uri);
     }
 
 }

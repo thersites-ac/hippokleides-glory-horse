@@ -5,7 +5,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.model.Feat;
 import net.picklepark.discord.service.EmbedRenderer;
 
+import javax.inject.Singleton;
 
+
+@Singleton
 public class FeatRenderer implements EmbedRenderer<Feat> {
 
     @Override

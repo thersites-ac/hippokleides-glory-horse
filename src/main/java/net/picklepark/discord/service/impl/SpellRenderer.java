@@ -5,8 +5,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.model.Spell;
 import net.picklepark.discord.service.EmbedRenderer;
 
+import javax.inject.Singleton;
 import java.util.Map;
 
+@Singleton
 public class SpellRenderer implements EmbedRenderer<Spell> {
 
     @Override

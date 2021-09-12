@@ -9,9 +9,11 @@ import net.picklepark.discord.service.RecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class LocalRecordingService implements RecordingService {
 
     public static final int PACKETS_PER_SECOND = 50;

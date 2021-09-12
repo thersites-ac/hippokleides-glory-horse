@@ -13,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Singleton
 public class LegacyPrdEmbedder implements PathfinderEmbedder {
     private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
     private static final String ADVANCED_CLASS_FEATS = "https://legacy.aonprd.com/advancedClassGuide/feats.html";

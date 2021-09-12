@@ -12,7 +12,6 @@ public interface DiscordActions {
     void connect();
     User lookupUser(String user) throws NoSuchUserException;
     String userInput();
-    void setPattern(String pattern);
     String getArgument(String arg);
     void setVolume(int volume);
     void disconnect();
@@ -21,4 +20,5 @@ public interface DiscordActions {
     void unpause();
     void skip();
     void queue(String uri);
+    void initMatches(String regex, String message);
 }

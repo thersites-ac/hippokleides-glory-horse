@@ -8,10 +8,12 @@ import net.picklepark.discord.service.ElementScraper;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class DefaultElementScraper implements ElementScraper {
     private static final String H2 = "h2";
     private static final String CORE_SPELL_LIST = "https://legacy.aonprd.com/coreRulebook/spellLists.html";

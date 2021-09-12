@@ -1,5 +1,7 @@
 package net.picklepark.discord.command;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -23,6 +25,7 @@ public class DiscordCommandRegistryTests {
     private String userInput;
     private String sentMessage;
     private boolean failureWasHandled;
+    private Injector injector;
 
     @Before
     public void setup() {
@@ -72,6 +75,19 @@ public class DiscordCommandRegistryTests {
         thenNoMessageWasSent();
     }
 
+    @Test
+    public void canRegisterAndExecuteSeveralCommands() throws Exception {
+        givenRegisterMultiple();
+        whenReceiveMessages();
+        thenBothWereExecuted();
+    }
+
+    private void givenRegisterMultiple() {
+        givenRegistry();
+        givenSetPrefix();
+        registry.register(new TestCommand(), new FailCommand());
+    }
+
     private void givenRegistryWithPrefixAndCommand(DiscordCommand command) {
         givenRegistry();
         givenSetPrefix();
@@ -88,6 +104,11 @@ public class DiscordCommandRegistryTests {
 
     private void givenSetPrefix() {
         registry.prefix('~');
+    }
+
+    private void whenReceiveMessages() throws Exception {
+        whenReceiveMessage("test");
+        whenReceiveMessage("fail");
     }
 
     private void whenReceiveMessage(String message) throws Exception {
@@ -111,6 +132,11 @@ public class DiscordCommandRegistryTests {
     private void thenSuccessMessageWasSent() {
         thenExecutedCommand();
         Assert.assertEquals(sentMessage, "OK");
+    }
+
+    private void thenBothWereExecuted() {
+        thenSuccessMessageWasSent();
+        thenFailureWasHandled();
     }
 
     @UserInput("silent")

@@ -8,8 +8,10 @@ import net.picklepark.discord.service.Transformer;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.inject.Singleton;
 import java.util.*;
 
+@Singleton
 public class DefaultFeatTransformer implements Transformer<Feat> {
 
     private static final String BENEFIT = "Benefit";

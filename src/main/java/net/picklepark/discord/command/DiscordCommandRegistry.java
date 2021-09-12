@@ -1,176 +1,59 @@
 package net.picklepark.discord.command;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.adaptor.impl.JdaDiscordActions;
 import net.picklepark.discord.annotation.Catches;
 import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
-import net.picklepark.discord.command.audio.*;
-import net.picklepark.discord.command.audio.util.AudioContext;
-import net.picklepark.discord.command.audio.util.GuildPlayer;
-import net.picklepark.discord.command.general.HelpCommand;
 import net.picklepark.discord.command.general.NoopCommand;
-import net.picklepark.discord.command.pathfinder.FeatCommand;
-import net.picklepark.discord.command.pathfinder.SpellCommand;
-import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
-import net.picklepark.discord.service.impl.FeatRenderer;
-import net.picklepark.discord.service.impl.SpellRenderer;
-import net.picklepark.discord.service.impl.DefaultElementScraper;
-import net.picklepark.discord.service.impl.DefaultFeatTransformer;
-import net.picklepark.discord.service.impl.DefaultSpellTransformer;
-import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.service.PollingService;
-import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.StorageService;
-import net.picklepark.discord.service.impl.AwsStorageService;
-import net.picklepark.discord.service.impl.LocalRecordingService;
-import net.picklepark.discord.service.impl.SqsPollingService;
+import net.picklepark.discord.service.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DiscordCommandRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
-    private static final String RAM_RANCH_URL = "https://www.youtube.com/watch?v=MADvxFXWvwE";
-    private static final LegacyPrdEmbedder legacyPrdEmbedder = new LegacyPrdEmbedder(
-                    new DefaultElementScraper(),
-                    new FeatRenderer(),
-                    new DefaultFeatTransformer(),
-                    new SpellRenderer(),
-                    new DefaultSpellTransformer());
 
     private static final DiscordCommand NOOP = new NoopCommand();
 
-    private final AudioPlayerManager playerManager;
-    private final Map<Long, GuildPlayer> guildPlayers;
-    private final List<String> authorizedUsers;
-    private final RecordingService recordingService;
     private final PollingService pollingService;
     private final StorageService storageService;
     private char prefix;
     private Map<String, DiscordCommand> handlers;
 
-    public DiscordCommandRegistry() {
+    @Inject
+    public DiscordCommandRegistry(StorageService storageService, PollingService pollingService) {
         handlers = new ConcurrentHashMap<>();
-        playerManager = new DefaultAudioPlayerManager();
-        guildPlayers = new HashMap<>();
-        AudioSourceManagers.registerRemoteSources(playerManager);
-        AudioSourceManagers.registerLocalSource(playerManager);
-
-        authorizedUsers = Arrays.asList("pvhagg#7133", "pvhagg#1387");
-        storageService = new AwsStorageService();
-        recordingService = new LocalRecordingService();
-        pollingService = new SqsPollingService(storageService);
+        this.storageService = storageService;
+        this.pollingService = pollingService;
     }
 
-    public DiscordCommand buildAuthorizedCommand(GuildMessageReceivedEvent event) throws NoSuchUserException {
-        if (isAuthorized(event))
-            return buildCommand(event);
-        else
-            return NOOP;
-    }
-
-    private boolean isAuthorized(GuildMessageReceivedEvent event) {
-        return true;
-//        return authorizedUsers.contains(event.getAuthor().getAsTag());
-    }
-
-    private DiscordCommand buildCommand(GuildMessageReceivedEvent event) throws NoSuchUserException {
-
-        String rawCommand = event.getMessage().getContentRaw();
-        String[] command = rawCommand.split(" ");
-        AudioContext context = getContext(event);
-
-        if ("~queue".equals(command[0]) && command.length == 2) {
-            return new QueueAudioCommand();
-        } else if ("~skip".equals(command[0])) {
-            return new SkipAudioCommand();
-        } else if ("~volume".equals(command[0]) && command.length == 1) {
-            return new GetVolumeAudioCommand();
-        } else if ("~volume".equals(command[0]) && command.length == 2) {
-            return new ChangeVolumeAudioCommand();
-        } else if ("~louder".equals(command[0])) {
-            return new LouderAudioCommand();
-        } else if ("~softer".equals(command[0])) {
-            return new SofterAudioCommand();
-        } else if ("~pause".equals(command[0])) {
-            return new PauseAudioCommand();
-        } else if ("~unpause".equals(command[0])) {
-            return new UnpauseAudioCommand();
-//        } else if ("~ramranch".equals(command[0])) {
-//            return new QueueAudioCommand(RAM_RANCH_URL, context);
-        } else if ("~gtfo".equals(command[0])) {
-            return new DisconnectCommand();
-        } else if ("~feat".equals(command[0])) {
-            return new FeatCommand(legacyPrdEmbedder);
-        } else if ("~spell".equals(command[0])) {
-            return new SpellCommand(legacyPrdEmbedder);
-        } else if ("~help".equals(command[0])) {
-            return new HelpCommand();
-        } else if ("~record".equals(command[0])) {
-            return new RecordCommand(recordingService);
-        } else if ("~clip".equals(command[0])) {
-            return new WriteAudioCommand(recordingService, storageService, pollingService);
-        } else if ('~' == rawCommand.charAt(0)) {
-            return fetchFromPollingService(rawCommand, context);
-        } else {
-            return NOOP;
-        }
-    }
-
-    private DiscordCommand fetchFromPollingService(String rawCommand, AudioContext context) {
-        String unprefixedCommand = rawCommand.substring(1);
-        DiscordCommand command = pollingService.lookup(unprefixedCommand, context);
-        if (command != null) {
-            logger.info("Dynamic command");
-            return command;
-        } else
-            return NOOP;
-    }
-
-    private AudioContext getContext(GuildMessageReceivedEvent event) {
-        return new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager);
-    }
-
-    private GuildPlayer getGuildPlayer(Guild guild) {
-        long guildId = Long.parseLong(guild.getId());
-        GuildPlayer guildPlayer = guildPlayers.get(guildId);
-        if (guildPlayer == null) {
-            guildPlayer = new GuildPlayer(playerManager);
-            guildPlayers.put(guildId, guildPlayer);
-        }
-        return guildPlayer;
-    }
-
-    public void execute(GuildMessageReceivedEvent event) throws Exception {
-        DiscordCommand command = buildAuthorizedCommand(event);
-        AudioContext context = getContext(event);
-        JdaDiscordActions actions = new JdaDiscordActions(event, context);
-        command.execute(actions);
+    private Optional<DiscordCommand> fetchFromPollingService(String s) {
+        DiscordCommand command = pollingService.lookup(s);
+        return Optional.ofNullable(command);
     }
 
     public void execute(DiscordActions actions) throws Exception {
         var message = actions.userInput();
         if (hasPrefix(message)) {
+            String tail = message.substring(1);
             DiscordCommand command = lookupAction(message);
+            actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), tail);
             executeInContext(command, actions);
         }
     }
 
     private void executeInContext(DiscordCommand command, DiscordActions actions) throws Exception {
         try {
-            actions.setPattern(command.getClass().getAnnotation(UserInput.class).value());
             command.execute(actions);
             sendSuccess(command, actions);
         } catch (Exception e) {
@@ -187,7 +70,7 @@ public class DiscordCommandRegistry {
         try {
             method.invoke(command, actions);
         } catch (IllegalAccessException e) {
-            logger.error("Inavlid access modifier for " + method.getName(), e);
+            logger.error("Invalid access modifier for " + method.getName(), e);
         } catch (InvocationTargetException e) {
             logger.error("Invalid parameters for " + method.getName(), e);
         }
@@ -207,28 +90,34 @@ public class DiscordCommandRegistry {
 
     private DiscordCommand lookupAction(String message) {
         var tail = message.substring(1);
+        logger.info("looking up {}", tail);
         return handlers.keySet().stream()
                 .filter(tail::matches)
                 .findFirst()
                 .map(s -> handlers.get(s))
-                .orElse(NOOP);
+                .orElse(fetchFromPollingService(tail).orElse(NOOP));
+
     }
 
-    private boolean hasPrefix(String message) {
-        return message.charAt(0) == prefix;
-    }
-
-    public DiscordCommandRegistry register(DiscordCommand command) {
+    public void register(DiscordCommand command) {
         if (command.getClass().isAnnotationPresent(UserInput.class)) {
             handlers.put(
                     command.getClass().getAnnotation(UserInput.class).value(),
                     command);
         }
-        return this;
     }
 
-    public DiscordCommandRegistry prefix(char prefix) {
-        this.prefix = prefix;
-        return this;
+    public void register(DiscordCommand... commands) {
+        for (var command: commands)
+            register(command);
     }
+
+    public void prefix(char prefix) {
+        this.prefix = prefix;
+    }
+
+    private boolean hasPrefix(String message) {
+        return message.length() > 0 && message.charAt(0) == prefix;
+    }
+
 }

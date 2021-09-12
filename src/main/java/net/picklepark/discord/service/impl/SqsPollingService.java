@@ -3,7 +3,7 @@ package net.picklepark.discord.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.util.AudioContext;
+import net.picklepark.discord.command.audio.ClipCommand;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.StorageService;
@@ -20,12 +20,14 @@ import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
+@Singleton
 public class SqsPollingService implements PollingService {
 
     private static final String url = "https://sqs.us-east-2.amazonaws.com/166605477498/TrimmedRecordingQueue";
@@ -36,10 +38,11 @@ public class SqsPollingService implements PollingService {
 
     private final StorageService storageService;
     private final ObjectMapper objectMapper;
-    private final ConcurrentHashMap<String, Function<AudioContext, DiscordCommand>> clips;
+    private final ConcurrentHashMap<String, DiscordCommand> clips;
 
     private int polls;
 
+    @Inject
     public SqsPollingService(StorageService storageService) {
         clips = new ConcurrentHashMap<>();
         objectMapper = new ObjectMapper();
@@ -105,12 +108,12 @@ public class SqsPollingService implements PollingService {
         String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         LocalClip clip = storageService.download(bucketName, objectKey);
-        Function<AudioContext, DiscordCommand> command = context -> makeCommand(clip.getPath());
+        DiscordCommand command = makeCommand(clip.getPath());
         clips.put(clip.getTitle(), command);
     }
 
     private DiscordCommand makeCommand(String path) {
-        return actions -> actions.queue(path);
+        return new ClipCommand(path);
     }
 
     private void resetPollCount() {
@@ -118,10 +121,10 @@ public class SqsPollingService implements PollingService {
     }
 
     @Override
-    public DiscordCommand lookup(String command, AudioContext context) {
+    public DiscordCommand lookup(String command) {
         if (clips.get(command) == null)
             return null;
-        return clips.get(command).apply(context);
+        return clips.get(command);
     }
 
 }

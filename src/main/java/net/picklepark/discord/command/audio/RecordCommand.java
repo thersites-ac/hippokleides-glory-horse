@@ -23,12 +23,8 @@ public class RecordCommand implements DiscordCommand {
     @Override
     public void execute(DiscordActions actions) {
         actions.connect();
-        if (recordingService.isRecording())
-            actions.send("I'm already recording. Leave me alone.");
-        else {
-            recordingService.beginRecording();
-            actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
-        }
+        recordingService.beginRecording();
+        actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
     }
 
 }

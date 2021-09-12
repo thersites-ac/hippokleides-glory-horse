@@ -72,11 +72,6 @@ public class JdaDiscordActions implements DiscordActions {
     }
 
     @Override
-    public void setPattern(String pattern) {
-        matcher = Pattern.compile(pattern).matcher(userInput());
-    }
-
-    @Override
     public String getArgument(String arg) {
         return matcher.group(arg);
     }
@@ -114,6 +109,13 @@ public class JdaDiscordActions implements DiscordActions {
                 audioContext.guildPlayer,
                 uri,
                 new ResultHandler(audioContext.guildPlayer, uri));
+    }
+
+    @Override
+    public void initMatches(String regex, String message) {
+        matcher = Pattern.compile(regex).matcher(message);
+        if (!matcher.matches())
+            throw new RuntimeException("Pattern " + regex + " does not match" + message);
     }
 
     @Override

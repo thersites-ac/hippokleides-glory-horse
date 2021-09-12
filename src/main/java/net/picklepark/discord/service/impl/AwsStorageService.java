@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Optional;
 
+@Singleton
 public class AwsStorageService implements StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(AwsStorageService.class);
