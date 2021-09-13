@@ -53,7 +53,6 @@ public class WriteAudioCommand implements DiscordCommand {
     @Override
     public void execute(DiscordActions actions) throws IOException {
         try {
-            actions.setReceivingHandler(new NoopHandler());
             String username = actions.getArgument("username");
             User user = actions.lookupUser(username);
             byte[] data = recordingService.getUser(user);
