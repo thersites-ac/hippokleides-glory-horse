@@ -1,6 +1,5 @@
 package net.picklepark.discord;
 
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -81,8 +80,8 @@ public class Bot extends ListenerAdapter {
         try {
             registry.execute(actions);
         } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
-            actions.send("Oh no, I'm broken!");
+            actions.send("Oh no, I'm dying!");
+            logger.error("Error processing guild message", ex);
         }
         super.onGuildMessageReceived(event);
     }

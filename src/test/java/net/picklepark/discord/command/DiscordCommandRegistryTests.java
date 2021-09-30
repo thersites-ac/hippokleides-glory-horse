@@ -1,20 +1,26 @@
 package net.picklepark.discord.command;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Catches;
 import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.exception.ResourceNotFoundException;
+import net.picklepark.discord.model.Coordinates;
+import net.picklepark.discord.model.LocalClip;
+import net.picklepark.discord.service.PollingService;
+import net.picklepark.discord.service.StorageService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 @RunWith(JUnit4.class)
 public class DiscordCommandRegistryTests {
@@ -25,7 +31,6 @@ public class DiscordCommandRegistryTests {
     private String userInput;
     private String sentMessage;
     private boolean failureWasHandled;
-    private Injector injector;
 
     @Before
     public void setup() {
@@ -62,13 +67,6 @@ public class DiscordCommandRegistryTests {
     }
 
     @Test
-    public void usesFailureHandlers() throws Exception {
-        givenRegistryWithPrefixAndCommand(new FailCommand());
-        whenReceiveMessage("fail");
-        thenFailureWasHandled();
-    }
-
-    @Test
     public void succeedsSilentlyIfNoSuccessAnnotationPresent() throws Exception {
         givenRegistryWithPrefixAndCommand(new SilentCommand());
         whenReceiveMessage("silent");
@@ -85,7 +83,7 @@ public class DiscordCommandRegistryTests {
     private void givenRegisterMultiple() {
         givenRegistry();
         givenSetPrefix();
-        registry.register(new TestCommand(), new FailCommand());
+        registry.register(new TestCommand(), new AnotherTestCommand());
     }
 
     private void givenRegistryWithPrefixAndCommand(DiscordCommand command) {
@@ -95,7 +93,7 @@ public class DiscordCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry();
+        registry = new DiscordCommandRegistry(new TestStorageService(), new TestPollingService());
     }
 
     private void givenRegisterCommand() {
@@ -107,8 +105,8 @@ public class DiscordCommandRegistryTests {
     }
 
     private void whenReceiveMessages() throws Exception {
+        whenReceiveMessage("another test");
         whenReceiveMessage("test");
-        whenReceiveMessage("fail");
     }
 
     private void whenReceiveMessage(String message) throws Exception {
@@ -125,10 +123,6 @@ public class DiscordCommandRegistryTests {
         Assert.assertEquals("init", sentMessage);
     }
 
-    private void thenFailureWasHandled() {
-        Assert.assertTrue(failureWasHandled);
-    }
-
     private void thenSuccessMessageWasSent() {
         thenExecutedCommand();
         Assert.assertEquals(sentMessage, "OK");
@@ -136,13 +130,12 @@ public class DiscordCommandRegistryTests {
 
     private void thenBothWereExecuted() {
         thenSuccessMessageWasSent();
-        thenFailureWasHandled();
     }
 
     @UserInput("silent")
     private class SilentCommand implements DiscordCommand {
         @Override
-        public void execute(DiscordActions actions) throws Exception {
+        public void execute(DiscordActions actions) {
             executed = true;
         }
     }
@@ -156,17 +149,11 @@ public class DiscordCommandRegistryTests {
         }
     }
 
-    @UserInput("fail")
-    @SuccessMessage("OK")
-    private class FailCommand implements DiscordCommand {
+    @UserInput("other")
+    @SuccessMessage("OK again")
+    private class AnotherTestCommand implements DiscordCommand {
         @Override
-        public void execute(DiscordActions actions) throws NoSuchUserException {
-            throw new NoSuchUserException("foo");
-        }
-
-        @Catches(NoSuchUserException.class)
-        public void catchNoSuchUser(DiscordActions actions) {
-            failureWasHandled = true;
+        public void execute(DiscordActions actions) {
         }
     }
 
@@ -191,9 +178,6 @@ public class DiscordCommandRegistryTests {
         @Override
         public String userInput() {
             return userInput;
-        }
-        @Override
-        public void setPattern(String value) {
         }
         @Override
         public String getArgument(String arg) {
@@ -221,6 +205,32 @@ public class DiscordCommandRegistryTests {
         @Override
         public void queue(String uri) {
         }
+
+        @Override
+        public void initMatches(String regex, String message) {
+        }
     }
 
+    private class TestStorageService implements StorageService {
+        @Override
+        public Coordinates store(File file) throws MalformedURLException {
+            return null;
+        }
+
+        @Override
+        public LocalClip download(String bucketName, String objectKey) throws URISyntaxException, ResourceNotFoundException {
+            return null;
+        }
+    }
+
+    private class TestPollingService implements PollingService {
+        @Override
+        public void expect(String key) {
+        }
+
+        @Override
+        public DiscordCommand lookup(String command) {
+            return null;
+        }
+    }
 }

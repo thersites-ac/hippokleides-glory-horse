@@ -8,6 +8,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * reduce TTL on audio URL
     * shorten saved audio window
 * other
+    * remove the awkward error handling in the commands
     * add some degree of fuzzy id matching or in-text search
     * authorization annotations
     * Lambda should assign a new id to each generated clip to avoid collision

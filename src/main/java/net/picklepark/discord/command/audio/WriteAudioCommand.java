@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.handler.NoopHandler;
+import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.PollingService;
@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @UserInput("clip (?<username>.+)")
 public class WriteAudioCommand implements DiscordCommand {
@@ -51,16 +50,19 @@ public class WriteAudioCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) throws IOException {
+    public void execute(DiscordActions actions) throws DiscordCommandException {
         try {
             String username = actions.getArgument("username");
             User user = actions.lookupUser(username);
             byte[] data = recordingService.getUser(user);
             Coordinates coordinates = writeAudioData(data, username);
             sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
-        } catch (NotRecordingException | NoSuchUserException e) {
-            e.printStackTrace();
-            actions.send("I never even had a chance");
+        } catch (NotRecordingException e) {
+            actions.send("I'm not very turned on right now :(");
+        } catch (NoSuchUserException e) {
+            actions.send("I can't find the user " + e.getUser() + "!");
+        } catch (IOException e) {
+            throw new DiscordCommandException(e);
         }
     }
 
@@ -97,17 +99,4 @@ public class WriteAudioCommand implements DiscordCommand {
                 .replace(' ', '_');
     }
 
-    public static byte[] flatten(List<byte[]> data) {
-        int totalLen = 0;
-        for (byte[] bytes: data)
-            totalLen += bytes.length;
-
-        byte[] combined = new byte[totalLen];
-        int ptr = 0;
-        for (byte[] bytes: data) {
-            System.arraycopy(bytes, 0, combined, ptr, bytes.length);
-            ptr += bytes.length;
-        }
-        return combined;
-    }
 }

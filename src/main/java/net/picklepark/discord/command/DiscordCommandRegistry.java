@@ -1,20 +1,16 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Catches;
 import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
+import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.StorageService;
-import net.picklepark.discord.service.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,7 +38,7 @@ public class DiscordCommandRegistry {
         return Optional.ofNullable(command);
     }
 
-    public void execute(DiscordActions actions) throws Exception {
+    public void execute(DiscordActions actions) {
         var message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
@@ -52,35 +48,14 @@ public class DiscordCommandRegistry {
         }
     }
 
-    private void executeInContext(DiscordCommand command, DiscordActions actions) throws Exception {
+    private void executeInContext(DiscordCommand command, DiscordActions actions) {
         try {
             command.execute(actions);
             sendSuccess(command, actions);
-        } catch (Exception e) {
-            Optional<Method> handler = exceptionHandler(command, e);
-            handler.ifPresent(m -> {
-                attemptInvocation(m, command, actions);
-                logger.warn("Handled exception while executing " + command.getClass().getName(), e);
-            });
-            handler.orElseThrow(() -> e);
+        } catch (DiscordCommandException e) {
+            actions.send("Oh no, I'm broken!");
+            logger.error("Error executing discord command", e);
         }
-    }
-
-    private void attemptInvocation(Method method, DiscordCommand command, DiscordActions actions) {
-        try {
-            method.invoke(command, actions);
-        } catch (IllegalAccessException e) {
-            logger.error("Invalid access modifier for " + method.getName(), e);
-        } catch (InvocationTargetException e) {
-            logger.error("Invalid parameters for " + method.getName(), e);
-        }
-    }
-
-    private Optional<Method> exceptionHandler(DiscordCommand command, Exception e) {
-        return Arrays.stream(command.getClass().getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(Catches.class)
-                        && method.getAnnotation(Catches.class).value().equals(e.getClass()))
-                .findFirst();
     }
 
     private void sendSuccess(DiscordCommand command, DiscordActions actions) {
