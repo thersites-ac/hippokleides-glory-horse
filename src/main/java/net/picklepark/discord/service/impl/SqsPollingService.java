@@ -12,25 +12,21 @@ import net.picklepark.discord.model.S3Event;
 import net.picklepark.discord.model.S3EventNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class SqsPollingService implements PollingService {
 
-    private static final String url = "https://sqs.us-east-2.amazonaws.com/166605477498/TrimmedRecordingQueue";
     private static final Logger logger = LoggerFactory.getLogger(SqsPollingService.class);
 
     private final SqsAsyncClient client;
@@ -39,25 +35,23 @@ public class SqsPollingService implements PollingService {
     private final StorageService storageService;
     private final ObjectMapper objectMapper;
     private final ConcurrentHashMap<String, DiscordCommand> clips;
+    private final String url;
 
     private int polls;
 
     @Inject
-    public SqsPollingService(StorageService storageService) {
+    public SqsPollingService(StorageService storageService,
+                             SqsAsyncClient client,
+                             @Named("sqs.url") String url) {
         clips = new ConcurrentHashMap<>();
         objectMapper = new ObjectMapper();
-        client = SqsAsyncClient.builder()
-                .credentialsProvider(ProfileCredentialsProvider.create())
-                .region(Region.US_EAST_2)
-                .httpClientBuilder(NettyNioAsyncHttpClient.builder()
-                        .connectionMaxIdleTime(Duration.ofSeconds(20))
-                        .connectionTimeout(Duration.ofSeconds(20)))
-                .build();
+        this.client = client;
+        this.storageService = storageService;
+        this.url = url;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
                 .waitTimeSeconds(20)
                 .build();
-        this.storageService = storageService;
         polls = 0;
     }
 
