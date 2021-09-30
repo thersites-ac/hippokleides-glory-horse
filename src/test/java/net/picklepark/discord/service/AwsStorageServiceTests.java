@@ -10,6 +10,6 @@ public class AwsStorageServiceTests {
 
     @Test
     public void canCreate() {
-        new AwsStorageService();
+        new AwsStorageService(null, null, null);
     }
 }
