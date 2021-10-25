@@ -15,6 +15,7 @@ public class ClipCommand implements DiscordCommand {
 
     @Override
     public void execute(DiscordActions actions) {
+        actions.connect();
         actions.queue(path);
     }
 }

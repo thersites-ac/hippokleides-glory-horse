@@ -1,4 +1,4 @@
-package net.picklepark.discord.service;
+package net.picklepark.discord.service.impl;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.model.Spell;

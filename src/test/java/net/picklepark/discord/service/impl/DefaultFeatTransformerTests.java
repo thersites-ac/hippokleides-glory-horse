@@ -1,4 +1,4 @@
-package net.picklepark.discord.service;
+package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.model.Feat;
 import net.picklepark.discord.model.ScrapeResult;

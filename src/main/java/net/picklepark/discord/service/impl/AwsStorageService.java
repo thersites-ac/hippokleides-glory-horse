@@ -28,23 +28,25 @@ import java.util.Optional;
 public class AwsStorageService implements StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(AwsStorageService.class);
-    private static final String DEFAULT_BUCKET = "discord-recordings";
 
-    private final String bucket;
     private final S3Client downloadClient;
     private final S3Presigner presigner;
     private final S3Client storageClient;
+    private final String uploadsBucket;
+    private final String clipsBucket;
 
     @Inject
     public AwsStorageService(@Named("download") S3Client downloadClient,
                              @Named("storage") S3Client storageClient,
+                             @Named("s3.uploads.bucket") String uploadsBucket,
+                             @Named("s3.trimmed.bucket") String clipsBucket,
                              S3Presigner presigner) {
-        bucket = DEFAULT_BUCKET;
+        this.uploadsBucket = uploadsBucket;
+        this.clipsBucket = clipsBucket;
         this.downloadClient = downloadClient;
         this.storageClient = storageClient;
         this.presigner = presigner;
     }
-
 
     @Override
     public Coordinates store(File file) {
@@ -57,10 +59,10 @@ public class AwsStorageService implements StorageService {
     }
 
     @Override
-    public LocalClip download(String bucketName, String objectKey) throws ResourceNotFoundException {
-        logger.info("Checking to download {}/{}", bucketName, objectKey);
+    public LocalClip download(String objectKey) throws ResourceNotFoundException {
+        logger.info("Checking to download {}/{}", clipsBucket, objectKey);
         GetObjectTaggingRequest taggingRequest = GetObjectTaggingRequest.builder()
-                .bucket(bucketName)
+                .bucket(clipsBucket)
                 .key(objectKey)
                 .build();
         GetObjectTaggingResponse taggingResponse = downloadClient.getObjectTagging(taggingRequest);
@@ -72,7 +74,7 @@ public class AwsStorageService implements StorageService {
 
         if (maybeTitle.isPresent()) {
             GetObjectRequest request = GetObjectRequest.builder()
-                    .bucket(bucketName)
+                    .bucket(clipsBucket)
                     .key(objectKey)
                     .build();
 
@@ -92,13 +94,13 @@ public class AwsStorageService implements StorageService {
                     .build();
         }
 
-        throw new ResourceNotFoundException(objectKey, "s3://" + bucketName + "/" + objectKey);
+        throw new ResourceNotFoundException(objectKey, "s3://" + clipsBucket + "/" + objectKey);
     }
 
     private String upload(File file) {
         String key = file.getName();
         PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucket)
+                .bucket(uploadsBucket)
                 .key(key)
                 .storageClass(StorageClass.STANDARD)
                 .build();
@@ -108,7 +110,7 @@ public class AwsStorageService implements StorageService {
 
     private URL presignedUrlFor(String key) {
         GetObjectRequest basicRequest = GetObjectRequest.builder()
-                .bucket(bucket)
+                .bucket(uploadsBucket)
                 .key(key)
                 .build();
 

@@ -1,4 +1,4 @@
-package net.picklepark.discord.service;
+package net.picklepark.discord.service.impl;
 
 import net.dv8tion.jda.api.audio.CombinedAudio;
 import net.dv8tion.jda.api.entities.User;

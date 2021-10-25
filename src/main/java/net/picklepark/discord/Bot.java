@@ -20,6 +20,7 @@ import net.picklepark.discord.command.general.HelpCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
+import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class Bot extends ListenerAdapter {
     private final Injector injector;
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
+    private final SqsPollingWorker worker;
  
     public static void main(String[] args) throws Exception {
         JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES)
@@ -72,6 +74,8 @@ public class Bot extends ListenerAdapter {
                 WriteAudioCommand.class,
                 RamRanchCommand.class
         );
+        worker = injector.getInstance(SqsPollingWorker.class);
+        worker.start();
     }
 
     @Override

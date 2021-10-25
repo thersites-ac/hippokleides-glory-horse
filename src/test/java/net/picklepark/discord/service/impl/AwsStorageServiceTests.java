@@ -1,6 +1,5 @@
-package net.picklepark.discord.service;
+package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.service.impl.AwsStorageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -10,6 +9,6 @@ public class AwsStorageServiceTests {
 
     @Test
     public void canCreate() {
-        new AwsStorageService(null, null, null);
+        new AwsStorageService(null, null, null, null, null);
     }
 }

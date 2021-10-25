@@ -10,8 +10,8 @@ import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
-import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +30,11 @@ public class DiscordCommandRegistryTests {
     private DiscordActions actions;
     private String userInput;
     private String sentMessage;
-    private boolean failureWasHandled;
 
     @Before
     public void setup() {
         sentMessage = "init";
         executed = false;
-        failureWasHandled = false;
         actions = new TestDiscordActions();
     }
 
@@ -93,7 +91,7 @@ public class DiscordCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new TestStorageService(), new TestPollingService());
+        registry = new DiscordCommandRegistry(new TestStorageService(), new DynamicCommandManagerImpl());
     }
 
     private void givenRegisterCommand() {
@@ -218,19 +216,9 @@ public class DiscordCommandRegistryTests {
         }
 
         @Override
-        public LocalClip download(String bucketName, String objectKey) throws URISyntaxException, ResourceNotFoundException {
+        public LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException {
             return null;
         }
     }
 
-    private class TestPollingService implements PollingService {
-        @Override
-        public void expect(String key) {
-        }
-
-        @Override
-        public DiscordCommand lookup(String command) {
-            return null;
-        }
-    }
 }

@@ -8,7 +8,6 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
-import net.picklepark.discord.service.PollingService;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.StorageService;
 import net.picklepark.discord.model.Coordinates;
@@ -40,13 +39,11 @@ public class WriteAudioCommand implements DiscordCommand {
 
     private final RecordingService recordingService;
     private final StorageService storageService;
-    private final PollingService pollingService;
 
     @Inject
-    public WriteAudioCommand(RecordingService recordingService, StorageService storageService, PollingService pollingService) {
+    public WriteAudioCommand(RecordingService recordingService, StorageService storageService) {
         this.recordingService = recordingService;
         this.storageService = storageService;
-        this.pollingService = pollingService;
     }
 
     @Override
@@ -89,7 +86,6 @@ public class WriteAudioCommand implements DiscordCommand {
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
         Coordinates coordinates = storageService.store(output);
-        pollingService.expect(baseName);
         return coordinates;
     }
 

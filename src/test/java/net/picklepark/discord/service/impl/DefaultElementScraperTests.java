@@ -1,8 +1,10 @@
-package net.picklepark.discord.service;
+package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.model.ScrapeResult;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.exception.NullDocumentException;
+import net.picklepark.discord.service.DocumentFetcher;
+import net.picklepark.discord.service.ElementScraper;
 import net.picklepark.discord.service.impl.DefaultElementScraper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

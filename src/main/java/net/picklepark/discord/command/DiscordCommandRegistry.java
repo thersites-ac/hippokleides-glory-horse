@@ -5,7 +5,7 @@ import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.service.PollingService;
+import net.picklepark.discord.service.DynamicCommandManager;
 import net.picklepark.discord.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,20 +21,20 @@ public class DiscordCommandRegistry {
 
     private static final DiscordCommand NOOP = new NoopCommand();
 
-    private final PollingService pollingService;
     private final StorageService storageService;
+    private final DynamicCommandManager commandManager;
     private char prefix;
     private Map<String, DiscordCommand> handlers;
 
     @Inject
-    public DiscordCommandRegistry(StorageService storageService, PollingService pollingService) {
+    public DiscordCommandRegistry(StorageService storageService, DynamicCommandManager commandManager) {
         handlers = new ConcurrentHashMap<>();
         this.storageService = storageService;
-        this.pollingService = pollingService;
+        this.commandManager = commandManager;
     }
 
-    private Optional<DiscordCommand> fetchFromPollingService(String s) {
-        DiscordCommand command = pollingService.lookup(s);
+    private Optional<DiscordCommand> getDynamic(String s) {
+        DiscordCommand command = commandManager.lookup(s);
         return Optional.ofNullable(command);
     }
 
@@ -70,7 +70,7 @@ public class DiscordCommandRegistry {
                 .filter(tail::matches)
                 .findFirst()
                 .map(s -> handlers.get(s))
-                .orElse(fetchFromPollingService(tail).orElse(NOOP));
+                .orElse(getDynamic(tail).orElse(NOOP));
 
     }
 
