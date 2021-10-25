@@ -22,6 +22,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * inform channel members after the clip has been loaded
     * clean up the local filesystem
     * group clips by channel
+    * make commands async
     * `help` command improvement:
         * annotate each command with its help message
         * list all known commands

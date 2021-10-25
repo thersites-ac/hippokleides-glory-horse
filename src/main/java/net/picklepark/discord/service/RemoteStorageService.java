@@ -10,9 +10,10 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 // FIXME: separate the logic of how to store and download from filenames and folders
-public interface StorageService {
+public interface RemoteStorageService {
     public Coordinates store(File file) throws MalformedURLException;
-    LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException;
+    public LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException;
+    public void sync();
     // FIXME implement this
 //    Collection<LocalClip> sync(String bucketName);
 }

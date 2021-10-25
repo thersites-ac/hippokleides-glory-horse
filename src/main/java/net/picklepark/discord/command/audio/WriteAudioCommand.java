@@ -9,7 +9,7 @@ import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
-import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.Coordinates;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -38,12 +38,12 @@ public class WriteAudioCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
 
     private final RecordingService recordingService;
-    private final StorageService storageService;
+    private final RemoteStorageService remoteStorageService;
 
     @Inject
-    public WriteAudioCommand(RecordingService recordingService, StorageService storageService) {
+    public WriteAudioCommand(RecordingService recordingService, RemoteStorageService remoteStorageService) {
         this.recordingService = recordingService;
-        this.storageService = storageService;
+        this.remoteStorageService = remoteStorageService;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class WriteAudioCommand implements DiscordCommand {
         String filename = "recordings/" + baseName;
         File output = new File(filename);
         AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
-        Coordinates coordinates = storageService.store(output);
+        Coordinates coordinates = remoteStorageService.store(output);
         return coordinates;
     }
 

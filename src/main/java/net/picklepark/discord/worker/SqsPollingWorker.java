@@ -6,7 +6,7 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.command.audio.ClipCommand;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.DynamicCommandManager;
-import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.model.S3Event;
 import net.picklepark.discord.model.S3EventNotification;
@@ -33,23 +33,23 @@ public class SqsPollingWorker extends Thread {
     private final SqsClient client;
     private final ReceiveMessageRequest request;
 
-    private final StorageService storageService;
+    private final RemoteStorageService remoteStorageService;
     private final DynamicCommandManager commandManager;
 
     private final String url;
-    private long interval;
+    private final long interval;
 
     @Inject
-    public SqsPollingWorker(StorageService storageService,
+    public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
                             DynamicCommandManager commandManager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.interval") long interval) {
         this.client = client;
-        this.storageService = storageService;
+        this.remoteStorageService = remoteStorageService;
         this.commandManager = commandManager;
         this.url = url;
-        interval = 5000;
+        this.interval = interval;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
                 .waitTimeSeconds(20)
@@ -104,7 +104,8 @@ public class SqsPollingWorker extends Thread {
         // in future, perhaps should confirm that the bucket name matches the expected bucket
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
-        LocalClip clip = storageService.download(objectKey);
+        // FIXME: as with the storage service, this logic should probably be in the commandManager itself
+        LocalClip clip = remoteStorageService.download(objectKey);
         DiscordCommand command = new ClipCommand(clip.getPath());
         commandManager.put(clip.getTitle(), command);
     }

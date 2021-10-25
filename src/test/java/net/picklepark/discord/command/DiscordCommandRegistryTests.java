@@ -10,7 +10,7 @@ import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
-import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -91,7 +91,7 @@ public class DiscordCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new TestStorageService(), new DynamicCommandManagerImpl());
+        registry = new DiscordCommandRegistry(new TestRemoteStorageService(), new DynamicCommandManagerImpl());
     }
 
     private void givenRegisterCommand() {
@@ -209,7 +209,7 @@ public class DiscordCommandRegistryTests {
         }
     }
 
-    private class TestStorageService implements StorageService {
+    private class TestRemoteStorageService implements RemoteStorageService {
         @Override
         public Coordinates store(File file) throws MalformedURLException {
             return null;

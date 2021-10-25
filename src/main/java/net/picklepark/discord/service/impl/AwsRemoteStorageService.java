@@ -1,7 +1,10 @@
 package net.picklepark.discord.service.impl;
 
+import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.command.audio.ClipCommand;
 import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.DynamicCommandManager;
+import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
 import org.slf4j.Logger;
@@ -22,30 +25,34 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Singleton
-public class AwsStorageService implements StorageService {
+public class AwsRemoteStorageService implements RemoteStorageService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AwsStorageService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AwsRemoteStorageService.class);
 
     private final S3Client downloadClient;
     private final S3Presigner presigner;
     private final S3Client storageClient;
     private final String uploadsBucket;
     private final String clipsBucket;
+    private final DynamicCommandManager commandManager;
 
     @Inject
-    public AwsStorageService(@Named("download") S3Client downloadClient,
-                             @Named("storage") S3Client storageClient,
-                             @Named("s3.uploads.bucket") String uploadsBucket,
-                             @Named("s3.trimmed.bucket") String clipsBucket,
-                             S3Presigner presigner) {
+    public AwsRemoteStorageService(@Named("download") S3Client downloadClient,
+                                   @Named("storage") S3Client storageClient,
+                                   @Named("s3.uploads.bucket") String uploadsBucket,
+                                   @Named("s3.trimmed.bucket") String clipsBucket,
+                                   S3Presigner presigner,
+                                   DynamicCommandManager commandManager) {
         this.uploadsBucket = uploadsBucket;
         this.clipsBucket = clipsBucket;
         this.downloadClient = downloadClient;
         this.storageClient = storageClient;
         this.presigner = presigner;
+        this.commandManager = commandManager;
     }
 
     @Override
@@ -95,6 +102,28 @@ public class AwsStorageService implements StorageService {
         }
 
         throw new ResourceNotFoundException(objectKey, "s3://" + clipsBucket + "/" + objectKey);
+    }
+
+    @Override
+    public void sync() {
+        ListObjectsRequest request = ListObjectsRequest.builder()
+                .bucket(clipsBucket)
+                .build();
+        ListObjectsResponse response = downloadClient.listObjects(request);
+        downloadAll(response.contents());
+    }
+
+    private void downloadAll(List<S3Object> contents) {
+        for (S3Object object: contents) {
+            try {
+                // FIXME: this logic should go in another class, probably the command manager class itself
+                LocalClip clip = download(object.key());
+                DiscordCommand command = new ClipCommand(clip.getPath());
+                commandManager.put(clip.getTitle(), command);
+            } catch (ResourceNotFoundException e) {
+                logger.warn("Could not download {}", object.key());
+            }
+        }
     }
 
     private String upload(File file) {

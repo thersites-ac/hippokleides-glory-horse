@@ -6,7 +6,7 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.DynamicCommandManager;
-import net.picklepark.discord.service.StorageService;
+import net.picklepark.discord.service.RemoteStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,15 +21,15 @@ public class DiscordCommandRegistry {
 
     private static final DiscordCommand NOOP = new NoopCommand();
 
-    private final StorageService storageService;
+    private final RemoteStorageService remoteStorageService;
     private final DynamicCommandManager commandManager;
     private char prefix;
     private Map<String, DiscordCommand> handlers;
 
     @Inject
-    public DiscordCommandRegistry(StorageService storageService, DynamicCommandManager commandManager) {
+    public DiscordCommandRegistry(RemoteStorageService remoteStorageService, DynamicCommandManager commandManager) {
         handlers = new ConcurrentHashMap<>();
-        this.storageService = storageService;
+        this.remoteStorageService = remoteStorageService;
         this.commandManager = commandManager;
     }
 

@@ -4,8 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import net.picklepark.discord.service.DynamicCommandManager;
 import net.picklepark.discord.service.RecordingService;
-import net.picklepark.discord.service.StorageService;
-import net.picklepark.discord.service.impl.AwsStorageService;
+import net.picklepark.discord.service.RemoteStorageService;
+import net.picklepark.discord.service.impl.AwsRemoteStorageService;
 import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
 import net.picklepark.discord.service.impl.LocalRecordingService;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -21,7 +21,7 @@ import javax.inject.Singleton;
 public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(StorageService.class).to(AwsStorageService.class);
+        bind(RemoteStorageService.class).to(AwsRemoteStorageService.class);
         bind(RecordingService.class).to(LocalRecordingService.class);
         bind(DynamicCommandManager.class).to(DynamicCommandManagerImpl.class);
     }
