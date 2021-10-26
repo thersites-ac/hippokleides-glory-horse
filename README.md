@@ -23,6 +23,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * clean up the local filesystem
     * group clips by channel
     * make commands async
+    * the command title is an injection attack risk; fix that
     * `help` command improvement:
         * annotate each command with its help message
         * list all known commands

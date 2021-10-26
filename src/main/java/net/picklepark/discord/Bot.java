@@ -72,7 +72,9 @@ public class Bot extends ListenerAdapter {
                 SofterAudioCommand.class,
                 UnpauseAudioCommand.class,
                 WriteAudioCommand.class,
-                RamRanchCommand.class
+                RamRanchCommand.class,
+                SyncClipsCommand.class,
+                ListCommandsCommand.class
         );
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();
