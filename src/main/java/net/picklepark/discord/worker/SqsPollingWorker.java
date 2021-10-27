@@ -21,6 +21,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -105,9 +106,15 @@ public class SqsPollingWorker extends Thread {
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         // FIXME: as with the storage service, this logic should probably be in the commandManager itself
-        LocalClip clip = remoteStorageService.download(objectKey);
-        DiscordCommand command = new ClipCommand(clip.getPath());
-        commandManager.put(clip.getTitle(), command);
+        try {
+            LocalClip clip = remoteStorageService.download(objectKey);
+            // FIXME: ideally we'd notify the guild where the clip originated
+            DiscordCommand command = new ClipCommand(clip.getPath());
+            commandManager.put(clip.getTitle(), command);
+        } catch (IOException e) {
+            logger.error("While downloading clip", e);
+            // FIXME: ideally we'd notify of failure, too
+        }
     }
 
 }

@@ -7,10 +7,11 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 
 # To Do
 * important:
-    * fetch cached clips outside of the SQS poller
     * reduce TTL on audio URL
     * shorten saved audio window
     * see the various fixmes
+    * hall of fame clips to avoid accidental deletion
+    * delete authorization
 * other
     * remove the awkward error handling in the commands
     * add some degree of fuzzy id matching or in-text search
@@ -23,7 +24,8 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * clean up the local filesystem
     * group clips by channel
     * make commands async
+    * handle error when user tries to delete a nonexistent clip
+    * forbid invalid command names in UI
     * the command title is an injection attack risk; fix that
     * `help` command improvement:
         * annotate each command with its help message
-        * list all known commands

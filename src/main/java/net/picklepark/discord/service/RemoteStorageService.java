@@ -5,15 +5,15 @@ import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
 // FIXME: separate the logic of how to store and download from filenames and folders
 public interface RemoteStorageService {
-    public Coordinates store(File file) throws MalformedURLException;
-    public LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException;
-    public void sync();
-    // FIXME implement this
-//    Collection<LocalClip> sync(String bucketName);
+    Coordinates store(File file) throws MalformedURLException;
+    LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException, IOException;
+    void sync();
+    void delete(String key);
 }
