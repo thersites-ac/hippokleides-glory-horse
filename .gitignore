@@ -12,3 +12,5 @@ bin
 __pycache__
 recordings/
 clips
+.metals/
+.classpath
