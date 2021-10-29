@@ -31,7 +31,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @UserInput("clip (?<username>.+)")
-@Help(name = "clip <username>", message = "Clip user audio. Make sure to run ~record first.")
+@Help(name = "clip <username>", message = "Clip a user from the voice channel. Make sure to run ~record first.")
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";

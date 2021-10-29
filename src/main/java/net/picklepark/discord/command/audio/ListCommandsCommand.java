@@ -1,6 +1,7 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @UserInput("list")
+@Help(name = "list", message = "List all the recorded clips I can play back.")
 public class ListCommandsCommand implements DiscordCommand {
 
     private final DynamicCommandManager commandManager;

@@ -1,10 +1,12 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 
 @UserInput("louder")
+@Help(name = "louder", message = "Crank it up!!!")
 public class LouderAudioCommand implements DiscordCommand {
 
   @Override

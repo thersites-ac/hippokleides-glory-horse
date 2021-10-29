@@ -74,8 +74,9 @@ public class Bot extends ListenerAdapter {
                 WriteAudioCommand.class,
                 RamRanchCommand.class,
                 SyncClipsCommand.class,
-                ListCommandsCommand.class,
-                DeleteClipCommand.class
+// FIXME: add this back after auth protection
+//                DeleteClipCommand.class,
+                ListCommandsCommand.class
         );
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();

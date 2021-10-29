@@ -6,7 +6,7 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 
 @UserInput("unpause")
-@Help(name = "unpause", message = "Unpause the playlist.")
+@Help(name = "unpause", message = "Unpause the current track.")
 public class UnpauseAudioCommand implements DiscordCommand {
 
   @Override

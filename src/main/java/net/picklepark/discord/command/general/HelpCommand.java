@@ -20,10 +20,10 @@ import java.util.stream.Collector;
 @Help(name = "help", message = "See this message again.")
 public class HelpCommand implements DiscordCommand {
 
-//    private static final String instructions = "Commands: ~queue [url], ~skip, ~volume (to get current), ~volume [n] (to set)," +
+//    private static final String INSTRUCTIONS = "Commands: ~queue [url], ~skip, ~volume (to get current), ~volume [n] (to set)," +
 //            " ~louder, ~softer, ~pause, ~unpause, ~gtfo, ~feat [feat name], ~spell [spell name], ~help";
-//    private static final String hint = "When you find a feat or spell, click the citation at top (e.g. Core Rulebook, " +
-//            "Advanced Player's Guide, etc.) to go to the site.";
+    private static final String HINT = "Also, when I find a feat or spell, click the citation at top (e.g. Core Rulebook, " +
+            "Advanced Player's Guide, etc.) to go to the site.";
 
     private DiscordCommandRegistry registry;
 
@@ -38,13 +38,15 @@ public class HelpCommand implements DiscordCommand {
         commands.stream()
                 .filter(command -> command.getClass().isAnnotationPresent(Help.class))
                 .map(this::commandHelpLine)
-                .reduce((s, t) -> s + ",\n" + t)
-                .ifPresentOrElse(body -> actions.send("I know these commands:\n" + body),
+                .sorted()
+                .reduce((s, t) -> s + "\n\t" + t)
+                .ifPresentOrElse(body -> actions.send("I know these commands:\n\t" + body),
                         () -> actions.send("I don't know anything :("));
+        actions.send(HINT);
     }
 
     private String commandHelpLine(DiscordCommand command) {
         Help help = command.getClass().getAnnotation(Help.class);
-        return help.name() + ": " + help.message();
+        return "* " + help.name() + ": " + help.message();
     }
 }

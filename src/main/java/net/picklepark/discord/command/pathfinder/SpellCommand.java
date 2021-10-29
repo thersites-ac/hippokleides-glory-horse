@@ -2,6 +2,7 @@ package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 @UserInput("spell (?<spell>.+)")
+@Help(name = "spell <spell name>", message = "Look up a spell from legacy.aonprd.com.")
 public class SpellCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(SpellCommand.class);
 
