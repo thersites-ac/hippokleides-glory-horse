@@ -3,6 +3,7 @@ package net.picklepark.discord.command.audio;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -30,6 +31,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @UserInput("clip (?<username>.+)")
+@Help(name = "clip <username>", message = "Clip user audio. Make sure to run ~record first.")
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";

@@ -1,7 +1,6 @@
-package net.picklepark.discord.service.impl;
+package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
 
 public class SpyCommand implements DiscordCommand {

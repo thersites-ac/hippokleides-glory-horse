@@ -10,10 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class DiscordCommandRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
@@ -23,7 +26,7 @@ public class DiscordCommandRegistry {
     private final RemoteStorageService remoteStorageService;
     private final DynamicCommandManager commandManager;
     private char prefix;
-    private Map<String, DiscordCommand> handlers;
+    private final Map<String, DiscordCommand> handlers;
 
     @Inject
     public DiscordCommandRegistry(RemoteStorageService remoteStorageService, DynamicCommandManager commandManager) {
@@ -41,7 +44,8 @@ public class DiscordCommandRegistry {
         var message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
-            DiscordCommand command = lookupAction(message);
+            // FIXME: use the tail here
+            DiscordCommand command = lookupAction(tail);
             actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), tail);
             executeInContext(command, actions);
         }
@@ -57,13 +61,12 @@ public class DiscordCommandRegistry {
     }
 
     private DiscordCommand lookupAction(String message) {
-        var tail = message.substring(1);
-        logger.info("looking up {}", tail);
+        logger.info("looking up {}", message);
         return handlers.keySet().stream()
-                .filter(tail::matches)
+                .filter(message::matches)
                 .findFirst()
-                .map(s -> handlers.get(s))
-                .orElse(getDynamic(tail).orElse(NOOP));
+                .map(handlers::get)
+                .orElse(getDynamic(message).orElse(NOOP));
 
     }
 
@@ -76,8 +79,12 @@ public class DiscordCommandRegistry {
     }
 
     public void register(DiscordCommand... commands) {
-        for (var command: commands)
+        for (var command : commands)
             register(command);
+    }
+
+    public Collection<DiscordCommand> getCommands() {
+        return handlers.values();
     }
 
     public void prefix(char prefix) {

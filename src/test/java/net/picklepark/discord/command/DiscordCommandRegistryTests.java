@@ -1,17 +1,11 @@
 package net.picklepark.discord.command;
 
-import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.UserInput;
-import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,21 +14,26 @@ import org.junit.runners.JUnit4;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class DiscordCommandRegistryTests {
 
     private DiscordCommandRegistry registry;
-    private boolean executed;
-    private DiscordActions actions;
-    private String userInput;
-    private String sentMessage;
+    private SpyDiscordActions actions;
+    private Collection<DiscordCommand> registeredCommands;
+    private SpyCommand testCommand;
+    private DiscordCommand anotherTestCommand;
+    private SpyCommand silentCommand;
 
     @Before
     public void setup() {
-        sentMessage = "init";
-        executed = false;
-        actions = new TestDiscordActions();
+        actions = new SpyDiscordActions();
+        testCommand = new TestCommand();
+        anotherTestCommand = new AnotherTestCommand();
+        silentCommand = new SilentCommand();
     }
 
     @Test
@@ -51,21 +50,21 @@ public class DiscordCommandRegistryTests {
 
     @Test
     public void usersUserInputAnnotation() throws Exception {
-        givenRegistryWithPrefixAndCommand(new TestCommand());
+        givenRegistryWithPrefixAndCommand(testCommand);
         whenReceiveMessage("test");
-        thenExecutedCommand();
+        thenExecutedCommand(testCommand);
     }
 
     @Test
     public void usesSuccessMessage() throws Exception {
-        givenRegistryWithPrefixAndCommand(new TestCommand());
+        givenRegistryWithPrefixAndCommand(testCommand);
         whenReceiveMessage("test");
         thenSuccessMessageWasSent();
     }
 
     @Test
     public void succeedsSilentlyIfNoSuccessAnnotationPresent() throws Exception {
-        givenRegistryWithPrefixAndCommand(new SilentCommand());
+        givenRegistryWithPrefixAndCommand(silentCommand);
         whenReceiveMessage("silent");
         thenNoMessageWasSent();
     }
@@ -77,10 +76,17 @@ public class DiscordCommandRegistryTests {
         thenBothWereExecuted();
     }
 
+    @Test
+    public void canListRegistered() {
+        givenRegisterMultiple();
+        whenListCommands();
+        thenListMatches();
+    }
+
     private void givenRegisterMultiple() {
         givenRegistry();
         givenSetPrefix();
-        registry.register(new TestCommand(), new AnotherTestCommand());
+        registry.register(testCommand, anotherTestCommand);
     }
 
     private void givenRegistryWithPrefixAndCommand(DiscordCommand command) {
@@ -94,11 +100,15 @@ public class DiscordCommandRegistryTests {
     }
 
     private void givenRegisterCommand() {
-        registry.register(new TestCommand());
+        registry.register(testCommand);
     }
 
     private void givenSetPrefix() {
         registry.prefix('~');
+    }
+
+    private void whenListCommands() {
+        registeredCommands = registry.getCommands();
     }
 
     private void whenReceiveMessages() throws Exception {
@@ -107,105 +117,34 @@ public class DiscordCommandRegistryTests {
     }
 
     private void whenReceiveMessage(String message) throws Exception {
-        userInput = "~" + message;
+        actions.setUserInput("~" + message);
         registry.execute(actions);
     }
 
-    private void thenExecutedCommand() {
-        Assert.assertTrue(executed);
+    private void thenListMatches() {
+        assertEquals(2, registeredCommands.size());
+        assertTrue(registeredCommands.stream().anyMatch(command ->
+                command instanceof TestCommand));
+        assertTrue(registeredCommands.stream().anyMatch(command ->
+                command instanceof AnotherTestCommand));
+    }
+
+    private void thenExecutedCommand(SpyCommand command) {
+        assertTrue(command.isExecuted());
     }
 
     private void thenNoMessageWasSent() {
-        thenExecutedCommand();
-        Assert.assertEquals("init", sentMessage);
+        thenExecutedCommand(silentCommand);
+        assertEquals("init", actions.getSentMessage());
     }
 
     private void thenSuccessMessageWasSent() {
-        thenExecutedCommand();
-        Assert.assertEquals(sentMessage, "OK");
+        thenExecutedCommand(testCommand);
+        assertEquals(actions.getSentMessage(), "OK");
     }
 
     private void thenBothWereExecuted() {
         thenSuccessMessageWasSent();
-    }
-
-    @UserInput("silent")
-    private class SilentCommand implements DiscordCommand {
-        @Override
-        public void execute(DiscordActions actions) {
-            executed = true;
-        }
-    }
-
-    @UserInput("test")
-    private class TestCommand implements DiscordCommand {
-        @Override
-        public void execute(DiscordActions actions) {
-            executed = true;
-            actions.send("OK");
-        }
-    }
-
-    @UserInput("other")
-    private class AnotherTestCommand implements DiscordCommand {
-        @Override
-        public void execute(DiscordActions actions) {
-            actions.send("OK again");
-        }
-    }
-
-    private class TestDiscordActions implements DiscordActions {
-        @Override
-        public void send(String message) {
-            sentMessage = message;
-        }
-        @Override
-        public void send(MessageEmbed embed) {
-        }
-        @Override
-        public void setReceivingHandler(AudioReceiveHandler handler) {
-        }
-        @Override
-        public void connect() {
-        }
-        @Override
-        public User lookupUser(String user) throws NoSuchUserException {
-            return null;
-        }
-        @Override
-        public String userInput() {
-            return userInput;
-        }
-        @Override
-        public String getArgument(String arg) {
-            return null;
-        }
-        @Override
-        public void setVolume(int volume) {
-        }
-        @Override
-        public void disconnect() {
-        }
-        @Override
-        public int getVolume() {
-            return 0;
-        }
-        @Override
-        public void pause() {
-        }
-        @Override
-        public void unpause() {
-        }
-        @Override
-        public void skip() {
-        }
-        @Override
-        public void queue(String uri) {
-        }
-
-        @Override
-        public void initMatches(String regex, String message) {
-        }
     }
 
     private class TestRemoteStorageService implements RemoteStorageService {
