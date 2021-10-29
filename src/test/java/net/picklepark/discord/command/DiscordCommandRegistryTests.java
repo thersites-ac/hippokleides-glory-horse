@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
@@ -139,19 +138,19 @@ public class DiscordCommandRegistryTests {
     }
 
     @UserInput("test")
-    @SuccessMessage("OK")
     private class TestCommand implements DiscordCommand {
         @Override
         public void execute(DiscordActions actions) {
             executed = true;
+            actions.send("OK");
         }
     }
 
     @UserInput("other")
-    @SuccessMessage("OK again")
     private class AnotherTestCommand implements DiscordCommand {
         @Override
         public void execute(DiscordActions actions) {
+            actions.send("OK again");
         }
     }
 
@@ -218,6 +217,14 @@ public class DiscordCommandRegistryTests {
         @Override
         public LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException {
             return null;
+        }
+
+        @Override
+        public void sync() {
+        }
+
+        @Override
+        public void delete(String key) {
         }
     }
 

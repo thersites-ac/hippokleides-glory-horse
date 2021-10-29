@@ -1,7 +1,6 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.SuccessMessage;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -51,16 +50,10 @@ public class DiscordCommandRegistry {
     private void executeInContext(DiscordCommand command, DiscordActions actions) {
         try {
             command.execute(actions);
-            sendSuccess(command, actions);
         } catch (DiscordCommandException e) {
             actions.send("Oh no, I'm broken!");
             logger.error("Error executing discord command", e);
         }
-    }
-
-    private void sendSuccess(DiscordCommand command, DiscordActions actions) {
-        if (command.getClass().isAnnotationPresent(SuccessMessage.class))
-            actions.send(command.getClass().getAnnotation(SuccessMessage.class).value());
     }
 
     private DiscordCommand lookupAction(String message) {
