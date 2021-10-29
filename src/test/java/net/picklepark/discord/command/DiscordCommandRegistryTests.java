@@ -73,7 +73,7 @@ public class DiscordCommandRegistryTests {
     public void canRegisterAndExecuteSeveralCommands() throws Exception {
         givenRegisterMultiple();
         whenReceiveMessages();
-        thenBothWereExecuted();
+        thenBothWereReceived();
     }
 
     @Test
@@ -112,8 +112,8 @@ public class DiscordCommandRegistryTests {
     }
 
     private void whenReceiveMessages() throws Exception {
-        whenReceiveMessage("another test");
         whenReceiveMessage("test");
+        whenReceiveMessage("another test");
     }
 
     private void whenReceiveMessage(String message) throws Exception {
@@ -135,16 +135,20 @@ public class DiscordCommandRegistryTests {
 
     private void thenNoMessageWasSent() {
         thenExecutedCommand(silentCommand);
-        assertEquals("init", actions.getSentMessage());
+        assertTrue(actions.getSentMessage().isEmpty());
     }
 
     private void thenSuccessMessageWasSent() {
         thenExecutedCommand(testCommand);
-        assertEquals(actions.getSentMessage(), "OK");
+        assertEquals(1, actions.getSentMessage().size());
+        assertEquals("OK", actions.getSentMessage().get(0));
     }
 
-    private void thenBothWereExecuted() {
-        thenSuccessMessageWasSent();
+    private void thenBothWereReceived() {
+        thenExecutedCommand(testCommand);
+        assertEquals(2, actions.getSentMessage().size());
+        assertEquals("OK", actions.getSentMessage().get(0));
+        assertEquals("OK again", actions.getSentMessage().get(1));
     }
 
     private class TestRemoteStorageService implements RemoteStorageService {

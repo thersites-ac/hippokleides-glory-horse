@@ -4,7 +4,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 
-@UserInput("other")
+@UserInput("another test")
 @Help(name = "other", message = "plz help")
 public class AnotherTestCommand implements DiscordCommand {
     @Override

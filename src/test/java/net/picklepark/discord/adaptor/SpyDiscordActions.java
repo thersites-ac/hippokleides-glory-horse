@@ -5,14 +5,21 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.exception.NoSuchUserException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SpyDiscordActions implements DiscordActions {
 
-    private String sentMessage = "init";
+    private List<String> sentMessages;
     private String userInput;
+
+    public SpyDiscordActions() {
+        sentMessages = new ArrayList<>();
+    }
 
     @Override
     public void send(String message) {
-        sentMessage = message;
+        sentMessages.add(message);
     }
     @Override
     public void send(MessageEmbed embed) {
@@ -62,8 +69,8 @@ public class SpyDiscordActions implements DiscordActions {
     public void initMatches(String regex, String message) {
     }
 
-    public String getSentMessage() {
-        return sentMessage;
+    public List<String> getSentMessage() {
+        return sentMessages;
     }
 
     public void setUserInput(String userInput) {

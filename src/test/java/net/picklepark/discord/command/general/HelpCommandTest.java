@@ -3,10 +3,13 @@ package net.picklepark.discord.command.general;
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.command.*;
 import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -48,9 +51,11 @@ public class HelpCommandTest {
     }
 
     private void thenSentAllRegisteredHelpMessages() {
-        String sentMessage = actions.getSentMessage();
-        assertTrue(sentMessage.contains("halp"));
-        assertTrue(sentMessage.contains("plz help"));
+        List<String> sentMessages = actions.getSentMessage();
+        assertFalse(sentMessages.isEmpty());
+        String helpMessage = sentMessages.get(0);
+        assertTrue(helpMessage.contains("halp"));
+        assertTrue(helpMessage.contains("plz help"));
     }
 
 }
