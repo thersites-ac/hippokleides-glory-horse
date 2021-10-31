@@ -4,6 +4,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 
 # To Do
 * important:
+    * take it live
     * see the various fixmes
     * hall of fame clips to avoid accidental deletion
     * delete authorization
