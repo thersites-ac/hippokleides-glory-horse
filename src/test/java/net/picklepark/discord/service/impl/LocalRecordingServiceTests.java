@@ -3,7 +3,6 @@ package net.picklepark.discord.service.impl;
 import net.dv8tion.jda.api.audio.CombinedAudio;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.exception.NotRecordingException;
-import net.picklepark.discord.service.impl.LocalRecordingService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class LocalRecordingServiceTests {
     private static final int totalPacketsProvided = packetsPerSec * secToProvide;
     private static final int maxPacketsStored = packetsPerSec * maxSecToStore;
 
-    private LocalRecordingService localRecordingService;
+    private RecordingServiceImpl localRecordingService;
     private CombinedAudio audio;
     private List<User> users;
     private short[] data;
@@ -30,7 +29,7 @@ public class LocalRecordingServiceTests {
 
     @Before
     public void setup() {
-        localRecordingService = new LocalRecordingService();
+        localRecordingService = new RecordingServiceImpl(30);
         users = new ArrayList<>();
         data = new short[]{0};
         audio = new CombinedAudio(users, data);

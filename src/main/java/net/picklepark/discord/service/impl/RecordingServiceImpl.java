@@ -9,22 +9,31 @@ import net.picklepark.discord.service.RecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class LocalRecordingService implements RecordingService {
+public class RecordingServiceImpl implements RecordingService {
 
     public static final int PACKETS_PER_SECOND = 50;
-    public static final int SECONDS_TO_STORE = 60;
-    public static final int MAX_STORED_PACKETS = PACKETS_PER_SECOND * SECONDS_TO_STORE;
+
+    public final int clipDuration;
+    public final int packetsPerClip;
+
+    public RecordingServiceImpl(@Named("recording.clip.duration") int clipDuration) {
+        this.clipDuration = clipDuration;
+        this.packetsPerClip = PACKETS_PER_SECOND * clipDuration;
+    }
 
     private LinkedList<byte[]> combined;
     private ConcurrentHashMap<Long, DiscontinuousAudioArray> userRecordings;
 
     private boolean recording = false;
-    private final Logger logger = LoggerFactory.getLogger(LocalRecordingService.class);
+    private final Logger logger = LoggerFactory.getLogger(RecordingServiceImpl.class);
+
+
 
     @Override
     public void beginRecording() {
@@ -59,7 +68,7 @@ public class LocalRecordingService implements RecordingService {
             throw new NotRecordingException();
         byte[] audioData = audio.getAudioData(1);
         combined.addLast(audioData);
-        if (combined.size() > MAX_STORED_PACKETS)
+        if (combined.size() > packetsPerClip)
             combined.removeFirst();
     }
 

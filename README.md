@@ -4,8 +4,6 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 
 # To Do
 * important:
-    * reduce TTL on audio URL
-    * shorten saved audio window
     * see the various fixmes
     * hall of fame clips to avoid accidental deletion
     * delete authorization

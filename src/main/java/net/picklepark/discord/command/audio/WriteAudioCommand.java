@@ -60,8 +60,6 @@ public class WriteAudioCommand implements DiscordCommand {
             actions.send("I'm not very turned on right now :(");
         } catch (NoSuchUserException e) {
             actions.send("I can't find the user " + e.getUser() + "!");
-        } catch (IOException e) {
-            throw new DiscordCommandException(e);
         }
     }
 
@@ -80,15 +78,19 @@ public class WriteAudioCommand implements DiscordCommand {
         }
     }
 
-    private Coordinates writeAudioData(byte[] data, String username) throws IOException {
-        InputStream in = new ByteArrayInputStream(data);
-        AudioInputStream audioInputStream = new AudioInputStream(in, AudioReceiveHandler.OUTPUT_FORMAT, data.length);
-        String baseName = makeName(username);
-        String filename = "recordings/" + baseName;
-        File output = new File(filename);
-        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
-        Coordinates coordinates = remoteStorageService.store(output);
-        return coordinates;
+    private Coordinates writeAudioData(byte[] data, String username) throws DiscordCommandException {
+        try (AudioInputStream audioInputStream = new AudioInputStream(
+                new ByteArrayInputStream(data),
+                AudioReceiveHandler.OUTPUT_FORMAT,
+                data.length)) {
+            String baseName = makeName(username);
+            String filename = "recordings/" + baseName;
+            File output = new File(filename);
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
+            return remoteStorageService.store(output);
+        } catch (IOException e) {
+            throw new DiscordCommandException(e);
+        }
     }
 
     private String makeName(String username) {

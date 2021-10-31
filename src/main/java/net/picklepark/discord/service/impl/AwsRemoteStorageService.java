@@ -42,12 +42,14 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final String clipsBucket;
     private final DynamicCommandManager commandManager;
     private final Map<String, String> remoteKeys;
+    private final Duration timeToLive;
 
     @Inject
-    public AwsRemoteStorageService(@Named("download") S3Client downloadClient,
-                                   @Named("storage") S3Client storageClient,
+    public AwsRemoteStorageService(@Named("s3.client.download") S3Client downloadClient,
+                                   @Named("s3.client.upload") S3Client storageClient,
                                    @Named("s3.uploads.bucket") String uploadsBucket,
                                    @Named("s3.trimmed.bucket") String clipsBucket,
+                                   @Named("s3.uploads.ttl") Duration timeToLive,
                                    S3Presigner presigner,
                                    DynamicCommandManager commandManager) {
         this.uploadsBucket = uploadsBucket;
@@ -56,6 +58,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         this.untrimmedClipsClient = storageClient;
         this.presigner = presigner;
         this.commandManager = commandManager;
+        this.timeToLive = timeToLive;
         remoteKeys = new HashMap<>();
     }
 
@@ -193,7 +196,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 .build();
 
         GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofHours(1))
+                .signatureDuration(timeToLive)
                 .getObjectRequest(basicRequest)
                 .build();
 
