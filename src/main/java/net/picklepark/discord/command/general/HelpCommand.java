@@ -5,16 +5,9 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommandRegistry;
-import org.checkerframework.checker.nullness.Opt;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 @UserInput("help")
 @Help(name = "help", message = "See this message again.")

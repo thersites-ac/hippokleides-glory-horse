@@ -9,6 +9,7 @@ import net.picklepark.discord.service.RecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ public class RecordingServiceImpl implements RecordingService {
     public final int clipDuration;
     public final int packetsPerClip;
 
+    @Inject
     public RecordingServiceImpl(@Named("recording.clip.duration") int clipDuration) {
         this.clipDuration = clipDuration;
         this.packetsPerClip = PACKETS_PER_SECOND * clipDuration;

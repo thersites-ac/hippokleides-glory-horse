@@ -2,8 +2,7 @@ package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.command.*;
-import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
-import org.junit.Assert;
+import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,7 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(null, new DynamicCommandManagerImpl());
+        registry = new DiscordCommandRegistry(null, new ClipManagerImpl());
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyDiscordActions();

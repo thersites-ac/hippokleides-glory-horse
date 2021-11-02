@@ -4,7 +4,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.service.DynamicCommandManager;
+import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +24,12 @@ public class DiscordCommandRegistry {
     private static final DiscordCommand NOOP = new NoopCommand();
 
     private final RemoteStorageService remoteStorageService;
-    private final DynamicCommandManager commandManager;
+    private final ClipManager commandManager;
     private char prefix;
     private final Map<String, DiscordCommand> handlers;
 
     @Inject
-    public DiscordCommandRegistry(RemoteStorageService remoteStorageService, DynamicCommandManager commandManager) {
+    public DiscordCommandRegistry(RemoteStorageService remoteStorageService, ClipManager commandManager) {
         handlers = new ConcurrentHashMap<>();
         this.remoteStorageService = remoteStorageService;
         this.commandManager = commandManager;
@@ -44,7 +44,6 @@ public class DiscordCommandRegistry {
         var message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
-            // FIXME: use the tail here
             DiscordCommand command = lookupAction(tail);
             actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), tail);
             executeInContext(command, actions);

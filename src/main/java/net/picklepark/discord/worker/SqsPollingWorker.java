@@ -2,10 +2,8 @@ package net.picklepark.discord.worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.ClipCommand;
 import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.service.DynamicCommandManager;
+import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.model.S3Event;
@@ -35,7 +33,7 @@ public class SqsPollingWorker extends Thread {
     private final ReceiveMessageRequest request;
 
     private final RemoteStorageService remoteStorageService;
-    private final DynamicCommandManager commandManager;
+    private final ClipManager commandManager;
 
     private final String url;
     private final long interval;
@@ -43,7 +41,7 @@ public class SqsPollingWorker extends Thread {
     @Inject
     public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
-                            DynamicCommandManager commandManager,
+                            ClipManager commandManager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.interval") long interval) {
         this.client = client;
@@ -105,12 +103,9 @@ public class SqsPollingWorker extends Thread {
         // in future, perhaps should confirm that the bucket name matches the expected bucket
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
-        // FIXME: as with the storage service, this logic should probably be in the commandManager itself
         try {
             LocalClip clip = remoteStorageService.download(objectKey);
-            // FIXME: ideally we'd notify the guild where the clip originated
-            DiscordCommand command = new ClipCommand(clip.getPath());
-            commandManager.put(clip.getTitle(), command);
+            commandManager.put(clip);
         } catch (IOException e) {
             logger.error("While downloading clip", e);
             // FIXME: ideally we'd notify of failure, too

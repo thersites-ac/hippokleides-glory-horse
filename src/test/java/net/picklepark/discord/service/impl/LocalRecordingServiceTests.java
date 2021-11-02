@@ -29,7 +29,7 @@ public class LocalRecordingServiceTests {
 
     @Before
     public void setup() {
-        localRecordingService = new RecordingServiceImpl(30);
+        localRecordingService = new RecordingServiceImpl(maxSecToStore);
         users = new ArrayList<>();
         data = new short[]{0};
         audio = new CombinedAudio(users, data);
@@ -58,7 +58,7 @@ public class LocalRecordingServiceTests {
     }
 
     @Test
-    public void storesAtMostOneMinAudioPerUser() throws NotRecordingException {
+    public void storesChosenAmountOfAudio() throws NotRecordingException {
         givenRecordingStarted();
         whenProvideExcessAudio();
         thenOnlyLastMinuteSaved();

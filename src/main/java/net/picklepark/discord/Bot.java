@@ -74,7 +74,6 @@ public class Bot extends ListenerAdapter {
                 WriteAudioCommand.class,
                 RamRanchCommand.class,
                 SyncClipsCommand.class,
-// FIXME: add this back after auth protection
 //                DeleteClipCommand.class,
                 ListCommandsCommand.class
         );

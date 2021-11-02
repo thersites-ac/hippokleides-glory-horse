@@ -1,9 +1,7 @@
 package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.ClipCommand;
 import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.service.DynamicCommandManager;
+import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
@@ -40,9 +38,10 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final S3Client untrimmedClipsClient;
     private final String uploadsBucket;
     private final String clipsBucket;
-    private final DynamicCommandManager commandManager;
+    private final ClipManager commandManager;
     private final Map<String, String> remoteKeys;
     private final Duration timeToLive;
+    private final String clipsDirectory;
 
     @Inject
     public AwsRemoteStorageService(@Named("s3.client.download") S3Client downloadClient,
@@ -50,8 +49,9 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                                    @Named("s3.uploads.bucket") String uploadsBucket,
                                    @Named("s3.trimmed.bucket") String clipsBucket,
                                    @Named("s3.uploads.ttl") Duration timeToLive,
+                                   @Named("clips.directory") String clipsDirectory,
                                    S3Presigner presigner,
-                                   DynamicCommandManager commandManager) {
+                                   ClipManager commandManager) {
         this.uploadsBucket = uploadsBucket;
         this.clipsBucket = clipsBucket;
         this.trimmedClipsClient = downloadClient;
@@ -59,6 +59,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         this.presigner = presigner;
         this.commandManager = commandManager;
         this.timeToLive = timeToLive;
+        this.clipsDirectory = clipsDirectory;
         remoteKeys = new HashMap<>();
     }
 
@@ -90,8 +91,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 .build();
 
         logger.info("Downloading {}", title);
-        // FIXME: parametrize this
-        String path = "clips/" + objectKey;
+        String path = localPathOf(objectKey);
         InputStream inputStream = trimmedClipsClient.getObject(request);
         Files.copy(inputStream, Path.of(path));
         return LocalClip.builder()
@@ -136,7 +136,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     private void deleteLocal(String filename) {
-        File localCopy = new File("clips/" + filename);
+        File localCopy = new File(localPathOf(filename));
         if (localCopy.exists())
             localCopy.delete();
     }
@@ -144,10 +144,8 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private void downloadAll(List<S3Object> contents) {
         for (S3Object object: contents) {
             try {
-                // FIXME: this logic should go in another class, probably the command manager class itself
                 LocalClip clip = syncOneFile(object.key());
-                DiscordCommand command = new ClipCommand(clip.getPath());
-                commandManager.put(clip.getTitle(), command);
+                commandManager.put(clip);
             } catch (ResourceNotFoundException | IOException e) {
                 logger.warn("Could not download {}", object.key());
             }
@@ -155,7 +153,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     private LocalClip syncOneFile(String key) throws ResourceNotFoundException, IOException {
-        File file = new File("clips/" + key);
+        File file = new File(localPathOf(key));
         if (!file.exists())
             return download(key);
         else
@@ -203,6 +201,10 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         PresignedGetObjectRequest output = presigner.presignGetObject(presignRequest);
 
         return output.url();
+    }
+
+    private String localPathOf(String objectKey) {
+        return clipsDirectory + "/" + objectKey;
     }
 
 }

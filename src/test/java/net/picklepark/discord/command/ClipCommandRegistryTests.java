@@ -5,7 +5,7 @@ import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Coordinates;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.RemoteStorageService;
-import net.picklepark.discord.service.impl.DynamicCommandManagerImpl;
+import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
-public class DiscordCommandRegistryTests {
+public class ClipCommandRegistryTests {
 
     private DiscordCommandRegistry registry;
     private SpyDiscordActions actions;
@@ -96,7 +96,7 @@ public class DiscordCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new TestRemoteStorageService(), new DynamicCommandManagerImpl());
+        registry = new DiscordCommandRegistry(new TestRemoteStorageService(), new ClipManagerImpl());
     }
 
     private void givenRegisterCommand() {

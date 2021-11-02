@@ -5,20 +5,20 @@ import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.service.DynamicCommandManager;
+import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
 @UserInput("delete (?<clip>.*)")
 @Help(name = "delete <clip>", message = "Delete a clip. WARNING: once you do this it's gone for good!")
-public class DeleteClipCommand implements DiscordCommand {
+public class DeleteDiscordCommand implements DiscordCommand {
 
-    private final DynamicCommandManager commandManager;
+    private final ClipManager commandManager;
     private final RemoteStorageService storageService;
 
     @Inject
-    public DeleteClipCommand(DynamicCommandManager commandManager, RemoteStorageService storageService) {
+    public DeleteDiscordCommand(ClipManager commandManager, RemoteStorageService storageService) {
         this.commandManager = commandManager;
         this.storageService = storageService;
     }

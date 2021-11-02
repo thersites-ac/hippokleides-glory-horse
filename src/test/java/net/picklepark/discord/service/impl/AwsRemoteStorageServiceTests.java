@@ -10,6 +10,6 @@ public class AwsRemoteStorageServiceTests {
 
     @Test
     public void canCreate() {
-        new AwsRemoteStorageService(null, null, null, null, null, null, null);
+        new AwsRemoteStorageService(null, null, null, null, null, null, null, null);
     }
 }
