@@ -10,12 +10,28 @@ repositories {
   }
 }
 
-dependencies {
-  annotationProcessor 'org.projectlombok:lombok:1.18.20'
+jar {
+  manifest {
+    attributes (
+      'Main-Class': 'net.picklepark.discord.Bot'
+    )
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+  }
+  archiveClassifier = 'uber'
 
+  from sourceSets.main.output
+
+  dependsOn configurations.runtimeClasspath
+  from {
+    configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+  }
+}
+
+dependencies {
   implementation 'net.dv8tion:JDA:4.3.0_285'
   implementation 'com.sedmelluq:lavaplayer:1.3.77'
   implementation 'org.jsoup:jsoup:1.14.1'
+  annotationProcessor 'org.projectlombok:lombok:1.18.20'
   compileOnly 'org.projectlombok:lombok:1.18.20'
 
 
