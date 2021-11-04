@@ -1,9 +1,7 @@
-gradlew
 .gradle
 build
 .idea
 gradlew.bat
-gradle
 /bot.iml
 out
 .project
@@ -14,3 +12,7 @@ recordings/
 clips
 .metals/
 .classpath
+/infra/terraform/.terraform.lock.hcl
+/infra/terraform/.terraform
+/infra/terraform/terraform.tfstate
+/infra/terraform/terraform.tfstate.backup

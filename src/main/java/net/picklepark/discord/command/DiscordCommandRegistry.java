@@ -41,7 +41,7 @@ public class DiscordCommandRegistry {
     }
 
     public void execute(DiscordActions actions) {
-        var message = actions.userInput();
+        String message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
             DiscordCommand command = lookupAction(tail);
@@ -78,7 +78,7 @@ public class DiscordCommandRegistry {
     }
 
     public void register(DiscordCommand... commands) {
-        for (var command : commands)
+        for (DiscordCommand command : commands)
             register(command);
     }
 

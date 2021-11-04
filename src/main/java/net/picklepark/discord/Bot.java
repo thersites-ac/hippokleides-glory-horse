@@ -98,9 +98,8 @@ public class Bot extends ListenerAdapter {
         return new JdaDiscordActions(event, context);
     }
 
-    @SafeVarargs
     private void registerAll(Class<? extends DiscordCommand>... commands) {
-        for (var command: commands) {
+        for (Class<? extends DiscordCommand> command: commands) {
             try {
                 registry.register(injector.getInstance(command));
                 registry.prefix('~');
