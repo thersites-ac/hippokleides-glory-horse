@@ -19,7 +19,7 @@ public class DiscontinuousAudioArray {
 
     public DiscontinuousAudioArray() {
         audio = new LinkedList<>();
-        maxInterval = 60000L;
+        maxInterval = 30000L;
     }
 
     public DiscontinuousAudioArray(long recordDuration) {
