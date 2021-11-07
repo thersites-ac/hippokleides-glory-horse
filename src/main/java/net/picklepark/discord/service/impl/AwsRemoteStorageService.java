@@ -147,7 +147,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 LocalClip clip = syncOneFile(object.key());
                 commandManager.put(clip);
             } catch (ResourceNotFoundException | IOException e) {
-                logger.warn("Could not download {}", object.key());
+                logger.error("While attempting to download " + object.key(), e);
             }
         }
     }
