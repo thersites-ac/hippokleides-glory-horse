@@ -5,6 +5,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 # To Do
 * important:
     * take it live
+        * almost done: need to shorten urls as they exceed discord message limits
     * hall of fame clips to avoid accidental deletion
     * delete authorization
 * other
