@@ -57,6 +57,7 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     S3Client uploadS3Client(AwsCredentialsProvider provider) {
         return S3Client.builder()
+                .region(Region.US_EAST_1)
                 .credentialsProvider(provider)
                 .build();
     }
