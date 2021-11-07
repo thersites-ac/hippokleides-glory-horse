@@ -7,6 +7,7 @@ resource "aws_instance" "bot" {
   instance_type = "t2.micro"
   user_data = "${file("user-data.sh")}"
   key_name = "hippokleides"
+  iam_instance_profile = "DiscordBot"
 }
 
 output "public_ip" {
