@@ -9,6 +9,7 @@ import net.picklepark.discord.service.impl.AwsRemoteStorageService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import net.picklepark.discord.service.impl.RecordingServiceImpl;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -30,7 +31,7 @@ public class ServicesModule extends AbstractModule {
     @Provides
     @Singleton
     AwsCredentialsProvider credentialsProvider() {
-       return ProfileCredentialsProvider.create();
+       return DefaultCredentialsProvider.create();
     }
 
     @Provides
