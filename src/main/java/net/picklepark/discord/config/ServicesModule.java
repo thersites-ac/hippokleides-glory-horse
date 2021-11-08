@@ -1,16 +1,19 @@
 package net.picklepark.discord.config;
 
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.RemoteStorageService;
+import net.picklepark.discord.service.UrlShortener;
 import net.picklepark.discord.service.impl.AwsRemoteStorageService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import net.picklepark.discord.service.impl.RecordingServiceImpl;
+import net.picklepark.discord.service.impl.BitlyUrlShortener;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -26,6 +29,7 @@ public class ServicesModule extends AbstractModule {
         bind(RemoteStorageService.class).to(AwsRemoteStorageService.class);
         bind(RecordingService.class).to(RecordingServiceImpl.class);
         bind(ClipManager.class).to(ClipManagerImpl.class);
+        bind(UrlShortener.class).to(BitlyUrlShortener.class);
     }
 
     @Provides
@@ -68,6 +72,12 @@ public class ServicesModule extends AbstractModule {
         return S3Presigner.builder()
                 .credentialsProvider(provider)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    HttpRequestFactory requestFactory() {
+        return new NetHttpTransport().createRequestFactory();
     }
 
 }

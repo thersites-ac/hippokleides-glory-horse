@@ -12,6 +12,7 @@ import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.Coordinates;
+import net.picklepark.discord.service.UrlShortener;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,15 @@ public class WriteAudioCommand implements DiscordCommand {
 
     private final RecordingService recordingService;
     private final RemoteStorageService remoteStorageService;
+    private final UrlShortener urlShortener;
 
     @Inject
-    public WriteAudioCommand(RecordingService recordingService, RemoteStorageService remoteStorageService) {
+    public WriteAudioCommand(RecordingService recordingService,
+                             RemoteStorageService remoteStorageService,
+                             UrlShortener urlShortener) {
         this.recordingService = recordingService;
         this.remoteStorageService = remoteStorageService;
+        this.urlShortener = urlShortener;
     }
 
     @Override
@@ -59,10 +64,13 @@ public class WriteAudioCommand implements DiscordCommand {
             actions.send("I'm not very turned on right now :(");
         } catch (NoSuchUserException e) {
             actions.send("I can't find the user " + e.getUser() + "!");
+        } catch (IOException e) {
+            actions.send("I can't give you a clean url for the recording right now");
+            logger.error("While shortening clip for " + actions.getArgument("username"), e);
         }
     }
 
-    private void sendCropLink(DiscordActions actions, URL location, String key) {
+    private void sendCropLink(DiscordActions actions, URL location, String key) throws IOException {
         String uriParam = Base64.getEncoder().encodeToString(location.toString().getBytes());
         String keyParam = Base64.getEncoder().encodeToString(key.getBytes());
         try {
@@ -70,7 +78,8 @@ public class WriteAudioCommand implements DiscordCommand {
                     .addParameter("uri", uriParam)
                     .addParameter("key", keyParam)
                     .build();
-            actions.send("OK, now go to " + cropLink.toString() + " to trim it.");
+            String bitlyLink = urlShortener.shorten(cropLink.toString());
+            actions.send("OK, now go to " + bitlyLink+ " to trim it.");
         } catch (URISyntaxException e) {
             actions.send("I did something incomprehensible, sorry");
             e.printStackTrace();

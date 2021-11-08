@@ -50,4 +50,22 @@ public class ServiceConstantsModule extends AbstractModule {
         return "clips";
     }
 
+    @Provides
+    @Named("shortener.group.guid")
+    String groupGuid() {
+        return "Blb7g34TKlu";
+    }
+
+    @Provides
+    @Named("shortener.auth.token")
+    String shortenerAuthToken() {
+        return System.getProperty("shortener.auth.token");
+    }
+
+    @Provides
+    @Named("shortener.endpoint")
+    String shortenerEndpoint() {
+        return "https://api-ssl.bitly.com/v4/shorten";
+    }
+
 }
