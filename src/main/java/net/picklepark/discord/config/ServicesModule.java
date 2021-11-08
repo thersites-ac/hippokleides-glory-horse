@@ -70,6 +70,7 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     S3Presigner presigner(AwsCredentialsProvider provider) {
         return S3Presigner.builder()
+                .region(Region.US_EAST_1)
                 .credentialsProvider(provider)
                 .build();
     }
