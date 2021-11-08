@@ -94,6 +94,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         String path = localPathOf(objectKey);
         InputStream inputStream = trimmedClipsClient.getObject(request);
         Files.copy(inputStream, Path.of(path));
+        inputStream.close();
         return LocalClip.builder()
                 .path(path)
                 .title(title)

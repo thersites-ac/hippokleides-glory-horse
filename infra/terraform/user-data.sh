@@ -8,4 +8,5 @@ mkdir recordings
 ./gradlew jar
 # need to configure credentials/role
 export TOKEN=`aws secretsmanager get-secret-value --secret-id token --region us-east-2 --query SecretString --output text`
-java -jar -Dtoken=$TOKEN build/libs/pathfinder-bot-uber.jar
+export BITLY_TOKEN=`aws secretsmanager get-secret-value --secret-id bitly_secret --region us-east-2 --query SecretString --output text`
+java -jar -Dtoken=$TOKEN -Dshortener.auth.token=$BITLY_TOKEN build/libs/pathfinder-bot-uber.jar
