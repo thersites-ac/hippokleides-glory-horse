@@ -27,11 +27,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.Date;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @UserInput("clip (?<username>.+)")
 @Help(name = "clip <username>", message = "Clip a user from the voice channel. Make sure to run ~record first.")
@@ -74,12 +70,10 @@ public class WriteAudioCommand implements DiscordCommand {
     }
 
     private void sendCropLink(DiscordActions actions, URL location, String key) throws IOException {
-        String uriParam = URLEncoder.encode(location.toString(), UTF_8);
-        String keyParam = URLEncoder.encode(key, UTF_8);
         try {
             URI cropLink = new URIBuilder(BASE_URL)
-                    .addParameter("uri", uriParam)
-                    .addParameter("key", keyParam)
+                    .addParameter("uri", location.toString())
+                    .addParameter("key", key)
                     .build();
             String bitlyLink = urlShortener.shorten(cropLink.toString());
             actions.send("OK, now go to " + bitlyLink+ " to trim it.");
