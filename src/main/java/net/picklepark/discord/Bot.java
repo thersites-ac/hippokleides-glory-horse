@@ -20,12 +20,15 @@ import net.picklepark.discord.command.general.HelpCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
+import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGES;
@@ -57,7 +60,7 @@ public class Bot extends ListenerAdapter {
 
         injector = Guice.createInjector(new DefaultModule());
         registry = injector.getInstance(DiscordCommandRegistry.class);
-        registerAll(
+        register(Arrays.asList(
                 HelpCommand.class,
                 FeatCommand.class,
                 SpellCommand.class,
@@ -76,7 +79,8 @@ public class Bot extends ListenerAdapter {
                 SyncClipsCommand.class,
 //                DeleteClipCommand.class,
                 ListCommandsCommand.class
-        );
+        ));
+        injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();
     }
@@ -98,7 +102,7 @@ public class Bot extends ListenerAdapter {
         return new JdaDiscordActions(event, context);
     }
 
-    private void registerAll(Class<? extends DiscordCommand>... commands) {
+    private void register(List<Class<? extends DiscordCommand>> commands) {
         for (Class<? extends DiscordCommand> command: commands) {
             try {
                 registry.register(injector.getInstance(command));
