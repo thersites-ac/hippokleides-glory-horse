@@ -18,49 +18,27 @@ public class FeatCommand implements DiscordCommand {
 
     private final LegacyPrdEmbedder legacyPrdEmbedder;
 
-    private MessageEmbed foundFeat;
-
     @Inject
     public FeatCommand(LegacyPrdEmbedder embedder) {
         this.legacyPrdEmbedder = embedder;
-        foundFeat = null;
     }
 
     @Override
     public void execute(DiscordActions actions) {
         String feat = actions.getArgument("feat");
-        tryCoreFeat(feat);
-        if (foundFeat == null)
-            tryAdvancedPlayerFeat(feat);
-        if (foundFeat == null)
-            tryAdvancedClassFeat(feat);
-        if (foundFeat == null)
-            actions.send("Sorry, I couldn't find that feat");
-        else
-            actions.send(foundFeat);
-    }
-
-    private void tryAdvancedClassFeat(String feat) {
         try {
-            foundFeat = legacyPrdEmbedder.embedAdvancedClassFeat(feat);
+            MessageEmbed foundFeat = legacyPrdEmbedder.embedCoreFeat(feat);
+            if (foundFeat == null)
+                foundFeat = legacyPrdEmbedder.embedAdvancedPlayerFeat(feat);
+            if (foundFeat == null)
+                foundFeat = legacyPrdEmbedder.embedAdvancedClassFeat(feat);
+            if (foundFeat == null)
+                actions.send("Sorry, I couldn't find that feat");
+            else
+                actions.send(foundFeat);
         } catch (Exception e) {
-            logger.warn(e.getMessage());
+            logger.warn("While looking up feat + " + feat, e);
         }
     }
 
-    private void tryAdvancedPlayerFeat(String feat) {
-        try {
-            foundFeat = legacyPrdEmbedder.embedAdvancedPlayerFeat(feat);
-        } catch (Exception e) {
-            logger.warn(e.getMessage());
-        }
-    }
-
-    private void tryCoreFeat(String feat) {
-        try {
-            foundFeat = legacyPrdEmbedder.embedCoreFeat(feat);
-        } catch (Exception e) {
-            logger.warn(e.getMessage());
-        }
-    }
 }

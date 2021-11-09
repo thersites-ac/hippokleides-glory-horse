@@ -20,3 +20,4 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * handle error when user tries to delete a nonexistent clip
     * handle invalid command names (in UI, lambda, and bot)
     * the command title is an injection attack risk; fix that
+    * bug: sync doesn't respect deletion/name changes
