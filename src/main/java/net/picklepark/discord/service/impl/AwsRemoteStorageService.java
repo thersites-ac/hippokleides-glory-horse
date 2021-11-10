@@ -38,7 +38,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final S3Client untrimmedClipsClient;
     private final String uploadsBucket;
     private final String clipsBucket;
-    private final ClipManager commandManager;
+    private final ClipManager clipManager;
     private final Map<String, String> remoteKeys;
     private final Duration timeToLive;
     private final String clipsDirectory;
@@ -51,13 +51,13 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                                    @Named("s3.uploads.ttl") Duration timeToLive,
                                    @Named("clips.directory") String clipsDirectory,
                                    S3Presigner presigner,
-                                   ClipManager commandManager) {
+                                   ClipManager clipManager) {
         this.uploadsBucket = uploadsBucket;
         this.clipsBucket = clipsBucket;
         this.trimmedClipsClient = downloadClient;
         this.untrimmedClipsClient = storageClient;
         this.presigner = presigner;
-        this.commandManager = commandManager;
+        this.clipManager = clipManager;
         this.timeToLive = timeToLive;
         this.clipsDirectory = clipsDirectory;
         remoteKeys = new HashMap<>();
@@ -117,6 +117,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
 
     @Override
     public void sync() {
+        clipManager.clear();
         ListObjectsRequest request = ListObjectsRequest.builder()
                 .bucket(clipsBucket)
                 .build();
@@ -146,7 +147,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         for (S3Object object: contents) {
             try {
                 LocalClip clip = syncOneFile(object.key());
-                commandManager.put(clip);
+                clipManager.put(clip);
             } catch (ResourceNotFoundException | IOException e) {
                 logger.error("While attempting to download " + object.key(), e);
             }

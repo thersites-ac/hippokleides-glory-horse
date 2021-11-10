@@ -7,7 +7,6 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * hall of fame clips to avoid accidental deletion
     * delete authorization
 * other
-    * remove the awkward error handling in the commands
     * add some degree of fuzzy id matching or in-text search
     * authorization annotations
     * Lambda should assign a new id to each generated clip to avoid collision
@@ -18,10 +17,10 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * handle error when user tries to delete a nonexistent clip
     * handle invalid command names (in UI, lambda, and bot)
     * the command title is an injection attack risk; fix that
-    * bug: sync doesn't respect deletion/name changes
     * user nickname collision when recording/clipping
     * audio backtrack
     * audio multichannel (to layer clips over playlist)
     * fix the volume controls
     * stop recording after disconnect
     * stop recording command in general
+    * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error

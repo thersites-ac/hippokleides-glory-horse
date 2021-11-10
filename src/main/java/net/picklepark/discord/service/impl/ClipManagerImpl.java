@@ -39,4 +39,9 @@ public class ClipManagerImpl implements ClipManager {
     public void delete(String clip) {
         localStore.remove(clip);
     }
+
+    @Override
+    public void clear() {
+        localStore.clear();
+    }
 }

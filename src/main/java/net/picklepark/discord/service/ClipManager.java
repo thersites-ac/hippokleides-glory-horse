@@ -10,4 +10,5 @@ public interface ClipManager {
     void put(LocalClip clip);
     Collection<String> getAllCommandNames();
     void delete(String clip);
+    void clear();
 }
