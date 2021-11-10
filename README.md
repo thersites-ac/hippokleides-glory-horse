@@ -23,3 +23,5 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * audio backtrack
     * audio multichannel (to layer clips over playlist)
     * fix the volume controls
+    * stop recording after disconnect
+    * stop recording command in general
