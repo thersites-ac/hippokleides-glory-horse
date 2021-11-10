@@ -6,6 +6,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.Messages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
@@ -30,7 +31,7 @@ import java.net.URL;
 import java.util.Date;
 
 @UserInput("clip (?<username>.+)")
-@Help(name = "clip <username>", message = "Clip a user from the voice channel. Make sure to run ~record first.")
+@Help(name = "clip <username>", message = Messages.WRITE_AUDIO)
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";
