@@ -4,8 +4,6 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 
 # To Do
 * important:
-    * take it live
-        * almost done: need to shorten urls as they exceed discord message limits
     * hall of fame clips to avoid accidental deletion
     * delete authorization
 * other
@@ -21,3 +19,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * handle invalid command names (in UI, lambda, and bot)
     * the command title is an injection attack risk; fix that
     * bug: sync doesn't respect deletion/name changes
+    * user nickname collision when recording/clipping
+    * audio backtrack
+    * audio multichannel (to layer clips over playlist)
+    * fix the volume controls
