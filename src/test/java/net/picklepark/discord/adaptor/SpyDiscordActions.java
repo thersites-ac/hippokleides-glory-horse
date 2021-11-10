@@ -5,16 +5,19 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.exception.NoSuchUserException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SpyDiscordActions implements DiscordActions {
 
     private List<String> sentMessages;
+    private List<MessageEmbed> sentEmbeds;
     private String userInput;
+    private Map<String, String> args;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();
+        sentEmbeds = new ArrayList<>();
+        args = new HashMap<>();
     }
 
     @Override
@@ -23,6 +26,7 @@ public class SpyDiscordActions implements DiscordActions {
     }
     @Override
     public void send(MessageEmbed embed) {
+        sentEmbeds.add(embed);
     }
     @Override
     public void setReceivingHandler(AudioReceiveHandler handler) {
@@ -40,7 +44,7 @@ public class SpyDiscordActions implements DiscordActions {
     }
     @Override
     public String getArgument(String arg) {
-        return null;
+        return args.get(arg);
     }
     @Override
     public void setVolume(int volume) {
@@ -73,7 +77,15 @@ public class SpyDiscordActions implements DiscordActions {
         return sentMessages;
     }
 
+    public List<MessageEmbed> getSentEmbeds() {
+        return sentEmbeds;
+    }
+
     public void setUserInput(String userInput) {
         this.userInput = userInput;
+    }
+
+    public void setArg(String key, String value) {
+        args.put(key, value);
     }
 }

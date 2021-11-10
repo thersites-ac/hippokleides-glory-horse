@@ -5,7 +5,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
+import net.picklepark.discord.service.PathfinderEmbedder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,22 +16,22 @@ import javax.inject.Inject;
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 
-    private final LegacyPrdEmbedder legacyPrdEmbedder;
+    private final PathfinderEmbedder embedder;
 
     @Inject
-    public FeatCommand(LegacyPrdEmbedder embedder) {
-        this.legacyPrdEmbedder = embedder;
+    public FeatCommand(PathfinderEmbedder embedder) {
+        this.embedder = embedder;
     }
 
     @Override
     public void execute(DiscordActions actions) {
         String feat = actions.getArgument("feat");
         try {
-            MessageEmbed foundFeat = legacyPrdEmbedder.embedCoreFeat(feat);
+            MessageEmbed foundFeat = embedder.embedCoreFeat(feat);
             if (foundFeat == null)
-                foundFeat = legacyPrdEmbedder.embedAdvancedPlayerFeat(feat);
+                foundFeat = embedder.embedAdvancedPlayerFeat(feat);
             if (foundFeat == null)
-                foundFeat = legacyPrdEmbedder.embedAdvancedClassFeat(feat);
+                foundFeat = embedder.embedAdvancedClassFeat(feat);
             if (foundFeat == null)
                 actions.send("Sorry, I couldn't find that feat");
             else
