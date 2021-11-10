@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.audio.util.AudioContext;
-import net.picklepark.discord.command.audio.util.GuildPlayer;
+import net.picklepark.discord.audio.AudioContext;
+import net.picklepark.discord.audio.GuildPlayer;
 import net.picklepark.discord.exception.NoSuchUserException;
 
 import java.util.List;

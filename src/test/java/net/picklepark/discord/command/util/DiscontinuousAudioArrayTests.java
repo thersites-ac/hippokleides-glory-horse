@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.util;
 
-import net.picklepark.discord.command.audio.util.DiscontinuousAudioArray;
+import net.picklepark.discord.audio.DiscontinuousAudioArray;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -3,7 +3,7 @@ package net.picklepark.discord.service.impl;
 import net.dv8tion.jda.api.audio.CombinedAudio;
 import net.dv8tion.jda.api.audio.UserAudio;
 import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.command.audio.util.DiscontinuousAudioArray;
+import net.picklepark.discord.audio.DiscontinuousAudioArray;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 import org.slf4j.Logger;

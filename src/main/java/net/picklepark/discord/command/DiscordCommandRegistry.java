@@ -5,7 +5,6 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.ClipManager;
-import net.picklepark.discord.service.RemoteStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +22,13 @@ public class DiscordCommandRegistry {
 
     private static final DiscordCommand NOOP = new NoopCommand();
 
-    private final RemoteStorageService remoteStorageService;
     private final ClipManager commandManager;
     private char prefix;
     private final Map<String, DiscordCommand> handlers;
 
     @Inject
-    public DiscordCommandRegistry(RemoteStorageService remoteStorageService, ClipManager commandManager) {
+    public DiscordCommandRegistry(ClipManager commandManager) {
         handlers = new ConcurrentHashMap<>();
-        this.remoteStorageService = remoteStorageService;
         this.commandManager = commandManager;
     }
 

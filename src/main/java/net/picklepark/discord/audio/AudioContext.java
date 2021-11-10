@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.audio.util;
+package net.picklepark.discord.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.dv8tion.jda.api.entities.TextChannel;

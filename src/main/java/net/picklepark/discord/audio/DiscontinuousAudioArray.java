@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.audio.util;
+package net.picklepark.discord.audio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

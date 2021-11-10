@@ -1,19 +1,12 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.model.Coordinates;
-import net.picklepark.discord.model.LocalClip;
-import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import static org.junit.Assert.*;
@@ -49,28 +42,28 @@ public class ClipCommandRegistryTests {
     }
 
     @Test
-    public void usersUserInputAnnotation() throws Exception {
+    public void usersUserInputAnnotation() {
         givenRegistryWithPrefixAndCommand(testCommand);
         whenReceiveMessage("test");
         thenExecutedCommand(testCommand);
     }
 
     @Test
-    public void usesSuccessMessage() throws Exception {
+    public void usesSuccessMessage() {
         givenRegistryWithPrefixAndCommand(testCommand);
         whenReceiveMessage("test");
         thenSuccessMessageWasSent();
     }
 
     @Test
-    public void succeedsSilentlyIfNoSuccessAnnotationPresent() throws Exception {
+    public void succeedsSilentlyIfNoSuccessAnnotationPresent() {
         givenRegistryWithPrefixAndCommand(silentCommand);
         whenReceiveMessage("silent");
         thenNoMessageWasSent();
     }
 
     @Test
-    public void canRegisterAndExecuteSeveralCommands() throws Exception {
+    public void canRegisterAndExecuteSeveralCommands() {
         givenRegisterMultiple();
         whenReceiveMessages();
         thenBothWereReceived();
@@ -96,7 +89,7 @@ public class ClipCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new TestRemoteStorageService(), new ClipManagerImpl());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl());
     }
 
     private void givenRegisterCommand() {
@@ -111,12 +104,12 @@ public class ClipCommandRegistryTests {
         registeredCommands = registry.getCommands();
     }
 
-    private void whenReceiveMessages() throws Exception {
+    private void whenReceiveMessages() {
         whenReceiveMessage("test");
         whenReceiveMessage("another test");
     }
 
-    private void whenReceiveMessage(String message) throws Exception {
+    private void whenReceiveMessage(String message) {
         actions.setUserInput("~" + message);
         registry.execute(actions);
     }
@@ -149,26 +142,6 @@ public class ClipCommandRegistryTests {
         assertEquals(2, actions.getSentMessage().size());
         assertEquals("OK", actions.getSentMessage().get(0));
         assertEquals("OK again", actions.getSentMessage().get(1));
-    }
-
-    private class TestRemoteStorageService implements RemoteStorageService {
-        @Override
-        public Coordinates store(File file) throws MalformedURLException {
-            return null;
-        }
-
-        @Override
-        public LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException {
-            return null;
-        }
-
-        @Override
-        public void sync() {
-        }
-
-        @Override
-        public void delete(String key) {
-        }
     }
 
 }
