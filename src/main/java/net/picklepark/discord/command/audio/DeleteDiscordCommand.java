@@ -1,6 +1,7 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 
 @UserInput("delete (?<clip>.*)")
 @Help(name = "delete <clip>", message = "Delete a clip. WARNING: once you do this it's gone for good!")
+@Auth(Auth.Level.OWNER)
 public class DeleteDiscordCommand implements DiscordCommand {
 
     private final ClipManager commandManager;

@@ -3,6 +3,7 @@ package net.picklepark.discord.command.audio;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
@@ -32,6 +33,7 @@ import java.util.Date;
 
 @UserInput("clip (?<username>.+)")
 @Help(name = "clip <username>", message = Messages.WRITE_AUDIO)
+@Auth(Auth.Level.ADMIN)
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";

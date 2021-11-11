@@ -1,12 +1,14 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 
 @UserInput("volume (?<volume>.+)")
 @Help(name = "volume <n>", message = "Set the volume.")
+@Auth(Auth.Level.ADMIN)
 public class ChangeVolumeAudioCommand implements DiscordCommand {
 
     @Override

@@ -1,9 +1,11 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.UserInput;
 
 @UserInput(".*")
+@Auth(Auth.Level.ADMIN)
 public class ClipCommand implements net.picklepark.discord.command.DiscordCommand {
 
     private final String path;

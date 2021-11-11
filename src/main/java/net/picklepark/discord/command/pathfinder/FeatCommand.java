@@ -2,6 +2,7 @@ package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 @UserInput("feat (?<feat>.+)")
 @Help(name = "feat <feat name>", message = "Look up a feat from legacy.aonprd.com.")
+@Auth(Auth.Level.ANY)
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 

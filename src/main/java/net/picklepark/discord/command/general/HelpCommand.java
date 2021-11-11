@@ -1,5 +1,6 @@
 package net.picklepark.discord.command.general;
 
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
@@ -11,6 +12,7 @@ import java.util.Collection;
 
 @UserInput("help")
 @Help(name = "help", message = "See this message again.")
+@Auth(Auth.Level.ANY)
 public class HelpCommand implements DiscordCommand {
 
 //    private static final String INSTRUCTIONS = "Commands: ~queue [url], ~skip, ~volume (to get current), ~volume [n] (to set)," +
