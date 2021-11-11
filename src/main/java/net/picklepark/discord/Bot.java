@@ -17,6 +17,7 @@ import net.picklepark.discord.command.audio.*;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
 import net.picklepark.discord.command.general.HelpCommand;
+import net.picklepark.discord.command.general.MakeAdminCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
@@ -77,8 +78,9 @@ public class Bot extends ListenerAdapter {
                 WriteAudioCommand.class,
                 RamRanchCommand.class,
                 SyncClipsCommand.class,
-//                DeleteClipCommand.class,
-                ListCommandsCommand.class
+                DeleteClipCommand.class,
+                ListCommandsCommand.class,
+                MakeAdminCommand.class
         ));
         injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);

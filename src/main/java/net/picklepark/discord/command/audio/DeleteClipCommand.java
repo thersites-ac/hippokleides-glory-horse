@@ -14,13 +14,13 @@ import javax.inject.Inject;
 @UserInput("delete (?<clip>.*)")
 @Help(name = "delete <clip>", message = "Delete a clip. WARNING: once you do this it's gone for good!")
 @Auth(Auth.Level.OWNER)
-public class DeleteDiscordCommand implements DiscordCommand {
+public class DeleteClipCommand implements DiscordCommand {
 
     private final ClipManager commandManager;
     private final RemoteStorageService storageService;
 
     @Inject
-    public DeleteDiscordCommand(ClipManager commandManager, RemoteStorageService storageService) {
+    public DeleteClipCommand(ClipManager commandManager, RemoteStorageService storageService) {
         this.commandManager = commandManager;
         this.storageService = storageService;
     }

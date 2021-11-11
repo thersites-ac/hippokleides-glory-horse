@@ -23,7 +23,7 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), null);
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyDiscordActions();

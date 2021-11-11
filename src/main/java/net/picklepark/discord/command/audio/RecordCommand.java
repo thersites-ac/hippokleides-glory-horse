@@ -5,14 +5,14 @@ import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.Messages;
+import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.handler.DemultiplexingHandler;
 import net.picklepark.discord.service.RecordingService;
 
 import javax.inject.Inject;
 
 @UserInput("record")
-@Help(name = "record", message = Messages.RECORD)
+@Help(name = "record", message = HelpMessages.RECORD)
 @Auth(Auth.Level.ADMIN)
 public class RecordCommand implements DiscordCommand {
 

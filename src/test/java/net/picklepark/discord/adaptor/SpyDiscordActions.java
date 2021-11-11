@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.service.ClipManager;
 
 import java.util.*;
 
@@ -13,11 +14,16 @@ public class SpyDiscordActions implements DiscordActions {
     private final List<MessageEmbed> sentEmbeds;
     private String userInput;
     private final Map<String, String> args;
+    private long owner;
+    private long author;
+    private String guildName;
+    private final HashMap<String, Long> members;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();
         sentEmbeds = new ArrayList<>();
         args = new HashMap<>();
+        members = new HashMap<>();
     }
 
     @Override
@@ -34,9 +40,19 @@ public class SpyDiscordActions implements DiscordActions {
     @Override
     public void connect() {
     }
+
+    @Override
+    public User getAuthor() {
+        return User.fromId(author);
+    }
+
     @Override
     public User lookupUser(String user) throws NoSuchUserException {
-        return null;
+        Long userId = members.get(user);
+        if (userId == null)
+            throw new NoSuchUserException(user);
+        else
+            return User.fromId(userId);
     }
     @Override
     public String userInput() {
@@ -73,6 +89,16 @@ public class SpyDiscordActions implements DiscordActions {
     public void initMatches(String regex, String message) {
     }
 
+    @Override
+    public String getGuildName() {
+        return guildName;
+    }
+
+    @Override
+    public User getOwner() {
+        return User.fromId(owner);
+    }
+
     public List<String> getSentMessage() {
         return sentMessages;
     }
@@ -87,5 +113,21 @@ public class SpyDiscordActions implements DiscordActions {
 
     public void setArg(String key, String value) {
         args.put(key, value);
+    }
+
+    public void setGuildOwner(long i) {
+        owner = i;
+    }
+
+    public void setAuthor(long i) {
+        author = i;
+    }
+
+    public void setGuildName(String guildName) {
+        this.guildName = guildName;
+    }
+
+    public void addGuildMember(String user, long id) {
+        members.put(user, id);
     }
 }

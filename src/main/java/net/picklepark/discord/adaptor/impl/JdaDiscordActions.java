@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
+import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NoSuchUserException;
 
 import java.util.List;
@@ -51,6 +52,11 @@ public class JdaDiscordActions implements DiscordActions {
     public void connect() {
         if (!event.getGuild().getAudioManager().isConnected())
             event.getGuild().getAudioManager().openAudioConnection(event.getGuild().getVoiceChannels().get(0));
+    }
+
+    @Override
+    public User getAuthor() {
+        return event.getAuthor();
     }
 
     @Override
@@ -116,6 +122,20 @@ public class JdaDiscordActions implements DiscordActions {
         matcher = Pattern.compile(regex).matcher(message);
         if (!matcher.matches())
             throw new RuntimeException("Pattern " + regex + " does not match" + message);
+    }
+
+    @Override
+    public String getGuildName() {
+        return event.getGuild().getName();
+    }
+
+    @Override
+    public User getOwner() throws NoOwnerException {
+        Member owner = event.getGuild().getOwner();
+        if (owner == null)
+            throw new NoOwnerException(event.getGuild().getName());
+        else
+            return owner.getUser();
     }
 
     @Override

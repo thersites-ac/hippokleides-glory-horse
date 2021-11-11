@@ -3,6 +3,7 @@ package net.picklepark.discord.adaptor;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NoSuchUserException;
 
 public interface DiscordActions {
@@ -10,6 +11,7 @@ public interface DiscordActions {
     void send(MessageEmbed embed);
     void setReceivingHandler(AudioReceiveHandler handler);
     void connect();
+    User getAuthor();
     User lookupUser(String user) throws NoSuchUserException;
     String userInput();
     String getArgument(String arg);
@@ -21,4 +23,6 @@ public interface DiscordActions {
     void skip();
     void queue(String uri);
     void initMatches(String regex, String message);
+    String getGuildName();
+    User getOwner() throws NoOwnerException;
 }

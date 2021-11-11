@@ -1,9 +1,11 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
 import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.service.AuthService;
 import net.picklepark.discord.service.ClipManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +27,13 @@ public class DiscordCommandRegistry {
     private final ClipManager commandManager;
     private char prefix;
     private final Map<String, DiscordCommand> handlers;
+    private final AuthService authService;
 
     @Inject
-    public DiscordCommandRegistry(ClipManager commandManager) {
+    public DiscordCommandRegistry(ClipManager commandManager, AuthService authService) {
         handlers = new ConcurrentHashMap<>();
         this.commandManager = commandManager;
+        this.authService = authService;
     }
 
     private Optional<DiscordCommand> getDynamic(String s) {
@@ -42,8 +46,17 @@ public class DiscordCommandRegistry {
         if (hasPrefix(message)) {
             String tail = message.substring(1);
             DiscordCommand command = lookupAction(tail);
-            actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), tail);
+            executeAuthorized(command, actions, tail);
+        }
+    }
+
+    private void executeAuthorized(DiscordCommand command, DiscordActions actions, String messageContent) {
+        Auth.Level level = command.getClass().getAnnotation(Auth.class).value();
+        if (authService.isActionAuthorized(actions, level)) {
+            actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), messageContent);
             executeInContext(command, actions);
+        } else {
+            actions.send("Lol no fucking way");
         }
     }
 

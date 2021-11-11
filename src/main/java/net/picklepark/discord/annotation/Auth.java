@@ -9,7 +9,7 @@ public @interface Auth {
 
     enum Level {
         ANY,
-        OWNER,
-        ADMIN
+        ADMIN,
+        OWNER
     }
 }

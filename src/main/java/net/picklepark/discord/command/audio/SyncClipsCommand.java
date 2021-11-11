@@ -5,14 +5,14 @@ import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.Messages;
+import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
 @UserInput("sync")
-@Help(name = "sync", message = Messages.SYNC)
+@Help(name = "sync", message = HelpMessages.SYNC)
 @Auth(Auth.Level.ADMIN)
 public class SyncClipsCommand implements DiscordCommand {
 

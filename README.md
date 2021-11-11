@@ -4,6 +4,7 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
 
 # To Do
 * important:
+    * persist auth
     * hall of fame clips to avoid accidental deletion
     * delete authorization
 * other
@@ -26,3 +27,5 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)
     * the logic in the ~feat command is now wrong
+    * remove admins
+    * better auth groups

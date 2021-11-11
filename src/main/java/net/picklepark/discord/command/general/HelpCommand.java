@@ -15,8 +15,6 @@ import java.util.Collection;
 @Auth(Auth.Level.ANY)
 public class HelpCommand implements DiscordCommand {
 
-//    private static final String INSTRUCTIONS = "Commands: ~queue [url], ~skip, ~volume (to get current), ~volume [n] (to set)," +
-//            " ~louder, ~softer, ~pause, ~unpause, ~gtfo, ~feat [feat name], ~spell [spell name], ~help";
     private static final String HINT = "Also, when I find a feat or spell, click the citation at top (e.g. Core Rulebook, " +
             "Advanced Player's Guide, etc.) to go to the site.";
 

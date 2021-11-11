@@ -7,7 +7,7 @@ import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.Messages;
+import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.NotRecordingException;
@@ -32,7 +32,7 @@ import java.net.URL;
 import java.util.Date;
 
 @UserInput("clip (?<username>.+)")
-@Help(name = "clip <username>", message = Messages.WRITE_AUDIO)
+@Help(name = "clip <username>", message = HelpMessages.WRITE_AUDIO)
 @Auth(Auth.Level.ADMIN)
 public class WriteAudioCommand implements DiscordCommand {
 
