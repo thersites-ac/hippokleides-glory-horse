@@ -26,3 +26,4 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)
+    * the logic in the ~feat command is now wrong

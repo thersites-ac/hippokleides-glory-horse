@@ -2,7 +2,6 @@ package net.picklepark.discord.worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.LocalClip;
@@ -19,8 +18,6 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @Singleton
@@ -94,19 +91,19 @@ public class SqsPollingWorker extends Thread {
                     .build();
             client.deleteMessage(delete);
             logger.info("Deleted {}", message.receiptHandle());
-        } catch (JsonProcessingException | URISyntaxException | ResourceNotFoundException e) {
+        } catch (JsonProcessingException e) {
             logger.error("While processing message", e);
         }
     }
 
-    private void process(S3Event event) throws URISyntaxException, ResourceNotFoundException {
+    private void process(S3Event event) {
         // in future, perhaps should confirm that the bucket name matches the expected bucket
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         try {
             LocalClip clip = remoteStorageService.download(objectKey);
             commandManager.put(clip);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("While downloading clip", e);
             // FIXME: ideally we'd notify of failure, too
         }

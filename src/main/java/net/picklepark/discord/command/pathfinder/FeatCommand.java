@@ -5,11 +5,13 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.Help;
 import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.PathfinderEmbedder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 @UserInput("feat (?<feat>.+)")
 @Help(name = "feat <feat name>", message = "Look up a feat from legacy.aonprd.com.")
@@ -27,18 +29,42 @@ public class FeatCommand implements DiscordCommand {
     public void execute(DiscordActions actions) {
         String feat = actions.getArgument("feat");
         try {
-            MessageEmbed foundFeat = embedder.embedCoreFeat(feat);
+            MessageEmbed foundFeat = coreFeatOrNull(feat);
             if (foundFeat == null)
-                foundFeat = embedder.embedAdvancedPlayerFeat(feat);
+                foundFeat = advancePlayerFeatOrNull(feat);
             if (foundFeat == null)
-                foundFeat = embedder.embedAdvancedClassFeat(feat);
+                foundFeat = advancedClassFeatOrNull(feat);
             if (foundFeat == null)
                 actions.send("Sorry, I couldn't find that feat");
             else
                 actions.send(foundFeat);
-        } catch (Exception e) {
-            logger.warn("While looking up feat + " + feat, e);
+        } catch (IOException e) {
+            logger.error("While looking up feat " + feat, e);
+            actions.send("Having trouble with my interwebs");
         }
     }
 
+    private MessageEmbed advancedClassFeatOrNull(String feat) throws IOException {
+        try {
+            return embedder.embedAdvancedClassFeat(feat);
+        } catch (ResourceNotFoundException e) {
+            return null;
+        }
+    }
+
+    private MessageEmbed advancePlayerFeatOrNull(String feat) throws IOException {
+        try {
+            return embedder.embedAdvancedPlayerFeat(feat);
+        } catch (ResourceNotFoundException e) {
+            return null;
+        }
+    }
+
+    private MessageEmbed coreFeatOrNull(String feat) throws IOException {
+        try {
+            return embedder.embedCoreFeat(feat);
+        } catch (ResourceNotFoundException e) {
+            return null;
+        }
+    }
 }
