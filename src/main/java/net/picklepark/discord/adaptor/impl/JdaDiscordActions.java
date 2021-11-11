@@ -62,10 +62,9 @@ public class JdaDiscordActions implements DiscordActions {
     @Override
     public User lookupUser(String user) throws NoSuchUserException {
         List<Member> users = event.getChannel().getGuild().getMembersByNickname(user, true);
-        if (users.isEmpty()) {
-            event.getChannel().sendMessage("No one is named " + user).queue();
+        if (users.isEmpty())
             throw new NoSuchUserException(user);
-        } else if (users.size() > 1) {
+        else if (users.size() > 1) {
             event.getChannel().sendMessage("Too many damn users named " + user).queue();
             throw new NoSuchUserException(user);
         } else

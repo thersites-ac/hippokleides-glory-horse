@@ -29,3 +29,5 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * the logic in the ~feat command is now wrong
     * remove admins
     * better auth groups
+    * `JdaDiscordActions` shouldn't be sending messages
+    * `lookupUser` should throw different exceptions for no user vs. ambiguous user

@@ -35,6 +35,7 @@ public class MakeAdminCommand implements DiscordCommand {
         try {
             long userId = actions.lookupUser(username).getIdLong();
             authService.addAdmin(guildName, userId);
+            actions.send("Welcome to the inner circle, " + username + ".");
         } catch (NoSuchUserException e) {
             logger.warn("Could not find user " + username + " in channel " + guildName);
             actions.send("I can't find a user named " + username);
