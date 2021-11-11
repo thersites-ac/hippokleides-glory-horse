@@ -6,4 +6,8 @@ public class ResourceNotFoundException extends Exception {
   public ResourceNotFoundException(String id, String uri) {
     super(String.format(format, id, uri));
   }
+
+  public ResourceNotFoundException() {
+    super();
+  }
 }

@@ -9,10 +9,10 @@ import java.util.*;
 
 public class SpyDiscordActions implements DiscordActions {
 
-    private List<String> sentMessages;
-    private List<MessageEmbed> sentEmbeds;
+    private final List<String> sentMessages;
+    private final List<MessageEmbed> sentEmbeds;
     private String userInput;
-    private Map<String, String> args;
+    private final Map<String, String> args;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();

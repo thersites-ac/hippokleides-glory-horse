@@ -9,10 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(JUnit4.class)
 public class FeatCommandTest {
@@ -34,30 +32,73 @@ public class FeatCommandTest {
         givenEmbedderReturnsDifferentResults();
         whenRunTwice();
         thenSentBothResults();
+    }
 
+    @Test
+    public void triesBasicRulebook() {
+        givenFeatFromBasicRulebook();
+        whenLookupFeat();
+        thenSendsResultFor("Core");
+    }
+
+    @Test
+    public void triesAdvancedPlayerRulebook() {
+        givenFeatFromAdvancedPlayerRulebook();
+        whenLookupFeat();
+        thenSendsResultFor("Advanced Player");
+    }
+
+    @Test
+    public void triesAdvancedClassRulebook() {
+        givenFeatFromAdvancedClassRulebook();
+        whenLookupFeat();
+        thenSendsResultFor("Advanced Class");
+    }
+
+    private void givenFeatFromAdvancedClassRulebook() {
+        testEmbedder.addAdvancedClass(new EmbedBuilder()
+                .setTitle("Advanced Class")
+                .build());
+    }
+
+    private void givenFeatFromAdvancedPlayerRulebook() {
+        testEmbedder.addAdvancedPlayer(new EmbedBuilder()
+                .setTitle("Advanced Player")
+                .build());
+    }
+
+    private void givenFeatFromBasicRulebook() {
+        testEmbedder.addCore(new EmbedBuilder()
+                .setTitle("Core")
+                .build());
     }
 
     private void givenEmbedderReturnsDifferentResults() {
         testEmbedder.addEmbed(new EmbedBuilder()
                 .setTitle("First")
-                .addField("Order", "First", false)
-        .build());
+                .build());
         testEmbedder.addEmbed(new EmbedBuilder()
                 .setTitle("Second")
-                .addField("Order", "Second", false)
-        .build());
+                .build());
+    }
+
+    private void whenLookupFeat() {
+        featCommand.execute(actions);
     }
 
     private void whenRunTwice() {
-        featCommand.execute(actions);
-        featCommand.execute(actions);
+        whenLookupFeat();
+        whenLookupFeat();
+    }
+
+    private void thenSendsResultFor(String title) {
+        MessageEmbed embed = actions.getSentEmbeds().remove(0);
+        assertEquals(title, embed.getTitle());
     }
 
     private void thenSentBothResults() {
-        List<MessageEmbed> embeds = actions.getSentEmbeds();
-        assertEquals(2, embeds.size());
-        assertEquals("First", embeds.get(0).getTitle());
-        assertEquals("Second", embeds.get(1).getTitle());
+        thenSendsResultFor("First");
+        thenSendsResultFor("Second");
     }
 
 }
