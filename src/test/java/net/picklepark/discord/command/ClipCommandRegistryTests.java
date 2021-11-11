@@ -1,7 +1,7 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.service.TestAuthService;
+import net.picklepark.discord.service.RubberstampAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +21,9 @@ public class ClipCommandRegistryTests {
     private SpyCommand testCommand;
     private DiscordCommand anotherTestCommand;
     private SpyCommand silentCommand;
-    private TestAuthService rubberstampAuth;
 
     @Before
     public void setup() {
-        rubberstampAuth = new TestAuthService();
-        rubberstampAuth.setAuthDecision(true);
         actions = new SpyDiscordActions();
         testCommand = new TestCommand();
         anotherTestCommand = new AnotherTestCommand();
@@ -93,7 +90,7 @@ public class ClipCommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), rubberstampAuth);
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthService());
     }
 
     private void givenRegisterCommand() {

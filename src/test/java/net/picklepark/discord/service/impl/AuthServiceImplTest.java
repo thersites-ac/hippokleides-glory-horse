@@ -18,9 +18,10 @@ public class AuthServiceImplTest {
     private SpyDiscordActions actions;
 
     @Before
-    public void setAuthService() {
+    public void setup() {
         authService = new AuthServiceImpl();
         actions = new SpyDiscordActions();
+        actions.setGuildName("Guild");
     }
 
     @Test
@@ -64,7 +65,6 @@ public class AuthServiceImplTest {
     }
 
     private void givenAddAdmin(long user) {
-        actions.setGuildName("Guild");
         authService.addAdmin("Guild", user);
     }
 

@@ -2,6 +2,7 @@ package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.command.*;
+import net.picklepark.discord.service.RubberstampAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), null);
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthService());
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyDiscordActions();
