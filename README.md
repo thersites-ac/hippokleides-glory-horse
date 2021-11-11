@@ -24,3 +24,5 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * stop recording after disconnect
     * stop recording command in general
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
+    * feature intake endpoint
+    * image search by keyword (from deviantart, wikihow, google images, etc.)
