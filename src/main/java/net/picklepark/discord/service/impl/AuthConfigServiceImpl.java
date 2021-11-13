@@ -19,7 +19,7 @@ import java.util.Set;
 public class AuthConfigServiceImpl implements AuthConfigService {
 
     private static final String CONFIG_KEY = "discord-bot-auth-config";
-    private static final String TMP_ADMINS = "/tmp/admins";
+    private static final String TMP_ADMINS = "/tmp/discord-bot-auth-config";
     private final S3Client client;
     private final String configBucket;
     private final GetObjectRequest getConfigRequest;
