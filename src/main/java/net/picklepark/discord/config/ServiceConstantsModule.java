@@ -21,13 +21,13 @@ public class ServiceConstantsModule extends AbstractModule {
     }
 
     @Provides
-    @Named("s3.uploads.bucket")
+    @Named("s3.bucket.uploads")
     String s3UploadsBucket() {
         return "discord-recordings";
     }
 
     @Provides
-    @Named("s3.trimmed.bucket")
+    @Named("s3.bucket.trimmed")
     String s3TrimmedBucket() {
         return "discord-output";
     }
@@ -66,6 +66,12 @@ public class ServiceConstantsModule extends AbstractModule {
     @Named("shortener.endpoint")
     String shortenerEndpoint() {
         return "https://api-ssl.bitly.com/v4/shorten";
+    }
+
+    @Provides
+    @Named("s3.bucket.config")
+    String configBucket() {
+        return "discord-config";
     }
 
 }

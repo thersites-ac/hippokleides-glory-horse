@@ -1,7 +1,7 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.service.RubberstampAuthService;
+import net.picklepark.discord.service.impl.RubberstampAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;

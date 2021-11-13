@@ -4,6 +4,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import jdk.jfr.Name;
 import net.picklepark.discord.service.*;
 import net.picklepark.discord.service.impl.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -56,6 +57,16 @@ public class ServicesModule extends AbstractModule {
     S3Client uploadS3Client(AwsCredentialsProvider provider) {
         return S3Client.builder()
                 .region(Region.US_EAST_1)
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("s3.client.config")
+    S3Client configS3Client(AwsCredentialsProvider provider) {
+        return S3Client.builder()
+                .region(Region.US_EAST_2)
                 .credentialsProvider(provider)
                 .build();
     }

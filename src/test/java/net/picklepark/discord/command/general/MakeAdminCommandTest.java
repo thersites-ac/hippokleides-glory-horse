@@ -2,7 +2,8 @@ package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.service.SpyAuthService;
+import net.picklepark.discord.service.impl.SpyAuthService;
+import net.picklepark.discord.service.impl.TestConfigService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,7 @@ public class MakeAdminCommandTest {
     @Before
     public void setup() {
         actions = new SpyDiscordActions();
-        spyAuthService = new SpyAuthService();
+        spyAuthService = new SpyAuthService(new TestConfigService());
         makeAdminCommand = new MakeAdminCommand(spyAuthService);
         actions.setArg("username", "user");
         actions.setGuildName("guild");

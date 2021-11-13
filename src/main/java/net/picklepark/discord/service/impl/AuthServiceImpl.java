@@ -4,10 +4,13 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.annotation.Auth;
 import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.service.AuthService;
+import net.picklepark.discord.service.AuthConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +19,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthServiceImpl implements AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     protected final ConcurrentHashMap<String, Set<Long>> admins;
+    private final AuthConfigService configService;
 
-    public AuthServiceImpl() {
-        admins = new ConcurrentHashMap<>();
+    @Inject
+    public AuthServiceImpl(AuthConfigService configService) {
+        ConcurrentHashMap<String, Set<Long>> tempAdmins;
+        this.configService = configService;
+        try {
+            tempAdmins = new ConcurrentHashMap<>(configService.getCurrentAdmins());
+        } catch (Exception e) {
+            logger.error("While initializing admins", e);
+            tempAdmins = new ConcurrentHashMap<>();
+        }
+        admins = tempAdmins;
     }
 
     @Override
@@ -38,7 +51,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void addAdmin(String guildName, long user) {
         admins.computeIfAbsent(guildName, key -> new HashSet<>());
-        admins.get(guildName).add(user);
+        if (admins.get(guildName).add(user)) try {
+            configService.persistAdmins(admins);
+            logger.info("Updated persistent admins after user {} was added in guild {}", user, guildName);
+        } catch (IOException e) {
+            logger.error("While persisting admins for guild " + guildName, e);
+        }
     }
 
     private boolean admin(DiscordActions actions) {

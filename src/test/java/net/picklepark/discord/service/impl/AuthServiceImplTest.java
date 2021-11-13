@@ -2,6 +2,7 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.annotation.Auth;
+import net.picklepark.discord.service.AuthConfigService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +17,12 @@ public class AuthServiceImplTest {
     private boolean decision;
     private Auth.Level level;
     private SpyDiscordActions actions;
+    private AuthConfigService testConfigService;
 
     @Before
     public void setup() {
-        authService = new AuthServiceImpl();
+        testConfigService = new TestConfigService();
+        authService = new AuthServiceImpl(testConfigService);
         actions = new SpyDiscordActions();
         actions.setGuildName("Guild");
     }
@@ -64,6 +67,13 @@ public class AuthServiceImplTest {
         thenDecisionIsPass();
     }
 
+    @Test
+    public void authSettingsPersistAcrossInstances() {
+        givenAddAdmin(42);
+        whenRestart();
+        thenUserIsAdmin(42);
+    }
+
     private void givenAddAdmin(long user) {
         authService.addAdmin("Guild", user);
     }
@@ -84,6 +94,17 @@ public class AuthServiceImplTest {
 
     private void whenTestAuth() {
         decision = authService.isActionAuthorized(actions, level);
+    }
+
+    private void whenRestart() {
+        authService = new AuthServiceImpl(testConfigService);
+    }
+
+    private void thenUserIsAdmin(long id) {
+        givenLevel(Auth.Level.ADMIN);
+        actions.setAuthor(id);
+        whenTestAuth();
+        thenDecisionIsPass();
     }
 
     private void thenDecisionIsFail() {
