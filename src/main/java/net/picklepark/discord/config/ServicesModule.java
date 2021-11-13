@@ -4,7 +4,6 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import jdk.jfr.Name;
 import net.picklepark.discord.service.*;
 import net.picklepark.discord.service.impl.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;

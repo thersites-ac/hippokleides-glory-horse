@@ -1,10 +1,8 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.service.AuthConfigService;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import javax.inject.Inject;
@@ -21,7 +19,6 @@ public class AuthConfigServiceImpl implements AuthConfigService {
     private static final String CONFIG_KEY = "discord-bot-auth-config";
     private static final String TMP_ADMINS = "/tmp/discord-bot-auth-config";
     private final S3Client client;
-    private final String configBucket;
     private final GetObjectRequest getConfigRequest;
     private final PutObjectRequest putObjectRequest;
 
@@ -29,7 +26,6 @@ public class AuthConfigServiceImpl implements AuthConfigService {
     public AuthConfigServiceImpl(@Named("s3.bucket.config") String configBucket,
                                  @Named("s3.client.config") S3Client configFetcher) {
         this.client = configFetcher;
-        this.configBucket = configBucket;
         getConfigRequest = GetObjectRequest.builder()
                 .bucket(configBucket)
                 .key(CONFIG_KEY)
@@ -42,8 +38,7 @@ public class AuthConfigServiceImpl implements AuthConfigService {
 
     @Override
     public Map<String, Set<Long>> getCurrentAdmins() throws IOException {
-        try (ResponseInputStream<GetObjectResponse> response = client.getObject(getConfigRequest)) {
-            ObjectInputStream inputStream = new ObjectInputStream(response);
+        try (ObjectInputStream inputStream = new ObjectInputStream(client.getObject(getConfigRequest))) {
             return (Map<String, Set<Long>>) inputStream.readObject();
         } catch (ClassNotFoundException e) {
             throw new IOException(e);
@@ -60,5 +55,6 @@ public class AuthConfigServiceImpl implements AuthConfigService {
         File file = new File(TMP_ADMINS);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
         out.writeObject(admins);
+        out.close();
     }
 }
