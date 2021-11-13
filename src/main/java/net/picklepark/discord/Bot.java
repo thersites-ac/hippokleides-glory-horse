@@ -32,8 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGES;
-import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_VOICE_STATES;
+import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
 public class Bot extends ListenerAdapter {
 
@@ -45,7 +44,7 @@ public class Bot extends ListenerAdapter {
     private final SqsPollingWorker worker;
  
     public static void main(String[] args) throws Exception {
-        JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES)
+        JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
                 .addEventListeners(new Bot())
                 .build();
     }
