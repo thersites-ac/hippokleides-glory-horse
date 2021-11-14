@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -51,12 +52,17 @@ public class DiscordCommandRegistry {
     }
 
     private void executeAuthorized(DiscordCommand command, DiscordActions actions, String messageContent) {
-        Auth.Level level = command.getClass().getAnnotation(Auth.class).value();
-        if (authService.isActionAuthorized(actions, level)) {
-            actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), messageContent);
-            executeInContext(command, actions);
+        Auth auth = command.getClass().getAnnotation(Auth.class);
+        if (auth != null) {
+            Auth.Level level = auth.value();
+            if (authService.isActionAuthorized(actions, level)) {
+                actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), messageContent);
+                executeInContext(command, actions);
+            } else {
+                actions.send("Lol no fucking way");
+            }
         } else {
-            actions.send("Lol no fucking way");
+            logger.error("Unannotated command for " + messageContent);
         }
     }
 

@@ -1,6 +1,9 @@
 package net.picklepark.discord.command;
 
+import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.adaptor.SpyDiscordActions;
+import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.impl.TestAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
@@ -29,15 +32,26 @@ public class DiscordCommandRegistryTest {
     @Test
     public void acceptsAuthorizedCommands() {
         givenAuthorizedCommand();
-        whenUserInvokes();
+        whenUserInvokesWith("test");
         thenCommandExecutes();
     }
 
     @Test
     public void rejectsUnauthorizedCommand() {
         givenUnauthorizedCommand();
-        whenUserInvokes();
+        whenUserInvokesWith("test");
         thenTellsUserOff();
+    }
+
+    @Test
+    public void skipsUnannotatedCommands() {
+        givenUnannotatedCommand();
+        whenUserInvokesWith("noannotation");
+        thenSendsNothing();
+    }
+
+    private void givenUnannotatedCommand() {
+        registry.register(new NoAuthAnnotationCommand());
     }
 
     private void givenUnauthorizedCommand() {
@@ -48,8 +62,8 @@ public class DiscordCommandRegistryTest {
         authService.setAuthDecision(true);
     }
 
-    private void whenUserInvokes() {
-        actions.setUserInput("~test");
+    private void whenUserInvokesWith(String s) {
+        actions.setUserInput("~" + s);
         registry.execute(actions);
     }
 
@@ -58,8 +72,19 @@ public class DiscordCommandRegistryTest {
         assertEquals("Lol no fucking way", actions.getSentMessage().get(0));
     }
 
+    private void thenSendsNothing() {
+        assertTrue(actions.getSentMessage().isEmpty());
+    }
+
     private void thenCommandExecutes() {
         assertEquals(1, actions.getSentMessage().size());
         assertEquals("OK", actions.getSentMessage().get(0));
+    }
+
+    @UserInput("noannotation")
+    private class NoAuthAnnotationCommand implements DiscordCommand {
+        @Override
+        public void execute(DiscordActions actions) throws DiscordCommandException {
+        }
     }
 }

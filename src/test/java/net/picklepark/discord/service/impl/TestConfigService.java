@@ -2,13 +2,15 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.service.AuthConfigService;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TestConfigService implements AuthConfigService {
-    private final ConcurrentHashMap<String, Set<Long>> admins;
+    private ConcurrentHashMap<String, Set<Long>> admins;
 
     public TestConfigService() {
         admins = new ConcurrentHashMap<>();
@@ -20,8 +22,7 @@ public class TestConfigService implements AuthConfigService {
     }
 
     @Override
-    public void persistAdmins(String guildName, long user) {
-        admins.computeIfAbsent(guildName, key -> new HashSet<>());
-        admins.get(guildName).add(user);
+    public void persistAdmins(Map<String, Set<Long>> admins) {
+        this.admins = new ConcurrentHashMap<>(admins);
     }
 }

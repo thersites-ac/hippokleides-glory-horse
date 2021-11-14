@@ -31,3 +31,4 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * better auth groups
     * `JdaDiscordActions` shouldn't be sending messages
     * `lookupUser` should throw different exceptions for no user vs. ambiguous user
+    * check for proper annotations in the `register` method
