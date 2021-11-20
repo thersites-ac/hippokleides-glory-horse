@@ -7,7 +7,7 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.exception.UserIdentificationException;
 import net.picklepark.discord.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class MakeAdminCommand implements DiscordCommand {
             long userId = actions.lookupUser(username).getIdLong();
             authService.addAdmin(guildName, userId);
             actions.send("Welcome to the inner circle, " + username + ".");
-        } catch (NoSuchUserException e) {
+        } catch (UserIdentificationException e) {
             logger.warn("Could not find user " + username + " in channel " + guildName);
             actions.send("I can't find a user named " + username);
         }

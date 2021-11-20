@@ -13,8 +13,10 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
+import net.picklepark.discord.exception.AmbiguousUserException;
 import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.exception.UserIdentificationException;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,12 +37,12 @@ public class JdaDiscordActions implements DiscordActions {
 
     @Override
     public void send(String message) {
-        this.event.getChannel().sendMessage(message).queue();;
+        this.event.getChannel().sendMessage(message).queue();
     }
 
     @Override
     public void send(MessageEmbed embed) {
-        this.event.getChannel().sendMessageEmbeds(embed).queue();;
+        this.event.getChannel().sendMessageEmbeds(embed).queue();
     }
 
     @Override
@@ -60,14 +62,32 @@ public class JdaDiscordActions implements DiscordActions {
     }
 
     @Override
-    public User lookupUser(String user) throws NoSuchUserException {
-        List<Member> users = event.getChannel().getGuild().getMembersByNickname(user, true);
+    public User lookupUser(String user) throws UserIdentificationException {
+        if (isTag(user))
+            return lookupTag(user);
+        else
+            return lookupNickname(user);
+    }
+
+    private User lookupTag(String user) throws NoSuchUserException {
+        Member member = event.getGuild().getMemberByTag(user);
+        if (member == null)
+            throw new NoSuchUserException(user);
+        else
+            return member.getUser();
+    }
+
+    boolean isTag(String user) {
+        return user.matches(".*#\\d{4}");
+    }
+
+    private User lookupNickname(String user) throws UserIdentificationException{
+        List<Member> users = event.getGuild().getMembersByNickname(user, true);
         if (users.isEmpty())
             throw new NoSuchUserException(user);
-        else if (users.size() > 1) {
-            event.getChannel().sendMessage("Too many damn users named " + user).queue();
-            throw new NoSuchUserException(user);
-        } else
+        else if (users.size() > 1)
+            throw new AmbiguousUserException(user);
+        else
             return users.get(0).getUser();
     }
 

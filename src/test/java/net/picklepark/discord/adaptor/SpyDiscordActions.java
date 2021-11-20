@@ -3,8 +3,7 @@ package net.picklepark.discord.adaptor;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.exception.NoSuchUserException;
-import net.picklepark.discord.service.ClipManager;
+import net.picklepark.discord.exception.UserIdentificationException;
 
 import java.util.*;
 
@@ -47,10 +46,10 @@ public class SpyDiscordActions implements DiscordActions {
     }
 
     @Override
-    public User lookupUser(String user) throws NoSuchUserException {
+    public User lookupUser(String user) throws UserIdentificationException {
         Long userId = members.get(user);
         if (userId == null)
-            throw new NoSuchUserException(user);
+            throw new UserIdentificationException(user);
         else
             return User.fromId(userId);
     }

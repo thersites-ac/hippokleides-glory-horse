@@ -9,7 +9,7 @@ import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.NoSuchUserException;
+import net.picklepark.discord.exception.UserIdentificationException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.RemoteStorageService;
@@ -64,7 +64,7 @@ public class WriteAudioCommand implements DiscordCommand {
             sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
         } catch (NotRecordingException e) {
             actions.send("I'm not very turned on right now :(");
-        } catch (NoSuchUserException e) {
+        } catch (UserIdentificationException e) {
             actions.send("I can't find the user " + e.getUser() + "!");
         } catch (IOException e) {
             actions.send("I can't give you a clean url for the recording right now");

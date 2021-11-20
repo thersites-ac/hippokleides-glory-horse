@@ -17,7 +17,6 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * handle error when user tries to delete a nonexistent clip
     * handle invalid command names (in UI, lambda, and bot)
     * the command title is an injection attack risk; fix that
-    * user nickname collision when recording/clipping
     * audio backtrack
     * audio multichannel (to layer clips over playlist)
     * fix the volume controls
@@ -32,3 +31,4 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * `JdaDiscordActions` shouldn't be sending messages
     * `lookupUser` should throw different exceptions for no user vs. ambiguous user
     * check for proper annotations in the `register` method
+    * `DeleteClipCommand` has an unidentified bug
