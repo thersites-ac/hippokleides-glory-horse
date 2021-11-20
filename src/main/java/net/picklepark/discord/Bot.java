@@ -79,7 +79,8 @@ public class Bot extends ListenerAdapter {
                 SyncClipsCommand.class,
                 DeleteClipCommand.class,
                 ListCommandsCommand.class,
-                MakeAdminCommand.class
+                MakeAdminCommand.class,
+                StopRecordingCommand.class
         ));
         injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);

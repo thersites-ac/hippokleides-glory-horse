@@ -1,12 +1,9 @@
 # Pathfinder Bot
-This project began as experimentation with the [lavaplayer](https://github.com/sedmelluq/lavaplayer/tree/master/demo-jda)
-demo for adding audio playback to a Discord bot. Over time, I've been adding other features as well.
+Hobby bot with miscellaneous functionality. Sit and spin.
 
 # To Do
 * important:
-    * persist auth
     * hall of fame clips to avoid accidental deletion
-    * delete authorization
 * other
     * add some degree of fuzzy id matching or in-text search
     * Lambda should assign a new id to each generated clip to avoid collision
@@ -14,21 +11,19 @@ demo for adding audio playback to a Discord bot. Over time, I've been adding oth
     * add CORS headers to API Gateway error responses
     * inform channel members after the clip has been loaded
     * group clips by channel in the bucket
-    * handle error when user tries to delete a nonexistent clip
     * handle invalid command names (in UI, lambda, and bot)
-    * the command title is an injection attack risk; fix that
+    * any unsanitized user input risks?
     * audio backtrack
     * audio multichannel (to layer clips over playlist)
     * fix the volume controls
-    * stop recording after disconnect
-    * stop recording command in general
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)
-    * the logic in the ~feat command is now wrong
     * remove admins
     * better auth groups
-    * `JdaDiscordActions` shouldn't be sending messages
-    * `lookupUser` should throw different exceptions for no user vs. ambiguous user
+    * modularize
     * check for proper annotations in the `register` method
-    * `DeleteClipCommand` has an unidentified bug
+    * handle error when user tries to delete a nonexistent clip
+    * `DeleteClipCommand` has an unidentified bug (think this was AWS permissions)
+    * update terraform/other infra files
+    * functional testing (set up another bot for this)
