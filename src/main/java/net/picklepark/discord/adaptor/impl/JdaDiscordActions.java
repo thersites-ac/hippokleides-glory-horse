@@ -18,6 +18,7 @@ import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,7 +67,7 @@ public class JdaDiscordActions implements DiscordActions {
         if (isTag(user))
             return lookupTag(user);
         else
-            return lookupNickname(user);
+            return lookupAmbiguousName(user);
     }
 
     private User lookupTag(String user) throws NoSuchUserException {
@@ -81,14 +82,17 @@ public class JdaDiscordActions implements DiscordActions {
         return user.matches(".*#\\d{4}");
     }
 
-    private User lookupNickname(String user) throws UserIdentificationException{
-        List<Member> users = event.getGuild().getMembersByNickname(user, true);
-        if (users.isEmpty())
+    private User lookupAmbiguousName(String user) throws UserIdentificationException{
+        List<Member> members = new ArrayList<>(event.getGuild().getMembersByName(user, true));
+        members.addAll(event.getGuild().getMembersByNickname(user, true));
+        members.addAll(event.getGuild().getMembersByEffectiveName(user, true));
+
+        if (members.isEmpty())
             throw new NoSuchUserException(user);
-        else if (users.size() > 1)
+        else if (members.size() > 1)
             throw new AmbiguousUserException(user);
         else
-            return users.get(0).getUser();
+            return members.get(0).getUser();
     }
 
     @Override

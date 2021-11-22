@@ -36,6 +36,8 @@ public class UnadminCommand implements DiscordCommand {
             actions.send("I don't know who " + username + " is.");
             logger.warn("Ambiguous user for input " + username, e);
         } catch (AuthLevelConflictException e) {
+            // FIXME: there's a corner case here where the channel owner tries to unadmin himself and gets
+            // this nonsense message
             actions.send(username + " is already beneath my notice.");
             logger.warn("Attempted to demote non-admin user: " + username, e);
         } catch (IOException e) {
