@@ -3,10 +3,8 @@ package net.picklepark.discord.command.audio;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UserIdentificationException;
@@ -31,9 +29,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 
-@UserInput("clip (?<username>.+)")
-@Help(name = "clip <username>", message = HelpMessages.WRITE_AUDIO)
-@Auth(Auth.Level.ADMIN)
 public class WriteAudioCommand implements DiscordCommand {
 
     private static final String FORMAT = "%s-%s.wav";
@@ -70,6 +65,26 @@ public class WriteAudioCommand implements DiscordCommand {
             actions.send("I can't give you a clean url for the recording right now");
             logger.error("While shortening clip for " + actions.getArgument("username"), e);
         }
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ADMIN;
+    }
+
+    @Override
+    public String example() {
+        return "clip <username>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return HelpMessages.WRITE_AUDIO;
+    }
+
+    @Override
+    public String userInput() {
+        return "clip (?<username>.+)";
     }
 
     private void sendCropLink(DiscordActions actions, URL location, String key) throws IOException {

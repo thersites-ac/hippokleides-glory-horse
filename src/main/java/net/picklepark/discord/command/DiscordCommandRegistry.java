@@ -1,10 +1,10 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.general.NoopCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.exception.UnimplementedException;
 import net.picklepark.discord.service.AuthService;
 import net.picklepark.discord.service.ClipManager;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -52,17 +51,12 @@ public class DiscordCommandRegistry {
     }
 
     private void executeAuthorized(DiscordCommand command, DiscordActions actions, String messageContent) {
-        Auth auth = command.getClass().getAnnotation(Auth.class);
-        if (auth != null) {
-            Auth.Level level = auth.value();
-            if (authService.isActionAuthorized(actions, level)) {
-                actions.initMatches(command.getClass().getAnnotation(UserInput.class).value(), messageContent);
-                executeInContext(command, actions);
-            } else {
-                actions.send("Lol no fucking way");
-            }
+        AuthLevel level = command.requiredAuthLevel();
+        if (authService.isActionAuthorized(actions, level)) {
+            actions.initMatches(command.userInput(), messageContent);
+            executeInContext(command, actions);
         } else {
-            logger.error("Unannotated command for " + messageContent);
+            actions.send("Lol no");
         }
     }
 
@@ -86,11 +80,10 @@ public class DiscordCommandRegistry {
     }
 
     public void register(DiscordCommand command) {
-        if (command.getClass().isAnnotationPresent(UserInput.class)) {
-            handlers.put(
-                    command.getClass().getAnnotation(UserInput.class).value(),
-                    command);
-        }
+        if (command instanceof NoopCommand)
+            throw new UnimplementedException();
+        else
+            handlers.put(command.userInput(), command);
     }
 
     public void register(DiscordCommand... commands) {

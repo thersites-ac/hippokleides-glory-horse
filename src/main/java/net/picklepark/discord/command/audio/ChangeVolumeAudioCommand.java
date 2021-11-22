@@ -1,14 +1,9 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 
-@UserInput("volume (?<volume>.+)")
-@Help(name = "volume <n>", message = "Set the volume.")
-@Auth(Auth.Level.ADMIN)
 public class ChangeVolumeAudioCommand implements DiscordCommand {
 
     @Override
@@ -20,6 +15,26 @@ public class ChangeVolumeAudioCommand implements DiscordCommand {
         } catch (NumberFormatException ex) {
             actions.send("Do you know what integers are? Really, " + actions.getArgument("volume") + "?");
         }
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ADMIN;
+    }
+
+    @Override
+    public String example() {
+        return "volume <n>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "Set the volume.";
+    }
+
+    @Override
+    public String userInput() {
+        return "volume (?<volume>.+)";
     }
 
 }

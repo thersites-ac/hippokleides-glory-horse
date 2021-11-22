@@ -1,7 +1,6 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.service.AuthConfigService;
-import net.picklepark.discord.service.impl.AuthServiceImpl;
 
 import java.util.Set;
 

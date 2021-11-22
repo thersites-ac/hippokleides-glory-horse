@@ -3,31 +3,31 @@ package net.picklepark.discord.command.general;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
-import net.picklepark.discord.exception.UnimplementedException;
+import net.picklepark.discord.exception.DiscordCommandException;
 
-public class NoopCommand implements DiscordCommand {
+public class UnadminCommand implements DiscordCommand {
     @Override
-    public void execute(DiscordActions actions) {
-        actions.send("I don't know how to " + actions.userInput());
+    public void execute(DiscordActions actions) throws DiscordCommandException {
+        // TODO
     }
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        throw new UnimplementedException();
+        return AuthLevel.OWNER;
     }
 
     @Override
     public String example() {
-        throw new UnimplementedException();
+        return "unadmin <user>";
     }
 
     @Override
     public String helpMessage() {
-        throw new UnimplementedException();
+        return "Revoke admin privileges";
     }
 
     @Override
     public String userInput() {
-        throw new UnimplementedException();
+        return "unadmin (?<user>.+)";
     }
 }

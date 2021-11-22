@@ -1,19 +1,14 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-@UserInput("delete (?<clip>.*)")
-@Help(name = "delete <clip>", message = "Delete a clip. WARNING: once you do this it's gone for good!")
-@Auth(Auth.Level.OWNER)
 public class DeleteClipCommand implements DiscordCommand {
 
     private final ClipManager commandManager;
@@ -31,5 +26,25 @@ public class DeleteClipCommand implements DiscordCommand {
         storageService.delete(clip);
         commandManager.delete(clip);
         actions.send("It is gone forever.");
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.OWNER;
+    }
+
+    @Override
+    public String example() {
+        return "delete <clip>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "Delete a clip. WARNING: once you do this it's gone for good!";
+    }
+
+    @Override
+    public String userInput() {
+        return "delete (?<clip>.*)";
     }
 }

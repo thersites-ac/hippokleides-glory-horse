@@ -1,19 +1,14 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-@UserInput("sync")
-@Help(name = "sync", message = HelpMessages.SYNC)
-@Auth(Auth.Level.ADMIN)
 public class SyncClipsCommand implements DiscordCommand {
 
     private final RemoteStorageService storageService;
@@ -27,5 +22,25 @@ public class SyncClipsCommand implements DiscordCommand {
     public void execute(DiscordActions actions) throws DiscordCommandException {
         storageService.sync();
         actions.send("Got 'em all");
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ADMIN;
+    }
+
+    @Override
+    public String example() {
+        return "sync";
+    }
+
+    @Override
+    public String helpMessage() {
+        return HelpMessages.SYNC;
+    }
+
+    @Override
+    public String userInput() {
+        return "sync";
     }
 }

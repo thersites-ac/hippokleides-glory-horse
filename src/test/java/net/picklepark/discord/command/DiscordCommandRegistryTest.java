@@ -2,7 +2,8 @@ package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.command.general.NoopCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.impl.TestAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
@@ -43,15 +44,9 @@ public class DiscordCommandRegistryTest {
         thenTellsUserOff();
     }
 
-    @Test
-    public void skipsUnannotatedCommands() {
-        givenUnannotatedCommand();
-        whenUserInvokesWith("noannotation");
-        thenSendsNothing();
-    }
-
-    private void givenUnannotatedCommand() {
-        registry.register(new NoAuthAnnotationCommand());
+    @Test(expected = RuntimeException.class)
+    public void cannotRegisterNoop() {
+        whenRegisterNoop();
     }
 
     private void givenUnauthorizedCommand() {
@@ -62,6 +57,10 @@ public class DiscordCommandRegistryTest {
         authService.setAuthDecision(true);
     }
 
+    private void whenRegisterNoop() {
+        registry.register(new NoopCommand());
+    }
+
     private void whenUserInvokesWith(String s) {
         actions.setUserInput("~" + s);
         registry.execute(actions);
@@ -69,11 +68,7 @@ public class DiscordCommandRegistryTest {
 
     private void thenTellsUserOff() {
         assertEquals(1, actions.getSentMessage().size());
-        assertEquals("Lol no fucking way", actions.getSentMessage().get(0));
-    }
-
-    private void thenSendsNothing() {
-        assertTrue(actions.getSentMessage().isEmpty());
+        assertEquals("Lol no", actions.getSentMessage().get(0));
     }
 
     private void thenCommandExecutes() {
@@ -81,10 +76,4 @@ public class DiscordCommandRegistryTest {
         assertEquals("OK", actions.getSentMessage().get(0));
     }
 
-    @UserInput("noannotation")
-    private class NoAuthAnnotationCommand implements DiscordCommand {
-        @Override
-        public void execute(DiscordActions actions) throws DiscordCommandException {
-        }
-    }
 }

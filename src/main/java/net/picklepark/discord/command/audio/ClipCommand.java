@@ -1,11 +1,9 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.exception.UnimplementedException;
 
-@UserInput(".*")
-@Auth(Auth.Level.ADMIN)
 public class ClipCommand implements net.picklepark.discord.command.DiscordCommand {
 
     private final String path;
@@ -22,5 +20,25 @@ public class ClipCommand implements net.picklepark.discord.command.DiscordComman
     public void execute(DiscordActions actions) {
         actions.connect();
         actions.queue(path);
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ADMIN;
+    }
+
+    @Override
+    public String example() {
+        throw new UnimplementedException();
+    }
+
+    @Override
+    public String helpMessage() {
+        throw new UnimplementedException();
+    }
+
+    @Override
+    public String userInput() {
+        return ".*";
     }
 }

@@ -1,7 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.service.AuthService;
 import net.picklepark.discord.service.AuthConfigService;
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean isActionAuthorized(DiscordActions actions, Auth.Level level) {
+    public boolean isActionAuthorized(DiscordActions actions, AuthLevel level) {
         switch (level) {
             case ANY:
                 return true;

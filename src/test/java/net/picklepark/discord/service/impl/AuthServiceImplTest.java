@@ -1,7 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.annotation.Auth;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.service.AuthConfigService;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class AuthServiceImplTest {
 
     private AuthServiceImpl authService;
     private boolean decision;
-    private Auth.Level level;
+    private AuthLevel level;
     private SpyDiscordActions actions;
     private AuthConfigService testConfigService;
 
@@ -29,14 +29,14 @@ public class AuthServiceImplTest {
 
     @Test
     public void anyAlwaysSucceeds() {
-        givenLevel(Auth.Level.ANY);
+        givenLevel(AuthLevel.ANY);
         whenTestAuth();
         thenDecisionIsPass();
     }
 
     @Test
     public void ownerLevelAllowsGuildOwner() {
-        givenLevel(Auth.Level.OWNER);
+        givenLevel(AuthLevel.OWNER);
         givenUserIsOwner(42);
         whenTestAuth();
         thenDecisionIsPass();
@@ -44,7 +44,7 @@ public class AuthServiceImplTest {
 
     @Test
     public void ownerLevelRejectsNonowner() {
-        givenLevel(Auth.Level.OWNER);
+        givenLevel(AuthLevel.OWNER);
         givenUserIsNotOwner(42);
         whenTestAuth();
         thenDecisionIsFail();
@@ -52,7 +52,7 @@ public class AuthServiceImplTest {
 
     @Test
     public void channelOwnerIsAlsoAdmin() {
-        givenLevel(Auth.Level.ADMIN);
+        givenLevel(AuthLevel.ADMIN);
         givenUserIsOwner(42);
         whenTestAuth();
         thenDecisionIsPass();
@@ -60,7 +60,7 @@ public class AuthServiceImplTest {
 
     @Test
     public void canAddAdmins() {
-        givenLevel(Auth.Level.ADMIN);
+        givenLevel(AuthLevel.ADMIN);
         givenUserIsNotOwner(42);
         givenAddAdmin(42);
         whenTestAuth();
@@ -88,7 +88,7 @@ public class AuthServiceImplTest {
         actions.setGuildOwner(user);
     }
 
-    private void givenLevel(Auth.Level level) {
+    private void givenLevel(AuthLevel level) {
         this.level = level;
     }
 
@@ -101,7 +101,7 @@ public class AuthServiceImplTest {
     }
 
     private void thenUserIsAdmin(long id) {
-        givenLevel(Auth.Level.ADMIN);
+        givenLevel(AuthLevel.ADMIN);
         actions.setAuthor(id);
         whenTestAuth();
         thenDecisionIsPass();

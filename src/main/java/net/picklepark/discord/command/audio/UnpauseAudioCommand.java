@@ -1,19 +1,34 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 
-@UserInput("unpause")
-@Help(name = "unpause", message = "Unpause the current track.")
-@Auth(Auth.Level.ADMIN)
 public class UnpauseAudioCommand implements DiscordCommand {
 
   @Override
   public void execute(DiscordActions actions) {
     actions.unpause();
+  }
+
+  @Override
+  public AuthLevel requiredAuthLevel() {
+    return AuthLevel.ADMIN;
+  }
+
+  @Override
+  public String example() {
+    return "unpause";
+  }
+
+  @Override
+  public String helpMessage() {
+    return "Unpause the current track.";
+  }
+
+  @Override
+  public String userInput() {
+    return "unpause";
   }
 
 }

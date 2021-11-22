@@ -1,16 +1,11 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@UserInput("queue (?<uri>.+)")
-@Help(name = "queue <url>", message = "Add a track to the playlist.")
-@Auth(Auth.Level.ADMIN)
 public class QueueAudioCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(QueueAudioCommand.class);
@@ -20,6 +15,26 @@ public class QueueAudioCommand implements DiscordCommand {
         String uri = actions.getArgument("uri");
         actions.queue(uri);
         actions.send("I CANNOT WAIT TO PLAY THIS SONG");
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ADMIN;
+    }
+
+    @Override
+    public String example() {
+        return "queue <url>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "Add a track to the playlist.";
+    }
+
+    @Override
+    public String userInput() {
+        return "queue (?<uri>.+)";
     }
 
 }

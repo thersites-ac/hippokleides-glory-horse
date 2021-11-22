@@ -1,14 +1,9 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 
-@UserInput("test")
-@Help(name = "test", message = "halp")
-@Auth(Auth.Level.ANY)
 public class TestCommand extends SpyCommand {
 
     @Override
@@ -17,4 +12,23 @@ public class TestCommand extends SpyCommand {
         super.execute(actions);
     }
 
+    @Override
+    public String userInput() {
+        return "test";
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ANY;
+    }
+
+    @Override
+    public String example() {
+        return "test";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "halp";
+    }
 }

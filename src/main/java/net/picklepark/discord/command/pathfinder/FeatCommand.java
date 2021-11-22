@@ -2,10 +2,8 @@ package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.PathfinderEmbedder;
 import org.slf4j.Logger;
@@ -14,9 +12,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.io.IOException;
 
-@UserInput("feat (?<feat>.+)")
-@Help(name = "feat <feat name>", message = "Look up a feat from legacy.aonprd.com.")
-@Auth(Auth.Level.ANY)
 public class FeatCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 
@@ -44,6 +39,26 @@ public class FeatCommand implements DiscordCommand {
             logger.error("While looking up feat " + feat, e);
             actions.send("Having trouble with my interwebs");
         }
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ANY;
+    }
+
+    @Override
+    public String example() {
+        return "feat <feat name>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "Look up a feat from legacy.aonprd.com.";
+    }
+
+    @Override
+    public String userInput() {
+        return "feat (?<feat>.+)";
     }
 
     private MessageEmbed advancedClassFeatOrNull(String feat) throws IOException {

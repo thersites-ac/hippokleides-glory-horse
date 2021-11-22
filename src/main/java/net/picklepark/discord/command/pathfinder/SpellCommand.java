@@ -2,10 +2,8 @@ package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
@@ -15,9 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.io.IOException;
 
-@UserInput("spell (?<spell>.+)")
-@Help(name = "spell <spell name>", message = "Look up a spell from legacy.aonprd.com.")
-@Auth(Auth.Level.ANY)
 public class SpellCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(SpellCommand.class);
 
@@ -41,6 +36,26 @@ public class SpellCommand implements DiscordCommand {
         } catch (ResourceNotFoundException e) {
             actions.send("I couldn't find " + actions.getArgument("spell"));
         }
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.ANY;
+    }
+
+    @Override
+    public String example() {
+        return "spell <spell name>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return "Look up a spell from legacy.aonprd.com.";
+    }
+
+    @Override
+    public String userInput() {
+        return "spell (?<spell>.+)";
     }
 
     private MessageEmbed scrapeSpell(DiscordActions actions) throws IOException, ResourceNotFoundException {

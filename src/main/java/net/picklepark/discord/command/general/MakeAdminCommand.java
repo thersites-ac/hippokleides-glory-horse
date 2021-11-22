@@ -1,10 +1,8 @@
 package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.annotation.Auth;
-import net.picklepark.discord.annotation.Help;
-import net.picklepark.discord.annotation.UserInput;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UserIdentificationException;
@@ -14,9 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@UserInput("admin (?<username>.+)")
-@Help(name = "admin <username>", message = HelpMessages.ADMIN)
-@Auth(Auth.Level.OWNER)
 public class MakeAdminCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(MakeAdminCommand.class);
@@ -40,5 +35,25 @@ public class MakeAdminCommand implements DiscordCommand {
             logger.warn("Could not find user " + username + " in channel " + guildName);
             actions.send("I can't find a user named " + username);
         }
+    }
+
+    @Override
+    public AuthLevel requiredAuthLevel() {
+        return AuthLevel.OWNER;
+    }
+
+    @Override
+    public String example() {
+        return "admin <username>";
+    }
+
+    @Override
+    public String helpMessage() {
+        return HelpMessages.ADMIN;
+    }
+
+    @Override
+    public String userInput() {
+        return "admin (?<username>.+)";
     }
 }
