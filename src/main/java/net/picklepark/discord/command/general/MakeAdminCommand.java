@@ -4,6 +4,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
+import net.picklepark.discord.constants.Messages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UserIdentificationException;
 import net.picklepark.discord.service.AuthService;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 public class MakeAdminCommand implements DiscordCommand {
 
@@ -34,6 +36,9 @@ public class MakeAdminCommand implements DiscordCommand {
         } catch (UserIdentificationException e) {
             logger.warn("Could not find user " + username + " in channel " + guildName);
             actions.send("I can't find a user named " + username);
+        } catch (IOException e) {
+            logger.error("While removing admin privileges for " + username, e);
+            actions.send(Messages.CANNOT_PERSIST_AUTH_STATE);
         }
     }
 

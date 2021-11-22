@@ -18,6 +18,7 @@ import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
 import net.picklepark.discord.command.general.HelpCommand;
 import net.picklepark.discord.command.general.MakeAdminCommand;
+import net.picklepark.discord.command.general.UnadminCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
@@ -37,7 +38,30 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 public class Bot extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
- 
+    private static final List<Class<? extends DiscordCommand>> COMMANDS = Arrays.asList(
+            HelpCommand.class,
+            FeatCommand.class,
+            SpellCommand.class,
+            ChangeVolumeAudioCommand.class,
+            DisconnectCommand.class,
+            GetVolumeAudioCommand.class,
+            LouderAudioCommand.class,
+            PauseAudioCommand.class,
+            QueueAudioCommand.class,
+            RecordCommand.class,
+            SkipAudioCommand.class,
+            SofterAudioCommand.class,
+            UnpauseAudioCommand.class,
+            WriteAudioCommand.class,
+            RamRanchCommand.class,
+            SyncClipsCommand.class,
+            DeleteClipCommand.class,
+            ListCommandsCommand.class,
+            MakeAdminCommand.class,
+            UnadminCommand.class,
+            StopRecordingCommand.class
+    );
+
     private final Injector injector;
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
@@ -60,28 +84,8 @@ public class Bot extends ListenerAdapter {
 
         injector = Guice.createInjector(new DefaultModule());
         registry = injector.getInstance(DiscordCommandRegistry.class);
-        register(Arrays.asList(
-                HelpCommand.class,
-                FeatCommand.class,
-                SpellCommand.class,
-                ChangeVolumeAudioCommand.class,
-                DisconnectCommand.class,
-                GetVolumeAudioCommand.class,
-                LouderAudioCommand.class,
-                PauseAudioCommand.class,
-                QueueAudioCommand.class,
-                RecordCommand.class,
-                SkipAudioCommand.class,
-                SofterAudioCommand.class,
-                UnpauseAudioCommand.class,
-                WriteAudioCommand.class,
-                RamRanchCommand.class,
-                SyncClipsCommand.class,
-                DeleteClipCommand.class,
-                ListCommandsCommand.class,
-                MakeAdminCommand.class,
-                StopRecordingCommand.class
-        ));
+        register(COMMANDS);
+
         injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();

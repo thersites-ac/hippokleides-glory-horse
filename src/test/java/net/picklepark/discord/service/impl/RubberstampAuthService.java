@@ -13,4 +13,8 @@ public class RubberstampAuthService implements AuthService {
     @Override
     public void addAdmin(String channelName, long user) {
     }
+
+    @Override
+    public void demote(long user, DiscordActions actions) {
+    }
 }

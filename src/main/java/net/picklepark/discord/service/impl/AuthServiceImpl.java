@@ -2,6 +2,7 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.service.AuthService;
 import net.picklepark.discord.service.AuthConfigService;
@@ -40,37 +41,57 @@ public class AuthServiceImpl implements AuthService {
             case ANY:
                 return true;
             case OWNER:
-                return owner(actions);
+                return authorIsOwner(actions);
             case ADMIN:
-                return admin(actions);
+                return hasAdminPrivileges(actions);
             default:
                 return false;
         }
     }
 
+    private boolean authorIsOwner(DiscordActions actions) {
+        return isOwner(actions, actions.getAuthor().getIdLong());
+    }
+
     @Override
-    public void addAdmin(String guildName, long user) {
+    public void addAdmin(String guildName, long user) throws IOException {
         admins.computeIfAbsent(guildName, key -> new HashSet<>());
-        if (admins.get(guildName).add(user)) try {
+        if (admins.get(guildName).add(user)) {
             configService.persistAdmins(admins);
             logger.info("Updated persistent admins after user {} was added in guild {}", user, guildName);
-        } catch (IOException e) {
-            logger.error("While persisting admins for guild " + guildName, e);
         }
     }
 
-    private boolean admin(DiscordActions actions) {
-        Set<Long> guildAdmins = admins.get(actions.getGuildName());
-        boolean userIsAdmin = guildAdmins != null && guildAdmins.contains(actions.getAuthor().getIdLong());
-        return userIsAdmin || owner(actions);
+    @Override
+    public void demote(long user, DiscordActions actions) throws AuthLevelConflictException, IOException {
+        if (lookupOwner(actions) == user)
+            throw new AuthLevelConflictException(user);
+        if (isAdmin(actions, user)) {
+            admins.get(actions.getGuildName()).remove(user);
+            configService.persistAdmins(admins);
+        } else
+            throw new AuthLevelConflictException(user);
     }
 
-    private boolean owner(DiscordActions actions) {
+    private boolean hasAdminPrivileges(DiscordActions actions) {
+        long authorId = actions.getAuthor().getIdLong();
+        return isAdmin(actions, authorId) || isOwner(actions, authorId);
+    }
+
+    private boolean isAdmin(DiscordActions actions, long id) {
+        Set<Long> guildAdmins = admins.get(actions.getGuildName());
+        return guildAdmins != null && guildAdmins.contains(id);
+    }
+
+    private boolean isOwner(DiscordActions actions, Long id) {
+        return lookupOwner(actions) == id;
+    }
+
+    private long lookupOwner(DiscordActions actions) {
         try {
-            return actions.getOwner().getIdLong() == actions.getAuthor().getIdLong();
+            return actions.getOwner().getIdLong();
         } catch (NoOwnerException e) {
-            logger.warn("Unowned channel", e);
-            return false;
+            return -1;
         }
     }
 

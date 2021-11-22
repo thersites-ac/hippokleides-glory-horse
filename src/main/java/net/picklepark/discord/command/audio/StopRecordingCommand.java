@@ -20,6 +20,7 @@ public class StopRecordingCommand implements DiscordCommand {
     @Override
     public void execute(DiscordActions actions) throws DiscordCommandException {
         recordingService.stopRecording();
+        actions.send("Can't hear a thing");
     }
 
     @Override

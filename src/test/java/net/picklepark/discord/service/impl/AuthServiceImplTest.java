@@ -2,16 +2,21 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.SpyDiscordActions;
 import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.service.AuthConfigService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class AuthServiceImplTest {
+
+    private static final String GUILD_NAME = "Guild";
 
     private AuthServiceImpl authService;
     private boolean decision;
@@ -24,13 +29,13 @@ public class AuthServiceImplTest {
         testConfigService = new TestConfigService();
         authService = new AuthServiceImpl(testConfigService);
         actions = new SpyDiscordActions();
-        actions.setGuildName("Guild");
+        actions.setGuildName(GUILD_NAME);
     }
 
     @Test
     public void anyAlwaysSucceeds() {
         givenLevel(AuthLevel.ANY);
-        whenTestAuth();
+        whenTestAuthFor(42);
         thenDecisionIsPass();
     }
 
@@ -38,7 +43,7 @@ public class AuthServiceImplTest {
     public void ownerLevelAllowsGuildOwner() {
         givenLevel(AuthLevel.OWNER);
         givenUserIsOwner(42);
-        whenTestAuth();
+        whenTestAuthFor(42);
         thenDecisionIsPass();
     }
 
@@ -46,7 +51,7 @@ public class AuthServiceImplTest {
     public void ownerLevelRejectsNonowner() {
         givenLevel(AuthLevel.OWNER);
         givenUserIsNotOwner(42);
-        whenTestAuth();
+        whenTestAuthFor(42);
         thenDecisionIsFail();
     }
 
@@ -54,37 +59,55 @@ public class AuthServiceImplTest {
     public void channelOwnerIsAlsoAdmin() {
         givenLevel(AuthLevel.ADMIN);
         givenUserIsOwner(42);
-        whenTestAuth();
+        whenTestAuthFor(42);
         thenDecisionIsPass();
     }
 
     @Test
-    public void canAddAdmins() {
+    public void canAddAdmins() throws IOException {
         givenLevel(AuthLevel.ADMIN);
         givenUserIsNotOwner(42);
         givenAddAdmin(42);
-        whenTestAuth();
+        whenTestAuthFor(42);
         thenDecisionIsPass();
     }
 
     @Test
-    public void authSettingsPersistAcrossInstances() {
+    public void authSettingsPersistAcrossInstances() throws IOException {
         givenAddAdmin(42);
         whenRestart();
         thenUserIsAdmin(42);
     }
 
-    private void givenAddAdmin(long user) {
-        authService.addAdmin("Guild", user);
+    @Test
+    public void demotedUserIsNotAdmin() throws AuthLevelConflictException, IOException {
+        givenLevel(AuthLevel.ADMIN);
+        givenAddAdmin(42);
+        whenDemote(42);
+        whenTestAuthFor(42);
+        thenDecisionIsFail();
+    }
+
+    @Test(expected = AuthLevelConflictException.class)
+    public void cannotDemotePeon() throws AuthLevelConflictException, IOException {
+        whenDemote(42);
+    }
+
+    @Test(expected = AuthLevelConflictException.class)
+    public void cannotDemoteGuildOwner() throws AuthLevelConflictException, IOException {
+        givenUserIsOwner(42);
+        whenDemote(42);
+    }
+
+    private void givenAddAdmin(long user) throws IOException {
+        authService.addAdmin(GUILD_NAME, user);
     }
 
     private void givenUserIsNotOwner(long user) {
-        actions.setAuthor(user);
         actions.setGuildOwner(user + 1);
     }
 
     private void givenUserIsOwner(long user) {
-        actions.setAuthor(user);
         actions.setGuildOwner(user);
     }
 
@@ -92,7 +115,13 @@ public class AuthServiceImplTest {
         this.level = level;
     }
 
-    private void whenTestAuth() {
+    private void whenDemote(int user) throws AuthLevelConflictException, IOException {
+        actions.setGuildName(GUILD_NAME);
+        authService.demote(user, actions);
+    }
+
+    private void whenTestAuthFor(long user) {
+        actions.setAuthor(user);
         decision = authService.isActionAuthorized(actions, level);
     }
 
@@ -102,8 +131,7 @@ public class AuthServiceImplTest {
 
     private void thenUserIsAdmin(long id) {
         givenLevel(AuthLevel.ADMIN);
-        actions.setAuthor(id);
-        whenTestAuth();
+        whenTestAuthFor(id);
         thenDecisionIsPass();
     }
 
