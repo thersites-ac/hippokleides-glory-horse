@@ -4,6 +4,7 @@ Hobby bot with miscellaneous functionality. Sit and spin.
 # To Do
 * important:
     * hall of fame clips to avoid accidental deletion
+    * functional testing (set up another bot for this)
 * other
     * add some degree of fuzzy id matching or in-text search
     * Lambda should assign a new id to each generated clip to avoid collision
@@ -19,11 +20,8 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)
-    * remove admins
     * better auth groups
     * modularize
-    * check for proper annotations in the `register` method
     * handle error when user tries to delete a nonexistent clip
     * `DeleteClipCommand` has an unidentified bug (think this was AWS permissions)
     * update terraform/other infra files
-    * functional testing (set up another bot for this)
