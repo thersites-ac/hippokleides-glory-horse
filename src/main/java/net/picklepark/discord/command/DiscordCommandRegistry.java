@@ -1,7 +1,7 @@
 package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.general.NoopCommand;
+import net.picklepark.discord.command.general.IdkCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UnimplementedException;
@@ -22,7 +22,7 @@ public class DiscordCommandRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
 
-    private static final DiscordCommand NOOP = new NoopCommand();
+    private static final DiscordCommand NOOP = new IdkCommand();
 
     private final ClipManager commandManager;
     private char prefix;
@@ -80,7 +80,7 @@ public class DiscordCommandRegistry {
     }
 
     public void register(DiscordCommand command) {
-        if (command instanceof NoopCommand)
+        if (command instanceof IdkCommand)
             throw new UnimplementedException();
         else
             handlers.put(command.userInput(), command);

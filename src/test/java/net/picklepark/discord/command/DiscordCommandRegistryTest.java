@@ -1,10 +1,7 @@
 package net.picklepark.discord.command;
 
-import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.adaptor.SpyDiscordActions;
-import net.picklepark.discord.command.general.NoopCommand;
-import net.picklepark.discord.constants.AuthLevel;
-import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.command.general.IdkCommand;
 import net.picklepark.discord.service.impl.TestAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
@@ -58,7 +55,7 @@ public class DiscordCommandRegistryTest {
     }
 
     private void whenRegisterNoop() {
-        registry.register(new NoopCommand());
+        registry.register(new IdkCommand());
     }
 
     private void whenUserInvokesWith(String s) {

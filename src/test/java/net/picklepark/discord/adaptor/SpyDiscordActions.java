@@ -17,12 +17,16 @@ public class SpyDiscordActions implements DiscordActions {
     private long author;
     private String guildName;
     private final HashMap<String, Long> members;
+    private final Queue<String> queuedAudio;
+    private boolean connected;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();
         sentEmbeds = new ArrayList<>();
         args = new HashMap<>();
         members = new HashMap<>();
+        queuedAudio = new LinkedList<>();
+        connected = false;
     }
 
     @Override
@@ -38,6 +42,7 @@ public class SpyDiscordActions implements DiscordActions {
     }
     @Override
     public void connect() {
+        connected = true;
     }
 
     @Override
@@ -66,6 +71,7 @@ public class SpyDiscordActions implements DiscordActions {
     }
     @Override
     public void disconnect() {
+        connected = false;
     }
     @Override
     public int getVolume() {
@@ -82,6 +88,7 @@ public class SpyDiscordActions implements DiscordActions {
     }
     @Override
     public void queue(String uri) {
+        queuedAudio.add(uri);
     }
 
     @Override
@@ -128,5 +135,13 @@ public class SpyDiscordActions implements DiscordActions {
 
     public void addGuildMember(String user, long id) {
         members.put(user, id);
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public Queue<String> getQueuedAudio() {
+        return new LinkedList<>(queuedAudio);
     }
 }

@@ -5,7 +5,8 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.UnimplementedException;
 
-public class NoopCommand implements DiscordCommand {
+public class IdkCommand implements DiscordCommand {
+
     @Override
     public void execute(DiscordActions actions) {
         actions.send("I don't know how to " + actions.userInput());
@@ -13,7 +14,7 @@ public class NoopCommand implements DiscordCommand {
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        throw new UnimplementedException();
+        return AuthLevel.ANY;
     }
 
     @Override
@@ -28,6 +29,6 @@ public class NoopCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        throw new UnimplementedException();
+        return ".*";
     }
 }
