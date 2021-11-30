@@ -33,6 +33,14 @@ public class RandomClipCommandTest {
         givenSomeClipExists();
         whenInvoke();
         thenPlaysSomeClip();
+        thenSendsTitle();
+    }
+
+    @Test
+    public void warnsOfNoClips() throws DiscordCommandException {
+        givenNoClipsExist();
+        whenInvoke();
+        thenDoesNothingButComplain();
     }
 
     private void givenSomeClipExists() {
@@ -44,13 +52,6 @@ public class RandomClipCommandTest {
                 .path("/example/bar")
                 .title("bar")
                 .build());
-    }
-
-    @Test
-    public void warnsOfNoClips() throws DiscordCommandException {
-        givenNoClipsExist();
-        whenInvoke();
-        thenDoesNothingButComplain();
     }
 
     private void givenNoClipsExist() {
@@ -67,13 +68,18 @@ public class RandomClipCommandTest {
         Queue<String> audioQueue = actions.getQueuedAudio();
         assertEquals(1, audioQueue.size());
         String uri = audioQueue.remove();
-        assertTrue(clipManager
-                .getAllCommandNames()
-                .stream()
-                .anyMatch(name -> clipManager
-                        .lookup(name)
+        assertTrue(clipManager.getAllCommandNames().stream()
+                .anyMatch(name -> clipManager.lookup(name)
                         .getPath()
                         .equals(uri)));
+    }
+
+    private void thenSendsTitle() {
+        assertEquals(1, actions.getSentMessage().size());
+        assertTrue(clipManager.getAllCommandNames().stream()
+                .anyMatch(name -> actions.getSentMessage()
+                        .get(0)
+                        .contains(name)));
     }
 
     private void thenDoesNothingButComplain() {

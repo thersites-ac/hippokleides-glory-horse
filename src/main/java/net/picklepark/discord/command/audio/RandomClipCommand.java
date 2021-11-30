@@ -30,6 +30,7 @@ public class RandomClipCommand implements DiscordCommand {
         try {
             String name = lookupRandomName();
             ClipCommand pickedClip = clipManager.lookup(name);
+            actions.send("Prepare to get \"" + name + "\"'d.");
             pickedClip.execute(actions);
         } catch (IllegalArgumentException ex) {
             logger.warn("Channel {} has no recorded clips to randomly select from", actions.getGuildName());
