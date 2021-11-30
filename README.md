@@ -6,6 +6,7 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * hall of fame clips to avoid accidental deletion
     * functional testing (set up another bot for this)
 * other
+    * track speaker of clips in order to create `~impersonate` command
     * add some degree of fuzzy id matching or in-text search
     * Lambda should assign a new id to each generated clip to avoid collision
     * error handling in the Python Lambda
