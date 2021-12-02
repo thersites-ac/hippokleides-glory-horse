@@ -19,7 +19,9 @@ import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,7 @@ public class JdaDiscordActions implements DiscordActions {
     }
 
     private User lookupAmbiguousName(String user) throws UserIdentificationException{
-        List<Member> members = new ArrayList<>(event.getGuild().getMembersByName(user, true));
+        Set<Member> members = new HashSet<>(event.getGuild().getMembersByName(user, true));
         members.addAll(event.getGuild().getMembersByNickname(user, true));
         members.addAll(event.getGuild().getMembersByEffectiveName(user, true));
 
@@ -92,7 +94,7 @@ public class JdaDiscordActions implements DiscordActions {
         else if (members.size() > 1)
             throw new AmbiguousUserException(user);
         else
-            return members.get(0).getUser();
+            return members.stream().findFirst().get().getUser();
     }
 
     @Override

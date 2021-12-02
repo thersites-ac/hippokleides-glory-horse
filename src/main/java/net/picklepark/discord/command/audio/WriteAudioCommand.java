@@ -6,9 +6,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
-import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.UserIdentificationException;
-import net.picklepark.discord.exception.NotRecordingException;
+import net.picklepark.discord.exception.*;
 import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.Coordinates;
@@ -51,16 +49,21 @@ public class WriteAudioCommand implements DiscordCommand {
 
     @Override
     public void execute(DiscordActions actions) throws DiscordCommandException {
+        String username = actions.getArgument("username");
         try {
-            String username = actions.getArgument("username");
             User user = actions.lookupUser(username);
             byte[] data = recordingService.getUser(user);
             Coordinates coordinates = writeAudioData(data, username);
             sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
         } catch (NotRecordingException e) {
             actions.send("I'm not very turned on right now :(");
-        } catch (UserIdentificationException e) {
+        } catch (NoSuchUserException e) {
             actions.send("I can't find the user " + e.getUser() + "!");
+        } catch (AmbiguousUserException e) {
+            actions.send("Too many damn users named " + username);
+        } catch (UserIdentificationException e) {
+            actions.send("I can't identify " + username);
+            logger.error("Unexpected UserIdentificationException", e);
         } catch (IOException e) {
             actions.send("I can't give you a clean url for the recording right now");
             logger.error("While shortening clip for " + actions.getArgument("username"), e);

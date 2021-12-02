@@ -26,3 +26,6 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * handle error when user tries to delete a nonexistent clip
     * `DeleteClipCommand` has an unidentified bug (think this was AWS permissions)
     * update terraform/other infra files
+    * more tags to search by random:
+        * username
+        * misc tags
