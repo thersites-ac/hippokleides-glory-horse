@@ -35,8 +35,6 @@ public class RecordingServiceImpl implements RecordingService {
     private boolean recording = false;
     private final Logger logger = LoggerFactory.getLogger(RecordingServiceImpl.class);
 
-
-
     @Override
     public void beginRecording() {
         recording = true;

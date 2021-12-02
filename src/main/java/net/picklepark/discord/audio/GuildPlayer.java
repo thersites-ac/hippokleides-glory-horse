@@ -3,6 +3,7 @@ package net.picklepark.discord.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.picklepark.discord.handler.send.AudioPlayerSendHandler;
 
 /**
  * Holder for both the player and a track scheduler for one guild.

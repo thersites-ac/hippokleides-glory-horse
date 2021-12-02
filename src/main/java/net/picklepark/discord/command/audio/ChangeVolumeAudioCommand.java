@@ -10,11 +10,23 @@ public class ChangeVolumeAudioCommand implements DiscordCommand {
     public void execute(DiscordActions actions) {
         try {
             int volume = Integer.parseInt(actions.getArgument("volume"));
-            actions.setVolume(volume);
-            actions.send("Changed!");
+            setValidVolume(actions, volume);
         } catch (NumberFormatException ex) {
             actions.send("Do you know what integers are? Really, " + actions.getArgument("volume") + "?");
         }
+    }
+
+    private void setValidVolume(DiscordActions actions, int volume) {
+        if (! isValid(volume)) {
+            actions.send("Valid volumes are 0-1000. Don't ask me what's wrong with 1001, it's just bad.");
+        } else {
+            actions.setVolume(volume);
+            actions.send("Changed!");
+        }
+    }
+
+    private boolean isValid(int volume) {
+        return 0 <= volume && volume <= 1000;
     }
 
     @Override

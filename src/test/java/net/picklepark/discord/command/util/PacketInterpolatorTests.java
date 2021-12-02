@@ -1,7 +1,7 @@
 package net.picklepark.discord.command.util;
 
-import net.picklepark.discord.audio.DiscontinuousAudioArray;
 import net.picklepark.discord.audio.PacketInterpolator;
+import net.picklepark.discord.audio.TimestampedPacket;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static net.picklepark.discord.audio.DiscontinuousAudioArray.PACKET_SIZE;
-import static net.picklepark.discord.audio.DiscontinuousAudioArray.TimestampedPacket.SILENCE_DATA;
+import static net.picklepark.discord.audio.TimestampedPacket.SILENCE_DATA;
 
 @RunWith(JUnit4.class)
 public class PacketInterpolatorTests {
 
-    private List<DiscontinuousAudioArray.TimestampedPacket> data;
+    private List<TimestampedPacket> data;
     private byte[] input;
     private byte[] result;
 
@@ -66,11 +66,11 @@ public class PacketInterpolatorTests {
     private void givenOnePacketOfSound() {
         input = new byte[PACKET_SIZE];
         Arrays.fill(input, (byte) 1);
-        data.add(new DiscontinuousAudioArray.TimestampedPacket(input));
+        data.add(new TimestampedPacket(input));
     }
 
     private void givenOnePacketOfSilence() {
-        data.add(DiscontinuousAudioArray.TimestampedPacket.silence());
+        data.add(TimestampedPacket.silence());
     }
 
     private void whenInterpolate() {

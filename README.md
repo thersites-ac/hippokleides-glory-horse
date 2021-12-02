@@ -17,7 +17,6 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * any unsanitized user input risks?
     * audio backtrack
     * audio multichannel (to layer clips over playlist)
-    * fix the volume controls
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)

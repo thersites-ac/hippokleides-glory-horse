@@ -4,7 +4,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
-import net.picklepark.discord.handler.DemultiplexingHandler;
+import net.picklepark.discord.handler.receive.DemultiplexingHandler;
 import net.picklepark.discord.service.RecordingService;
 
 import javax.inject.Inject;
