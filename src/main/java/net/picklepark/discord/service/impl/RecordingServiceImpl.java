@@ -23,17 +23,17 @@ public class RecordingServiceImpl implements RecordingService {
     public final int clipDuration;
     public final int packetsPerClip;
 
-    @Inject
-    public RecordingServiceImpl(@Named("recording.clip.duration") int clipDuration) {
-        this.clipDuration = clipDuration;
-        this.packetsPerClip = PACKETS_PER_SECOND * clipDuration;
-    }
-
     private LinkedList<byte[]> combined;
     private ConcurrentHashMap<Long, DiscontinuousAudioArray> userRecordings;
 
     private boolean recording = false;
     private final Logger logger = LoggerFactory.getLogger(RecordingServiceImpl.class);
+
+    @Inject
+    public RecordingServiceImpl(@Named("recording.clip.duration") int clipDuration) {
+        this.clipDuration = clipDuration;
+        this.packetsPerClip = PACKETS_PER_SECOND * clipDuration;
+    }
 
     @Override
     public void beginRecording() {

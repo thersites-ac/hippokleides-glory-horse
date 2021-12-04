@@ -1,56 +1,105 @@
 package net.picklepark.discord.handler.send;
 
 import club.minnced.opus.util.OpusLibrary;
+import com.sedmelluq.discord.lavaplayer.format.transcoder.AudioChunkDecoder;
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
+import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.picklepark.discord.exception.DiscordCommandException;
 import tomp2p.opuswrapper.Opus;
 
-import javax.annotation.Nullable;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
 
+import static com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats.DISCORD_OPUS;
 
-public class MultichannelPlayerSendHandler implements AudioSendHandler {
+public class MultichannelPlayerSendHandler {
 
-    private AudioPlayerSendHandler channelOne;
-    private AudioPlayerSendHandler channelTwo;
-    private boolean channelOneCanProvide;
-    private boolean channelTwoCanPrivide;
-
-    public MultichannelPlayerSendHandler() {
-        channelOneCanProvide = false;
-        channelTwoCanPrivide = false;
-    }
-
-    @Override
-    public boolean canProvide() {
-        channelOneCanProvide = channelOne.canProvide();
-        channelTwoCanPrivide = channelTwo.canProvide();
-        return channelOneCanProvide || channelTwoCanPrivide;
-    }
-
-    @Nullable
-    @Override
-    public ByteBuffer provide20MsAudio() {
-        if (! channelOneCanProvide)
-            return channelTwo.provide20MsAudio();
-        else if (! channelTwoCanPrivide)
-            return channelOne.provide20MsAudio();
-        else {
-            return mix(channelOne.provide20MsAudio(), channelTwo.provide20MsAudio());
-        }
-    }
-
-    private ByteBuffer mix(ByteBuffer channelOneAudio, ByteBuffer channelTwoAudio) {
-        return null;
-    }
-
-    public void setChannelTwo(AudioPlayerSendHandler channelTwo) {
-        this.channelTwo = channelTwo;
-    }
-
-    public void setChannelOne(AudioPlayerSendHandler channelOne) {
-        this.channelOne = channelOne;
-    }
 }
+
+// how to read from the totally-fucked stream that lavaplayer provides
+//    public static void main(String[] args) throws DiscordCommandException, IOException, InterruptedException {
+//        AudioPlayerManager junk = new DefaultAudioPlayerManager();
+//        AudioSourceManagers.registerLocalSource(junk);
+//        AudioPlayer player = junk.createPlayer();
+//        junk.loadItem("recordings/mixed.wav", new AudioLoadResultHandler() {
+//            @Override
+//            public void trackLoaded(AudioTrack track) {
+//                player.playTrack(track);
+//            }
+//            @Override
+//            public void playlistLoaded(AudioPlaylist playlist) {
+//                player.playTrack(playlist.getSelectedTrack());
+//            }
+//            @Override
+//            public void noMatches() {
+//                System.out.println("No match");
+//            }
+//            @Override
+//            public void loadFailed(FriendlyException exception) {
+//                System.out.println("Load failed");
+//            }
+//        });
+//        Thread.sleep(3000);
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        AudioChunkDecoder decoder = DISCORD_OPUS.createDecoder();
+//        for (AudioFrame frame = player.provide(); frame != null; frame = player.provide()) {
+//            ShortBuffer shortBuffer = ByteBuffer.allocateDirect(DISCORD_OPUS.totalSampleCount() * 2)
+//                    .order(ByteOrder.nativeOrder())
+//                    .asShortBuffer();
+//            decoder.decode(frame.getData(), shortBuffer);
+//            outputStream.write(bytesOf(shortBuffer));
+//            System.out.println("Wrote a frame");
+//        }
+//        writeAudioData(outputStream.toByteArray());
+//        System.out.println("Done");
+//    }
+//
+//    private static byte[] bytesOf(ShortBuffer shortBuffer) {
+//        ByteBuffer byteBuffer = ByteBuffer.allocate(DISCORD_OPUS.totalSampleCount() * 2);
+//        while (byteBuffer.position() < byteBuffer.capacity()) {
+//            byteBuffer.putShort(shortBuffer.get());
+//        }
+//        return byteBuffer.array();
+//    }
+//
+//    private static void addAllTo(byte[] source, ArrayList<Byte> dest) {
+//        for (byte b: source)
+//            dest.add(b);
+//    }
+//
+//    public static void writeAudioData(byte[] data) throws DiscordCommandException {
+//        try (AudioInputStream audioInputStream = new AudioInputStream(
+//                new ByteArrayInputStream(data),
+//                AudioReceiveHandler.OUTPUT_FORMAT,
+//                data.length)) {
+//            String filename = "recordings/mixed-2.wav";
+//            File output = new File(filename);
+//            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
+//        } catch (IOException e) {
+//            throw new DiscordCommandException(e);
+//        }
+//    }
+
+// how to mix using Java's relatively civilized built-in audio API:
 //class scratch {
 //    public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
 //        File file1 = new File("recordings/Mon_Oct_25_19-56-18_EDT_2021-cogbog.wav");
