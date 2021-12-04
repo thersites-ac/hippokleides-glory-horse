@@ -5,21 +5,36 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.service.PathfinderEmbedder;
+import net.picklepark.discord.model.Feat;
+import net.picklepark.discord.model.ScrapeResult;
+import net.picklepark.discord.service.ElementScraper;
+import net.picklepark.discord.service.EmbedRenderer;
+import net.picklepark.discord.service.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class FeatCommand implements DiscordCommand {
-    private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
 
-    private final PathfinderEmbedder embedder;
+    private static final Logger logger = LoggerFactory.getLogger(FeatCommand.class);
+    private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
+    private static final String ADVANCED_CLASS_FEATS = "https://legacy.aonprd.com/advancedClassGuide/feats.html";
+    private static final String ADVANCED_PLAYER_FEATS = "https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html";
+
+    private final ElementScraper scraper;
+    private final EmbedRenderer<Feat> featRenderer;
+    private final Transformer<Feat> featTransformer;
 
     @Inject
-    public FeatCommand(PathfinderEmbedder embedder) {
-        this.embedder = embedder;
+    public FeatCommand(ElementScraper scraper,
+                       EmbedRenderer<Feat> featRenderer,
+                       Transformer<Feat> featTransformer) {
+        this.scraper = scraper;
+        this.featRenderer = featRenderer;
+        this.featTransformer = featTransformer;
     }
 
     @Override
@@ -63,7 +78,7 @@ public class FeatCommand implements DiscordCommand {
 
     private MessageEmbed advancedClassFeatOrNull(String feat) throws IOException {
         try {
-            return embedder.embedAdvancedClassFeat(feat);
+            return embedWithSource(feat, ADVANCED_CLASS_FEATS, "Advanced Class Guide");
         } catch (ResourceNotFoundException e) {
             return null;
         }
@@ -71,7 +86,7 @@ public class FeatCommand implements DiscordCommand {
 
     private MessageEmbed advancePlayerFeatOrNull(String feat) throws IOException {
         try {
-            return embedder.embedAdvancedPlayerFeat(feat);
+            return embedWithSource(feat, ADVANCED_PLAYER_FEATS, "Advanced Player's Guide");
         } catch (ResourceNotFoundException e) {
             return null;
         }
@@ -79,9 +94,20 @@ public class FeatCommand implements DiscordCommand {
 
     private MessageEmbed coreFeatOrNull(String feat) throws IOException {
         try {
-            return embedder.embedCoreFeat(feat);
+            return embedWithSource(feat, CORE_FEATS, "Core Rulebook");
         } catch (ResourceNotFoundException e) {
             return null;
         }
     }
+
+    private MessageEmbed embedWithSource(String id, String url, String source) throws IOException, ResourceNotFoundException {
+        logger.info("Scraping {}", id);
+        ScrapeResult result = scraper.scrapeFeatNodes(id, url);
+        result.setSource(source);
+        logger.info("Elements: {}", Arrays.toString(result.getElements().toArray()));
+        Feat feat = featTransformer.transform(result);
+        logger.info("Feat: {}", feat.toString());
+        return featRenderer.render(feat);
+    }
+
 }

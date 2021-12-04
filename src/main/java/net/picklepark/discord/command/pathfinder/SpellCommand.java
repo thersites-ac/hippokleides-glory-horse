@@ -6,28 +6,37 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.service.impl.LegacyPrdEmbedder;
+import net.picklepark.discord.model.ScrapeResult;
+import net.picklepark.discord.model.Spell;
+import net.picklepark.discord.service.ElementScraper;
+import net.picklepark.discord.service.EmbedRenderer;
+import net.picklepark.discord.service.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class SpellCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(SpellCommand.class);
-
-    private final LegacyPrdEmbedder embedder;
+    private final ElementScraper scraper;
+    private final EmbedRenderer<Spell> spellEmbedRenderer;
+    private final Transformer<Spell> spellTransformer;
 
     @Inject
-    public SpellCommand(LegacyPrdEmbedder embedder) {
-        this.embedder = embedder;
+    public SpellCommand(ElementScraper scraper,
+                        EmbedRenderer<Spell> spellEmbedRenderer,
+                        Transformer<Spell> spellTransformer) {
+        this.scraper = scraper;
+        this.spellEmbedRenderer = spellEmbedRenderer;
+        this.spellTransformer = spellTransformer;
     }
 
     @Override
     public void execute(DiscordActions actions) throws DiscordCommandException {
-        MessageEmbed result = null;
         try {
-            result = scrapeSpell(actions);
+            MessageEmbed result = scrapeSpell(actions);
             actions.send(result);
         } catch (IOException e) {
             throw new DiscordCommandException(e);
@@ -60,6 +69,11 @@ public class SpellCommand implements DiscordCommand {
 
     private MessageEmbed scrapeSpell(DiscordActions actions) throws IOException, ResourceNotFoundException {
         String spell = actions.getArgument("spell");
-        return embedder.embedSpell(spell);
+        logger.info("Scraping {}", spell);
+        ScrapeResult result = scraper.scrapeCoreSpell(spell);
+        logger.info("Elements: {}", Arrays.toString(result.getElements().toArray()));
+        Spell spellModel = spellTransformer.transform(result);
+        logger.info("Spell: {}", spellModel.toString());
+        return spellEmbedRenderer.render(spellModel);
     }
 }

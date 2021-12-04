@@ -12,7 +12,6 @@ public class EmbedModule extends AbstractModule {
     protected void configure() {
         bind(DocumentFetcher.class).to(DefaultDocumentFetcher.class);
         bind(ElementScraper.class).to(DefaultElementScraper.class);
-        bind(PathfinderEmbedder.class).to(LegacyPrdEmbedder.class);
     }
 
     @Provides EmbedRenderer<Feat> featEmbedRenderer() {
