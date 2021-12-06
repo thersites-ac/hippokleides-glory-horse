@@ -4,7 +4,6 @@ import net.picklepark.discord.command.general.HelpCommand;
 import net.picklepark.discord.tools.AnotherTestCommand;
 import net.picklepark.discord.tools.SpyCommand;
 import net.picklepark.discord.tools.SpyDiscordActions;
-import net.picklepark.discord.command.*;
 import net.picklepark.discord.tools.RubberstampAuthService;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import net.picklepark.discord.tools.TestCommand;

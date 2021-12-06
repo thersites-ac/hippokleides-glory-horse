@@ -1,8 +1,6 @@
-package net.picklepark.discord.command.general;
+package net.picklepark.discord.command;
 
-import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.command.DiscordCommandRegistry;
 import net.picklepark.discord.constants.AuthLevel;
 
 import javax.inject.Inject;

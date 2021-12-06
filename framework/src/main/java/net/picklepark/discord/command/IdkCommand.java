@@ -1,4 +1,4 @@
-package net.picklepark.discord.command.general;
+package net.picklepark.discord.command;
 
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;

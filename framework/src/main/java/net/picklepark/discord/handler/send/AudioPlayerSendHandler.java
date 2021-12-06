@@ -29,7 +29,7 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
 
   @Override
   public boolean canProvide() {
-    // returns true if audio was provided
+    // returns true if net.picklepark.discord.audio was provided
     return audioPlayer.provide(frame);
   }
 

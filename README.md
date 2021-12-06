@@ -4,7 +4,6 @@ Hobby bot with miscellaneous functionality. Sit and spin.
 # To Do
 * important:
     * hall of fame clips to avoid accidental deletion
-    * functional testing (set up another bot for this)
 * other
     * track speaker of clips in order to create `~impersonate` command
     * add some degree of fuzzy id matching or in-text search
@@ -25,6 +24,6 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * handle error when user tries to delete a nonexistent clip
     * `DeleteClipCommand` has an unidentified bug (think this was AWS permissions)
     * update terraform/other infra files
-    * more tags to search by random:
-        * username
-        * misc tags
+    * functional testing (set up another bot for this)
+    * more tags for randomized selections
+    * random youtube playback (search and play back audio from first result) - Eli

@@ -1,7 +1,6 @@
 package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.command.audio.ClipCommand;
+import net.picklepark.discord.command.ClipCommand;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.ClipManager;
 
