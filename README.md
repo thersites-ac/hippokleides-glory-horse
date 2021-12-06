@@ -20,10 +20,10 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * feature intake endpoint
     * image search by keyword (from deviantart, wikihow, google images, etc.)
     * better auth groups
-    * modularize
     * handle error when user tries to delete a nonexistent clip
     * `DeleteClipCommand` has an unidentified bug (think this was AWS permissions)
     * update terraform/other infra files
     * functional testing (set up another bot for this)
     * more tags for randomized selections
     * random youtube playback (search and play back audio from first result) - Eli
+    * modularize -- continue (move tests, separate audio more cleanly)
