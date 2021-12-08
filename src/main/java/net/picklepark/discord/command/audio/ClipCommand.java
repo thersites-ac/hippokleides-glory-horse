@@ -1,4 +1,4 @@
-package net.picklepark.discord.command;
+package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.constants.AuthLevel;

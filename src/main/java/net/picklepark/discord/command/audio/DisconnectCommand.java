@@ -35,7 +35,7 @@ public class DisconnectCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Tell me to leave your net.picklepark.discord.audio channel.";
+        return "Tell me to leave your audio channel.";
     }
 
     @Override

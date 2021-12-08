@@ -1,6 +1,35 @@
 package net.picklepark.discord.handler.send;
 
+import club.minnced.opus.util.OpusLibrary;
+import com.sedmelluq.discord.lavaplayer.format.transcoder.AudioChunkDecoder;
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
+import net.dv8tion.jda.api.audio.AudioReceiveHandler;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.picklepark.discord.exception.DiscordCommandException;
+import tomp2p.opuswrapper.Opus;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+
+import static com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats.DISCORD_OPUS;
 
 public class MultichannelPlayerSendHandler {
 
@@ -25,7 +54,7 @@ public class MultichannelPlayerSendHandler {
 //                System.out.println("No match");
 //            }
 //            @Override
-//            public void loadFailed(FriendlyException net.picklepark.discord.exception) {
+//            public void loadFailed(FriendlyException exception) {
 //                System.out.println("Load failed");
 //            }
 //        });
@@ -70,7 +99,7 @@ public class MultichannelPlayerSendHandler {
 //        }
 //    }
 
-// how to mix using Java's relatively civilized built-in net.picklepark.discord.audio API:
+// how to mix using Java's relatively civilized built-in audio API:
 //class scratch {
 //    public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
 //        File file1 = new File("recordings/Mon_Oct_25_19-56-18_EDT_2021-cogbog.wav");

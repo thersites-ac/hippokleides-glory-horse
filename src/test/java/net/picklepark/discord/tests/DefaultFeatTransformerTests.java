@@ -109,7 +109,7 @@ public class DefaultFeatTransformerTests {
     private void givenScrapedElementHasSpuriousDetail() {
         elements.add(new Element("p").addClass("stat-block-1")
                 .appendChild(new Element("b").text("Failure:"))
-                .appendChild(new TextNode("This should cause an net.picklepark.discord.exception.")));
+                .appendChild(new TextNode("This should cause an exception.")));
     }
 
     private void givenFeatHasNoSummary() {

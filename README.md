@@ -4,6 +4,7 @@ Hobby bot with miscellaneous functionality. Sit and spin.
 # To Do
 * important:
     * hall of fame clips to avoid accidental deletion
+    * functional testing (set up another bot for this)
 * other
     * track speaker of clips in order to create `~impersonate` command
     * add some degree of fuzzy id matching or in-text search

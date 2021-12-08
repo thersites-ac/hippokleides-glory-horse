@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 // FIXME: separate the logic of how to store and download from filenames and folders
 public interface RemoteStorageService {
