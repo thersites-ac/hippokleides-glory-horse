@@ -8,6 +8,7 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * track speaker of clips in order to create `~impersonate` command
     * add some degree of fuzzy id matching or in-text search
     * Lambda should assign a new id to each generated clip to avoid collision
+        * the use case for this is when a user clips two portions of the same recording--currently they get uploaded with the same key and one version overrides the other
     * error handling in the Python Lambda
     * add CORS headers to API Gateway error responses
     * inform channel members after the clip has been loaded
