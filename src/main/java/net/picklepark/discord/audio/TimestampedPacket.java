@@ -1,17 +1,12 @@
 package net.picklepark.discord.audio;
 
-import java.util.Arrays;
+import static net.picklepark.discord.constants.AudioConstants.SILENCE_DATA;
 
 public class TimestampedPacket {
-    public static final byte[] SILENCE_DATA = new byte[DiscontinuousAudioArray.PACKET_SIZE];
 
     public final boolean isSilence;
     public final long timestamp;
     public final byte[] data;
-
-    static {
-        Arrays.fill(SILENCE_DATA, (byte) 0);
-    }
 
     public TimestampedPacket(byte[] data) {
         this.data = data;

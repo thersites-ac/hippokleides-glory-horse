@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static net.picklepark.discord.constants.AudioConstants.SILENCE_DATA;
+
 public class DiscontinuousAudioArray {
 
-    public static final int BYTES_PER_MS = 192;
-    public static final int MS_PER_PACKET = 20;
-    public static final int PACKET_SIZE = BYTES_PER_MS * MS_PER_PACKET;
     private final long maxInterval;
 
     private Logger logger = LoggerFactory.getLogger(DiscontinuousAudioArray.class);
@@ -52,7 +51,7 @@ public class DiscontinuousAudioArray {
     }
 
     private boolean isSilence(byte[] data) {
-        return Arrays.equals(data, TimestampedPacket.SILENCE_DATA);
+        return Arrays.equals(data, SILENCE_DATA);
     }
 
 }

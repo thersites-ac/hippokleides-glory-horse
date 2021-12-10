@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static net.picklepark.discord.audio.DiscontinuousAudioArray.MS_PER_PACKET;
-import static net.picklepark.discord.audio.DiscontinuousAudioArray.PACKET_SIZE;
-import static net.picklepark.discord.audio.TimestampedPacket.SILENCE_DATA;
+import static net.picklepark.discord.constants.AudioConstants.MS_PER_PACKET;
+import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
+import static net.picklepark.discord.constants.AudioConstants.SILENCE_DATA;
 
 public class PacketInterpolator {
 

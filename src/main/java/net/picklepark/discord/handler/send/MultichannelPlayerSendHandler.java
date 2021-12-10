@@ -14,8 +14,10 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.exception.UnimplementedException;
 import tomp2p.opuswrapper.Opus;
 
+import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -31,8 +33,18 @@ import java.util.ArrayList;
 
 import static com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats.DISCORD_OPUS;
 
-public class MultichannelPlayerSendHandler {
+public class MultichannelPlayerSendHandler implements AudioSendHandler {
 
+    @Override
+    public boolean canProvide() {
+        throw new UnimplementedException();
+    }
+
+    @Nullable
+    @Override
+    public ByteBuffer provide20MsAudio() {
+        throw new UnimplementedException();
+    }
 }
 
 // how to read from the totally-fucked stream that lavaplayer provides
