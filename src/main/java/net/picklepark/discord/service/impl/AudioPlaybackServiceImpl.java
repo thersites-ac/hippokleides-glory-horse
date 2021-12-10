@@ -6,6 +6,7 @@ import net.picklepark.discord.service.AudioPlaybackService;
 import javax.sound.sampled.AudioInputStream;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static net.picklepark.discord.constants.AudioConstants.BYTES_PER_MS;
@@ -34,7 +35,6 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
 
     @Override
     public byte[] nextTwentyMs() {
-        // todo: immutability
-        return frame;
+        return Arrays.copyOf(frame, frame.length);
     }
 }
