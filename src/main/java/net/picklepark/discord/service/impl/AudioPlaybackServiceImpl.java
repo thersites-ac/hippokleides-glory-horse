@@ -9,7 +9,6 @@ import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static net.picklepark.discord.constants.AudioConstants.BYTES_PER_MS;
 import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
 
 public class AudioPlaybackServiceImpl implements AudioPlaybackService {
@@ -63,7 +62,7 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
     }
 
     private void averageChannelFrames() {
-        for (int i = 0; i < BYTES_PER_MS; i++)
+        for (int i = 0; i < PACKET_SIZE; i++)
             averageFrame[i] = (byte) Math.max(channelOneFrame[i] >> 1 + channelTwoFrame[i] >> 1, 255);
     }
 
