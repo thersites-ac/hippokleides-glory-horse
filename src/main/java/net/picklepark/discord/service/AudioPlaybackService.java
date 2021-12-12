@@ -1,9 +1,11 @@
 package net.picklepark.discord.service;
 
 import javax.sound.sampled.AudioInputStream;
+import java.io.IOException;
 
 public interface AudioPlaybackService {
-    void addChannel(AudioInputStream datasource);
-    boolean hasNext();
-    byte[] nextTwentyMs();
+    void setChannelOne(AudioInputStream channelOne);
+    void setChannelTwo(AudioInputStream channelTwo);
+    boolean hasNext() throws IOException;
+    byte[] nextTwentyMs() throws IOException;
 }

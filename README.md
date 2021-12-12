@@ -28,4 +28,3 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * functional testing (set up another bot for this)
     * more tags for randomized selections
     * random youtube playback (search and play back audio from first result) - Eli
-    * modularize -- continue (move tests, separate audio more cleanly)
