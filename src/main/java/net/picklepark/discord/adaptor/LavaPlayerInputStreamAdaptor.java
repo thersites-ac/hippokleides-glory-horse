@@ -25,28 +25,26 @@ public class LavaPlayerInputStreamAdaptor extends InputStream {
         decoder = DISCORD_OPUS.createDecoder();
         this.player = player;
         nextFrame();
-        data = new byte[0];
-        cursor = 0;
     }
 
     @Override
     public int read() throws IOException {
-        if (endOfFrame())
-            try {
-                nextFrame();
-            } catch (NullPointerException ex) {
-                return -1;
-            }
-        return readFromFrame();
+        if (endOfFrame() && nextFrame())
+            return readFromFrame();
+        else
+            return -1;
     }
 
     private boolean endOfFrame() {
         return cursor == data.length;
     }
 
-    private void nextFrame() throws IOException {
+    private boolean nextFrame() throws IOException {
         AudioFrame frame = player.provide();
-        decodeData(frame);
+        if (frame == null)
+            return false;
+        data = decodeData(frame);
+        return true;
     }
 
     private int readFromFrame() {
@@ -55,14 +53,14 @@ public class LavaPlayerInputStreamAdaptor extends InputStream {
         return b & 0xff;
     }
 
-    private void decodeData(AudioFrame frame) throws IOException {
+    private byte[] decodeData(AudioFrame frame) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ShortBuffer shortBuffer = ByteBuffer.allocateDirect(DISCORD_OPUS.totalSampleCount() * 2)
                 .order(ByteOrder.nativeOrder())
                 .asShortBuffer();
         decoder.decode(frame.getData(), shortBuffer);
         out.write(bytesOf(shortBuffer));
-        data = out.toByteArray();
+        return out.toByteArray();
     }
 
     private static byte[] bytesOf(ShortBuffer shortBuffer) {

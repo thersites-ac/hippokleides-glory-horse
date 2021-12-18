@@ -45,7 +45,7 @@ public class AudioMultichannelTests {
     }
 
     @Test
-    public void playsBackLongerOfTwoChannels() throws IOException {
+    public void playbackLengthIsLongerOfTwoChannels() throws IOException {
         givenChannelOne(channelOne);
         givenChannelOne(channelTwo);
         whenPlayAll();
