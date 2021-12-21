@@ -11,7 +11,7 @@ public class RamRanchCommand implements DiscordCommand {
     @Override
     public void execute(DiscordActions actions) {
         actions.connect();
-        actions.queue(RAM_RANCH_URL);
+        actions.queueChannelOne(RAM_RANCH_URL);
         actions.send("enjoy :)");
     }
 

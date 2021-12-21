@@ -17,17 +17,19 @@ public class SpyDiscordActions implements DiscordActions {
     private long owner;
     private long author;
     private String guildName;
-    private final HashMap<String, Long> members;
-    private final Queue<String> queuedAudio;
     private boolean connected;
+    private final HashMap<String, Long> members;
+    private final Queue<String> channelOne;
+    private final Queue<String> channelTwo;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();
         sentEmbeds = new ArrayList<>();
         args = new HashMap<>();
         members = new HashMap<>();
-        queuedAudio = new LinkedList<>();
         connected = false;
+        channelOne = new LinkedList<>();
+        channelTwo = new LinkedList<>();
     }
 
     @Override
@@ -84,12 +86,19 @@ public class SpyDiscordActions implements DiscordActions {
     @Override
     public void unpause() {
     }
+
     @Override
     public void skip() {
     }
+
     @Override
-    public void queue(String uri) {
-        queuedAudio.add(uri);
+    public void queueChannelOne(String uri) {
+        channelOne.add(uri);
+    }
+
+    @Override
+    public void queueChannelTwo(String uri) {
+        channelTwo.add(uri);
     }
 
     @Override
@@ -142,7 +151,11 @@ public class SpyDiscordActions implements DiscordActions {
         return connected;
     }
 
-    public Queue<String> getQueuedAudio() {
-        return new LinkedList<>(queuedAudio);
+    public Queue<String> getChannelOne() {
+        return new LinkedList<>(channelOne);
+    }
+
+    public Queue<String> getChannelTwo() {
+        return new LinkedList<>(channelTwo);
     }
 }

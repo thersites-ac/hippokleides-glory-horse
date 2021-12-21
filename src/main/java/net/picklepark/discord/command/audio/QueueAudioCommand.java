@@ -13,7 +13,7 @@ public class QueueAudioCommand implements DiscordCommand {
     @Override
     public void execute(DiscordActions actions) {
         String uri = actions.getArgument("uri");
-        actions.queue(uri);
+        actions.queueChannelOne(uri);
         actions.send("I CANNOT WAIT TO PLAY THIS SONG");
     }
 

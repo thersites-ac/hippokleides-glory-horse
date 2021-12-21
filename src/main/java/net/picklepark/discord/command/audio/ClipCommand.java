@@ -19,7 +19,7 @@ public class ClipCommand implements net.picklepark.discord.command.DiscordComman
     @Override
     public void execute(DiscordActions actions) {
         actions.connect();
-        actions.queue(path);
+        actions.queueChannelTwo(path);
     }
 
     @Override

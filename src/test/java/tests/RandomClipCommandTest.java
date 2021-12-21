@@ -66,7 +66,7 @@ public class RandomClipCommandTest {
 
     private void thenPlaysSomeClip() {
         assertTrue(actions.isConnected());
-        Queue<String> audioQueue = actions.getQueuedAudio();
+        Queue<String> audioQueue = actions.getChannelTwo();
         assertEquals(1, audioQueue.size());
         String uri = audioQueue.remove();
         assertTrue(clipManager.getAllCommandNames().stream()
@@ -85,7 +85,7 @@ public class RandomClipCommandTest {
 
     private void thenDoesNothingButComplain() {
         assertFalse(actions.isConnected());
-        assertEquals(0, actions.getQueuedAudio().size());
+        assertEquals(0, actions.getChannelOne().size());
         assertEquals("I have never heard the sweet sound of your conversation.", actions.getSentMessage().get(0));
     }
 

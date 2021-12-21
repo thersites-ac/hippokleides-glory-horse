@@ -3,39 +3,51 @@ package net.picklepark.discord.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.picklepark.discord.handler.send.AudioPlayerSendHandler;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.picklepark.discord.adaptor.LavaPlayerInputStreamAdaptor;
+import net.picklepark.discord.handler.send.MultichannelPlayerSendHandler;
+import net.picklepark.discord.service.AudioPlaybackService;
+import net.picklepark.discord.service.impl.AudioPlaybackServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Holder for both the player and a track scheduler for one guild.
- */
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
+import static net.dv8tion.jda.api.audio.AudioReceiveHandler.OUTPUT_FORMAT;
+
 public class GuildPlayer {
-  /**
-   * Audio player for the guild.
-   */
+
+  private static final Logger logger = LoggerFactory.getLogger(GuildPlayer.class);
+
   public final AudioPlayer player;
-  /**
-   * Track scheduler for the player.
-   */
   public final TrackScheduler scheduler;
 
-  /**
-   * Creates a player and a track scheduler.
-   * @param manager Audio player manager to use for creating the player.
-   */
+  private final AudioPlaybackService audioPlaybackService;
+
   public GuildPlayer(AudioPlayerManager manager) {
     player = manager.createPlayer();
     scheduler = new TrackScheduler(player);
     player.addListener(scheduler);
+    audioPlaybackService = new AudioPlaybackServiceImpl();
   }
 
-  /**
-   * @return Wrapper around AudioPlayer to use it as an AudioSendHandler.
-   */
-  public AudioPlayerSendHandler getSendHandler() {
-    return new AudioPlayerSendHandler(player);
+  public AudioSendHandler getSendHandler() {
+    return new MultichannelPlayerSendHandler(audioPlaybackService);
   }
 
   public void queue(AudioTrack track) {
-    scheduler.queue(track);
+    logger.info("Queueing");
+    try {
+      player.playTrack(track);
+      audioPlaybackService.setChannelOne(new AudioInputStream(
+              new LavaPlayerInputStreamAdaptor(player),
+              OUTPUT_FORMAT,
+              track.getDuration()
+      ));
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
   }
+
 }

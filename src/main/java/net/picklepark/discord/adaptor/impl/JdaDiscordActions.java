@@ -13,17 +13,20 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
-import net.picklepark.discord.exception.AmbiguousUserException;
-import net.picklepark.discord.exception.NoOwnerException;
-import net.picklepark.discord.exception.NoSuchUserException;
-import net.picklepark.discord.exception.UserIdentificationException;
+import net.picklepark.discord.exception.*;
+import net.picklepark.discord.service.AudioPlaybackService;
 
-import java.util.ArrayList;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.dv8tion.jda.api.audio.AudioReceiveHandler.OUTPUT_FORMAT;
 
 public class JdaDiscordActions implements DiscordActions {
 
@@ -135,12 +138,35 @@ public class JdaDiscordActions implements DiscordActions {
     }
 
     @Override
+    public void queueChannelOne(String uri) {
+        audioContext.playerManager.loadItemOrdered(
+                audioContext.guildPlayer,
+                uri,
+                new ResultHandler(audioContext.guildPlayer, uri));
+    }
+
+    @Override
+    public void queueChannelTwo(String uri) {
+        try {
+            audioContext.audioPlaybackService.setChannelTwo(AudioSystem.getAudioInputStream(
+                    OUTPUT_FORMAT,
+                    AudioSystem.getAudioInputStream(new File(uri)))
+            );
+        } catch (Exception e) {
+            // FIXME: decide what to do with this exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+    @Override
     public void queue(String uri) {
         audioContext.playerManager.loadItemOrdered(
                 audioContext.guildPlayer,
                 uri,
                 new ResultHandler(audioContext.guildPlayer, uri));
     }
+     */
 
     @Override
     public void initMatches(String regex, String message) {

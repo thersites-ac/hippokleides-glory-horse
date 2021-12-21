@@ -28,3 +28,4 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * functional testing (set up another bot for this)
     * more tags for randomized selections
     * random youtube playback (search and play back audio from first result) - Eli
+    * the helper methods in `Bot.java` and the whole `AudioContext` thing are bad and should be rearranged

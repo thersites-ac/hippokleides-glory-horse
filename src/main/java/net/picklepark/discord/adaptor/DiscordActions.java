@@ -21,7 +21,8 @@ public interface DiscordActions {
     void pause();
     void unpause();
     void skip();
-    void queue(String uri);
+    void queueChannelOne(String uri);
+    void queueChannelTwo(String uri);
     void initMatches(String regex, String message);
     String getGuildName();
     User getOwner() throws NoOwnerException;

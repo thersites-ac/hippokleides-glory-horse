@@ -3,6 +3,9 @@ package net.picklepark.discord.handler.send;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.picklepark.discord.service.AudioPlaybackService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -13,6 +16,9 @@ import java.nio.ByteBuffer;
  * provide20MsAudio().
  */
 public class AudioPlayerSendHandler implements AudioSendHandler {
+
+  private Logger logger = LoggerFactory.getLogger(AudioPlayerSendHandler.class);
+
   private final AudioPlayer audioPlayer;
   private final ByteBuffer buffer;
   private final MutableAudioFrame frame;
@@ -35,6 +41,7 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
 
   @Override
   public ByteBuffer provide20MsAudio() {
+    logger.info("Providing more audio");
     // flip to make it a read buffer
     ((Buffer) buffer).flip();
     return buffer;

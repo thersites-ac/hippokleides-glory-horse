@@ -22,16 +22,16 @@ import net.picklepark.discord.command.general.UnadminCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
+import net.picklepark.discord.service.AudioPlaybackService;
 import net.picklepark.discord.service.RemoteStorageService;
+import net.picklepark.discord.service.impl.AudioPlaybackServiceImpl;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
@@ -67,7 +67,8 @@ public class Bot extends ListenerAdapter {
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
     private final SqsPollingWorker worker;
- 
+    private final Map<String, AudioPlaybackService> channelPlaybacks;
+
     public static void main(String[] args) throws Exception {
         JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
                 .addEventListeners(new Bot())
@@ -90,6 +91,7 @@ public class Bot extends ListenerAdapter {
         injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();
+        channelPlaybacks = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -105,8 +107,12 @@ public class Bot extends ListenerAdapter {
     }
 
     private DiscordActions buildActions(GuildMessageReceivedEvent event) {
-        AudioContext context = new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager);
+        AudioContext context = new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager, getPlaybackService(event.getGuild()));
         return new JdaDiscordActions(event, context);
+    }
+
+    private AudioPlaybackService getPlaybackService(Guild guild) {
+        return channelPlaybacks.computeIfAbsent(guild.getId(), whatever -> new AudioPlaybackServiceImpl());
     }
 
     private void register(List<Class<? extends DiscordCommand>> commands) {
@@ -124,8 +130,7 @@ public class Bot extends ListenerAdapter {
 
     private GuildPlayer getGuildPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
-        guildPlayers.computeIfAbsent(guildId, id -> new GuildPlayer(playerManager));
-        return guildPlayers.get(guildId);
+        return guildPlayers.computeIfAbsent(guildId, id -> new GuildPlayer(playerManager));
     }
 
 }
