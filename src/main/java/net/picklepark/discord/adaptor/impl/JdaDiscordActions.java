@@ -14,6 +14,7 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
 import net.picklepark.discord.exception.*;
+import net.picklepark.discord.handler.send.MultichannelPlayerSendHandler;
 import net.picklepark.discord.service.AudioPlaybackService;
 
 import javax.sound.sampled.AudioInputStream;
@@ -60,6 +61,7 @@ public class JdaDiscordActions implements DiscordActions {
     public void connect() {
         if (!event.getGuild().getAudioManager().isConnected())
             event.getGuild().getAudioManager().openAudioConnection(event.getGuild().getVoiceChannels().get(0));
+        event.getGuild().getAudioManager().setSendingHandler(new MultichannelPlayerSendHandler(audioContext.guildPlayer.audioPlaybackService));
     }
 
     @Override
@@ -134,7 +136,8 @@ public class JdaDiscordActions implements DiscordActions {
 
     @Override
     public void skip() {
-        audioContext.guildPlayer.scheduler.nextTrack();
+        throw new UnimplementedException();
+//        audioContext.guildPlayer.scheduler.nextTrack();
     }
 
     @Override
@@ -148,7 +151,7 @@ public class JdaDiscordActions implements DiscordActions {
     @Override
     public void queueChannelTwo(String uri) {
         try {
-            audioContext.audioPlaybackService.setChannelTwo(AudioSystem.getAudioInputStream(
+            audioContext.guildPlayer.audioPlaybackService.setChannelTwo(AudioSystem.getAudioInputStream(
                     OUTPUT_FORMAT,
                     AudioSystem.getAudioInputStream(new File(uri)))
             );

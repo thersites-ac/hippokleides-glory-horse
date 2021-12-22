@@ -1,5 +1,6 @@
 package net.picklepark.discord.handler.send;
 
+import com.google.inject.internal.asm.$ModuleVisitor;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.picklepark.discord.service.AudioPlaybackService;
 import org.slf4j.Logger;
@@ -34,7 +35,6 @@ public class MultichannelPlayerSendHandler implements AudioSendHandler {
     @Nullable
     @Override
     public ByteBuffer provide20MsAudio() {
-        logger.info("Providing more audio");
         try {
             return ByteBuffer.wrap(playbackService.nextTwentyMs());
         } catch (IOException e) {

@@ -10,13 +10,10 @@ public class AudioContext {
     public final TextChannel channel;
     public final GuildPlayer guildPlayer;
     public final AudioPlayerManager playerManager;
-    public final AudioPlaybackService audioPlaybackService;
 
-    public AudioContext(TextChannel channel, GuildPlayer guildPlayer, AudioPlayerManager playerManager, AudioPlaybackService audioPlaybackService) {
+    public AudioContext(TextChannel channel, GuildPlayer guildPlayer, AudioPlayerManager playerManager) {
         this.channel = channel;
         this.guildPlayer = guildPlayer;
         this.playerManager = playerManager;
-        this.audioPlaybackService = audioPlaybackService;
-        channel.getGuild().getAudioManager().setSendingHandler(new MultichannelPlayerSendHandler(audioPlaybackService));
     }
 }

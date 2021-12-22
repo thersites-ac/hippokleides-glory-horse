@@ -21,33 +21,21 @@ public class LavaPlayerInputStreamAdaptor extends InputStream {
     private byte[] data;
     private int cursor;
 
-    public LavaPlayerInputStreamAdaptor(AudioPlayer player) throws IOException {
+    public LavaPlayerInputStreamAdaptor(AudioPlayer player) {
         decoder = DISCORD_OPUS.createDecoder();
         this.player = player;
-        nextFrame();
+        data = new byte[0];
     }
 
     @Override
     public int read() throws IOException {
-        if (endOfFrame() && nextFrame())
-            return readFromFrame();
-        else
-            return -1;
-    }
-
-    private boolean endOfFrame() {
-        return cursor == data.length;
-    }
-
-    private boolean nextFrame() throws IOException {
-        AudioFrame frame = player.provide();
-        if (frame == null)
-            return false;
-        data = decodeData(frame);
-        return true;
-    }
-
-    private int readFromFrame() {
+        if (cursor == data.length) {
+            AudioFrame frame = player.provide();
+            if (frame == null)
+                return -1;
+            data = decodeData(frame);
+            cursor = 0;
+        }
         byte b = data[cursor];
         cursor = cursor + 1;
         return b & 0xff;

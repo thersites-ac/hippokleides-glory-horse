@@ -1,5 +1,7 @@
 package net.picklepark.discord.service;
 
+import net.picklepark.discord.adaptor.LavaPlayerInputStreamAdaptor;
+
 import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 

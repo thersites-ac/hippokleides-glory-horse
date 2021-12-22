@@ -107,12 +107,8 @@ public class Bot extends ListenerAdapter {
     }
 
     private DiscordActions buildActions(GuildMessageReceivedEvent event) {
-        AudioContext context = new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager, getPlaybackService(event.getGuild()));
+        AudioContext context = new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager);
         return new JdaDiscordActions(event, context);
-    }
-
-    private AudioPlaybackService getPlaybackService(Guild guild) {
-        return channelPlaybacks.computeIfAbsent(guild.getId(), whatever -> new AudioPlaybackServiceImpl());
     }
 
     private void register(List<Class<? extends DiscordCommand>> commands) {

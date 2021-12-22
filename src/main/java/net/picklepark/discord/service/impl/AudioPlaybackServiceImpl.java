@@ -3,6 +3,8 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.exception.NotAvailableException;
 import net.picklepark.discord.service.AudioPlaybackService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioInputStream;
 
@@ -13,15 +15,18 @@ import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
 
 public class AudioPlaybackServiceImpl implements AudioPlaybackService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AudioPlaybackServiceImpl.class);
+
     private AudioInputStream channelOne;
     private AudioInputStream channelTwo;
     
-
     // todo: change this to ByteBuffer
     private final byte[] averageFrame = new byte[PACKET_SIZE];
     private final byte[] channelOneFrame = new byte[PACKET_SIZE];
     private final byte[] channelTwoFrame = new byte[PACKET_SIZE];
- 
+    private int channelOneBytesRead = 0;
+    private int channelTwoBytesRead = 0;
+
     @Override
     public void setChannelOne(AudioInputStream channelOne) {
         this.channelOne = channelOne;
@@ -34,13 +39,8 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
 
     @Override
     public boolean hasNext() throws IOException {
-        int channelOneBytesRead = readChannel(channelOne, channelOneFrame);
-        int channelTwoBytesRead = readChannel(channelTwo, channelTwoFrame);
-
-        if (channelOneBytesRead == 0)
-            channelOne = null;
-        if (channelTwoBytesRead == 0)
-            channelTwo = null;
+        channelOneBytesRead = readChannel(channelOne, channelOneFrame);
+        channelTwoBytesRead = readChannel(channelTwo, channelTwoFrame);
 
         return channelOneBytesRead > 0 || channelTwoBytesRead > 0;
     }
@@ -48,13 +48,13 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
     @Override
     public byte[] nextTwentyMs() {
         byte[] output;
-        if (channelOne == null && channelTwo == null)
+        if (channelOneBytesRead <= 0 && channelTwoBytesRead <= 0) {
             throw new NotAvailableException();
-        else if (channelOne == null)
+        } else if (channelOneBytesRead <= 0) {
             output = channelTwoFrame;
-        else if (channelTwo == null)
+        } else if (channelTwoBytesRead <= 0) {
             output = channelOneFrame;
-        else {
+        } else {
             averageChannelFrames();
             output = averageFrame;
         }
@@ -62,18 +62,16 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
     }
 
     private void averageChannelFrames() {
-        for (int i = 0; i < PACKET_SIZE; i++)
-            averageFrame[i] = (byte) Math.max(channelOneFrame[i] >> 1 + channelTwoFrame[i] >> 1, 255);
+        for (int i = 0; i < PACKET_SIZE; i++) {
+            byte summed = (byte) (channelOneFrame[i] + channelTwoFrame[i]);
+            averageFrame[i] = summed;
+        }
     }
 
     private int readChannel(AudioInputStream channel, byte[] output) throws IOException {
-        int bytesRead = 0;
-        if (channel != null) {
-            bytesRead = channel.read(output);
-            if (bytesRead == 0)
-                channel.close();
-        }
-        return  bytesRead;
+        if (channel == null)
+            return 0;
+        return channel.read(output);
     }
 
 }
