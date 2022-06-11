@@ -8,13 +8,17 @@ import org.slf4j.LoggerFactory;
 
 public class QueueAudioCommand implements DiscordCommand {
 
+    public static final String ARGUMENT = "uri";
+    public static final String CONFIRMATION_MESSAGE = "I CANNOT WAIT TO PLAY THIS SONG";
+
     private static final Logger logger = LoggerFactory.getLogger(QueueAudioCommand.class);
 
     @Override
     public void execute(DiscordActions actions) {
-        String uri = actions.getArgument("uri");
+        String uri = actions.getArgument(ARGUMENT);
+        actions.connect();
         actions.queue(uri);
-        actions.send("I CANNOT WAIT TO PLAY THIS SONG");
+        actions.send(CONFIRMATION_MESSAGE);
     }
 
     @Override
