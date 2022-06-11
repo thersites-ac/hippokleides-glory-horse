@@ -59,7 +59,7 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "repeat 42 wow";
+        return "repeat wow 42 times";
     }
 
     @Override

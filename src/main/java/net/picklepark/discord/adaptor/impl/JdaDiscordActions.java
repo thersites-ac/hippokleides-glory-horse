@@ -18,9 +18,7 @@ import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NoSuchUserException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,6 +130,12 @@ public class JdaDiscordActions implements DiscordActions {
     @Override
     public void skip() {
         audioContext.guildPlayer.scheduler.nextTrack();
+    }
+
+    @Override
+    public void nuke() {
+        audioContext.guildPlayer.scheduler.empty();
+        skip();
     }
 
     @Override

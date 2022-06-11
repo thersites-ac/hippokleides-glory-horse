@@ -20,6 +20,7 @@ public class SpyDiscordActions implements DiscordActions {
     private final HashMap<String, Long> members;
     private final Queue<String> queuedAudio;
     private boolean connected;
+    private boolean wasNuked = false;
 
     public SpyDiscordActions() {
         sentMessages = new ArrayList<>();
@@ -87,6 +88,13 @@ public class SpyDiscordActions implements DiscordActions {
     @Override
     public void skip() {
     }
+
+    @Override
+    public void nuke() {
+        wasNuked = true;
+        queuedAudio.clear();
+    }
+
     @Override
     public void queue(String uri) {
         queuedAudio.add(uri);

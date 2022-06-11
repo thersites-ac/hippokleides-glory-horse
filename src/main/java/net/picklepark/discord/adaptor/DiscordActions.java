@@ -21,6 +21,7 @@ public interface DiscordActions {
     void pause();
     void unpause();
     void skip();
+    void nuke();
     void queue(String uri);
     void initMatches(String regex, String message);
     String getGuildName();

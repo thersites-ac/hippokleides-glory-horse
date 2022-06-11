@@ -61,7 +61,8 @@ public class Bot extends ListenerAdapter {
             UnadminCommand.class,
             StopRecordingCommand.class,
             RandomClipCommand.class,
-            RepeatClipCommand.class
+            RepeatClipCommand.class,
+            NukeQueueCommand.class
     );
 
     private final Injector injector;

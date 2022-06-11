@@ -53,4 +53,8 @@ public class TrackScheduler extends AudioEventAdapter {
       nextTrack();
     }
   }
+
+  public void empty() {
+    queue.clear();
+  }
 }
