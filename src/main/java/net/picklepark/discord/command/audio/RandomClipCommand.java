@@ -29,7 +29,7 @@ public class RandomClipCommand implements DiscordCommand {
     public void execute(DiscordActions actions) throws DiscordCommandException {
         try {
             String name = lookupRandomName();
-            ClipCommand pickedClip = clipManager.lookup(name);
+            PlayClipCommand pickedClip = clipManager.lookup(name);
             actions.send("Prepare to get \"" + name + "\"'d.");
             pickedClip.execute(actions);
         } catch (IllegalArgumentException ex) {

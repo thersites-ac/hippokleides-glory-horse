@@ -14,7 +14,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
-public class ClipCommandRegistryTests {
+public class CommandRegistryTests {
 
     private DiscordCommandRegistry registry;
     private SpyDiscordActions actions;

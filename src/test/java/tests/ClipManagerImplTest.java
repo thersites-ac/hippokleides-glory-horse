@@ -1,6 +1,6 @@
 package tests;
 
-import net.picklepark.discord.command.audio.ClipCommand;
+import net.picklepark.discord.command.audio.PlayClipCommand;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Assert;
@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 public class ClipManagerImplTest {
 
     private ClipManagerImpl clipManager;
-    private ClipCommand foundCommand;
+    private PlayClipCommand foundCommand;
 
     @Before
     public void setup() {

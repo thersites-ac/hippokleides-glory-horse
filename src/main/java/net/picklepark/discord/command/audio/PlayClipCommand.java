@@ -4,11 +4,11 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.UnimplementedException;
 
-public class ClipCommand implements net.picklepark.discord.command.DiscordCommand {
+public class PlayClipCommand implements net.picklepark.discord.command.DiscordCommand {
 
     private final String path;
 
-    public ClipCommand(String path) {
+    public PlayClipCommand(String path) {
         this.path = path;
     }
 
