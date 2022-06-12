@@ -2,10 +2,12 @@ package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;
 
 public class PlayClipCommand implements net.picklepark.discord.command.DiscordCommand {
 
+    private static final String TOO_MANY_CLIPS_QUEUED_EXCEPTION = "Stop it, I'm just one bot!";
     private final String path;
 
     public PlayClipCommand(String path) {
@@ -19,7 +21,11 @@ public class PlayClipCommand implements net.picklepark.discord.command.DiscordCo
     @Override
     public void execute(DiscordActions actions) {
         actions.connect();
-        actions.queue(path);
+        try {
+            actions.queue(path);
+        } catch (NotEnoughQueueCapacityException ex) {
+            actions.send(TOO_MANY_CLIPS_QUEUED_EXCEPTION);
+        }
     }
 
     @Override

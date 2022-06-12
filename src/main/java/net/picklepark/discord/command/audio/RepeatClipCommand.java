@@ -4,21 +4,20 @@ import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.service.ClipManager;
 
 import javax.inject.Inject;
-import java.util.Random;
 
 public class RepeatClipCommand implements DiscordCommand {
 
     public static final String ARGUMENT_NUMBER = "number";
     public static final String ARGUMENT_TITLE = "title";
     public static final String REGEX = String.format("repeat (?<%s>.+) (?<%s>\\S+) times", ARGUMENT_TITLE, ARGUMENT_NUMBER);
-    public static final String CONFIRMATION_MESSAGE = "You got it, boss";
+    public static final String CONFIRMATION_MESSAGE = "You're going to LOVE this";
     public static final String BAD_NUMBER_INPUT_MESSAGE = "How exactly do you expect me to repeat that %s times?";
     public static final String BAD_CLIP_INPUT_MESSAGE = "I definitely don't know how to %s.";
-
-    private static final Random RANDOM = new Random();
+    public static final String INSUFFICIENT_QUEUE_SPACE = "No, that's a stupid number.";
 
     private final ClipManager clipManager;
 
@@ -32,7 +31,10 @@ public class RepeatClipCommand implements DiscordCommand {
         String repetitionsInput = actions.getArgument(ARGUMENT_NUMBER);
         try {
             int repetitions = Integer.parseInt(repetitionsInput);
-            if (repetitions <= 0)
+            int capacity = DiscordActions.MAX_QUEUE_SIZE - actions.getAudioQueueSize();
+            if (capacity < repetitions)
+                throw new NotEnoughQueueCapacityException(capacity + "");
+            else if (repetitions <= 0)
                 throw new NumberFormatException("Negative value for number of repetitions");
             String titleInput = actions.getArgument(ARGUMENT_TITLE);
             PlayClipCommand foundClip = clipManager.lookup(titleInput);
@@ -45,6 +47,8 @@ public class RepeatClipCommand implements DiscordCommand {
             }
         } catch (NumberFormatException ex) {
             actions.send(String.format(BAD_NUMBER_INPUT_MESSAGE, repetitionsInput));
+        } catch (NotEnoughQueueCapacityException ex) {
+            actions.send(INSUFFICIENT_QUEUE_SPACE);
         } catch (Exception ex) {
             throw new DiscordCommandException(ex);
         }

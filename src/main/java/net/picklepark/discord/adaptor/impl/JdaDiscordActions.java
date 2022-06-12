@@ -13,10 +13,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
-import net.picklepark.discord.exception.AmbiguousUserException;
-import net.picklepark.discord.exception.NoOwnerException;
-import net.picklepark.discord.exception.NoSuchUserException;
-import net.picklepark.discord.exception.UserIdentificationException;
+import net.picklepark.discord.exception.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -139,7 +136,9 @@ public class JdaDiscordActions implements DiscordActions {
     }
 
     @Override
-    public void queue(String uri) {
+    public void queue(String uri) throws NotEnoughQueueCapacityException {
+        if (audioContext.guildPlayer.scheduler.size() > MAX_QUEUE_SIZE)
+            throw new NotEnoughQueueCapacityException("Max size: " + MAX_QUEUE_SIZE);
         audioContext.playerManager.loadItemOrdered(
                 audioContext.guildPlayer,
                 uri,
@@ -172,6 +171,10 @@ public class JdaDiscordActions implements DiscordActions {
         audioContext.guildPlayer.player.setPaused(false);
     }
 
+    @Override
+    public int getAudioQueueSize() {
+        return audioContext.guildPlayer.scheduler.size();
+    }
 
     private class ResultHandler implements AudioLoadResultHandler {
 

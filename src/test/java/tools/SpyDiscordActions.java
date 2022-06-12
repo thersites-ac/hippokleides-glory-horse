@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
 import java.util.*;
@@ -96,8 +97,11 @@ public class SpyDiscordActions implements DiscordActions {
     }
 
     @Override
-    public void queue(String uri) {
-        queuedAudio.add(uri);
+    public void queue(String uri) throws NotEnoughQueueCapacityException {
+        if (queuedAudio.size() >= DiscordActions.MAX_QUEUE_SIZE)
+            throw new NotEnoughQueueCapacityException(MAX_QUEUE_SIZE + "");
+        else
+            queuedAudio.add(uri);
     }
 
     @Override
@@ -112,6 +116,11 @@ public class SpyDiscordActions implements DiscordActions {
     @Override
     public User getOwner() {
         return User.fromId(owner);
+    }
+
+    @Override
+    public int getAudioQueueSize() {
+        return queuedAudio.size();
     }
 
     public List<String> getSentMessage() {

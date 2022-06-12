@@ -44,6 +44,16 @@ public class RepeatClipCommandTest {
     }
 
     @Test
+    public void explainsBadClipInputs() throws DiscordCommandException {
+        String unmappedTitle = "something bad";
+        actions.setArg(RepeatClipCommand.ARGUMENT_TITLE, unmappedTitle);
+        command.execute(actions);
+        assertEquals(0, actions.getQueuedAudio().size());
+        assertEquals(1, actions.getSentMessage().size());
+        assertEquals(String.format(RepeatClipCommand.BAD_CLIP_INPUT_MESSAGE, unmappedTitle), actions.getSentMessage().get(0));
+    }
+
+    @Test
     public void explainsBadNumberInputs() throws DiscordCommandException {
         explainsBadNumberInput("-2");
         explainsBadNumberInput("2.4");
@@ -52,13 +62,12 @@ public class RepeatClipCommandTest {
     }
 
     @Test
-    public void explainsBadClipInputs() throws DiscordCommandException {
-        String unmappedTitle = "something bad";
-        actions.setArg(RepeatClipCommand.ARGUMENT_TITLE, unmappedTitle);
+    public void respectsMaximumQueueSize() throws DiscordCommandException {
+        actions.setArg(RepeatClipCommand.ARGUMENT_NUMBER, Integer.MAX_VALUE + "");
         command.execute(actions);
         assertEquals(0, actions.getQueuedAudio().size());
         assertEquals(1, actions.getSentMessage().size());
-        assertEquals(String.format(RepeatClipCommand.BAD_CLIP_INPUT_MESSAGE, unmappedTitle), actions.getSentMessage().get(0));
+        assertEquals(RepeatClipCommand.INSUFFICIENT_QUEUE_SPACE, actions.getSentMessage().get(0));
     }
 
     private void explainsBadNumberInput(String input) throws DiscordCommandException {

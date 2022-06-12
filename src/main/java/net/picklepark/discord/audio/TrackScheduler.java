@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -12,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This class schedules tracks for the audio player. It contains the queue of tracks.
  */
 public class TrackScheduler extends AudioEventAdapter {
+
   private final AudioPlayer player;
   private final BlockingQueue<AudioTrack> queue;
 
@@ -56,5 +58,9 @@ public class TrackScheduler extends AudioEventAdapter {
 
   public void empty() {
     queue.clear();
+  }
+
+  public int size() {
+    return queue.size();
   }
 }
