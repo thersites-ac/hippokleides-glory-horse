@@ -14,47 +14,23 @@ import java.util.Map;
 import java.util.Set;
 
 @Singleton
-public class AuthConfigServiceImpl implements AuthConfigService {
+public class AuthConfigServiceImpl extends JavaConfigManager<Map<String, Set<Long>>> implements AuthConfigService {
 
     private static final String CONFIG_KEY = "discord-bot-auth-config";
-    private static final String TMP_ADMINS = "/tmp/discord-bot-auth-config";
-    private final S3Client client;
-    private final GetObjectRequest getConfigRequest;
-    private final PutObjectRequest putObjectRequest;
 
     @Inject
     public AuthConfigServiceImpl(@Named("s3.bucket.config") String configBucket,
                                  @Named("s3.client.config") S3Client configFetcher) {
-        this.client = configFetcher;
-        getConfigRequest = GetObjectRequest.builder()
-                .bucket(configBucket)
-                .key(CONFIG_KEY)
-                .build();
-        putObjectRequest = PutObjectRequest.builder()
-                .bucket(configBucket)
-                .key(CONFIG_KEY)
-                .build();
+        super(configBucket, configFetcher, CONFIG_KEY);
     }
 
     @Override
     public Map<String, Set<Long>> getCurrentAdmins() throws IOException {
-        try (ObjectInputStream inputStream = new ObjectInputStream(client.getObject(getConfigRequest))) {
-            return (Map<String, Set<Long>>) inputStream.readObject();
-        } catch (ClassNotFoundException e) {
-            throw new IOException(e);
-        }
+        return getRemote();
     }
 
     @Override
     public void persistAdmins(Map<String, Set<Long>> admins) throws IOException {
-        writeAsFile(admins);
-        client.putObject(putObjectRequest, Path.of(TMP_ADMINS));
-    }
-
-    private void writeAsFile(Map<String, Set<Long>> admins) throws IOException {
-        File file = new File(TMP_ADMINS);
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, false));
-        out.writeObject(admins);
-        out.close();
+        persist(admins);
     }
 }

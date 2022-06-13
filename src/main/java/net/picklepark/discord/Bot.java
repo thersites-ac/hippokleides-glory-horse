@@ -67,7 +67,8 @@ public class Bot extends ListenerAdapter {
             StopRecordingCommand.class,
             RandomClipCommand.class,
             RepeatClipCommand.class,
-            NukeQueueCommand.class
+            NukeQueueCommand.class,
+            WelcomeCommand.class
     );
 
     private final Injector injector;
@@ -115,7 +116,7 @@ public class Bot extends ListenerAdapter {
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);
         String user = event.getMember().getUser().getAsTag();
-        String channel = event.getChannelJoined().getName();
+        String channel = event.getChannelJoined().getGuild().getName();
         logger.info(String.format("%s joined %s",
                 user,
                 channel));

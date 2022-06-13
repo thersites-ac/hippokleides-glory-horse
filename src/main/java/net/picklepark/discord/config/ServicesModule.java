@@ -24,6 +24,7 @@ public class ServicesModule extends AbstractModule {
         bind(RecordingService.class).to(RecordingServiceImpl.class);
         bind(ClipManager.class).to(ClipManagerImpl.class);
         bind(UrlShortener.class).to(BitlyUrlShortener.class);
+        bind(WelcomeManager.class).to(WelcomeManagerImpl.class);
     }
 
     @Provides

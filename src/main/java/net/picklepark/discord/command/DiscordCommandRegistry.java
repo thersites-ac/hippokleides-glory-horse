@@ -77,9 +77,13 @@ public class DiscordCommandRegistry {
     }
 
     public void welcome(UserJoinedVoiceActions actions) throws NotEnoughQueueCapacityException {
+        String user = actions.user();
+        String channel = actions.channel();
         LocalClip welcome = welcomeManager.welcome(actions.user(), actions.channel());
         if (welcome != null && actions.isConnected()) {
             actions.play(welcome.getPath());
+        } else {
+            logger.error(String.format("Welcome was null in %s for %s", channel, user));
         }
     }
 
