@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.audio;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
@@ -16,7 +16,7 @@ public class QueueAudioCommand implements DiscordCommand {
     private static final String WAIT_A_BIT_MESSAGE = "Wait out the current track of skip it, then try again.";
 
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         String uri = actions.getArgument(ARGUMENT);
         actions.connect();
         try {

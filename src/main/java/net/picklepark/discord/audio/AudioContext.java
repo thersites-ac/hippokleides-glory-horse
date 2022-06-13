@@ -1,17 +1,19 @@
 package net.picklepark.discord.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
 
 public class AudioContext {
-    public final TextChannel channel;
+    public final AudioManager audioManager;
     public final GuildPlayer guildPlayer;
     public final AudioPlayerManager playerManager;
 
-    public AudioContext(TextChannel channel, GuildPlayer guildPlayer, AudioPlayerManager playerManager) {
-        this.channel = channel;
+    public AudioContext(Guild guild, GuildPlayer guildPlayer, AudioPlayerManager playerManager) {
+        this.audioManager = guild.getAudioManager();
         this.guildPlayer = guildPlayer;
         this.playerManager = playerManager;
-        channel.getGuild().getAudioManager().setSendingHandler(guildPlayer.getSendHandler());
+        audioManager.setSendingHandler(guildPlayer.getSendHandler());
     }
 }

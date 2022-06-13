@@ -1,10 +1,10 @@
 package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.exception.NoOwnerException;
-import net.picklepark.discord.service.AuthService;
+import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.AuthConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class AuthServiceImpl implements AuthService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+public class AuthManagerImpl implements AuthManager {
+    private static final Logger logger = LoggerFactory.getLogger(AuthManagerImpl.class);
     protected final ConcurrentHashMap<String, Set<Long>> admins;
     private final AuthConfigService configService;
 
     @Inject
-    public AuthServiceImpl(AuthConfigService configService) {
+    public AuthManagerImpl(AuthConfigService configService) {
         ConcurrentHashMap<String, Set<Long>> tempAdmins;
         this.configService = configService;
         try {
@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean isActionAuthorized(DiscordActions actions, AuthLevel level) {
+    public boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level) {
         switch (level) {
             case ANY:
                 return true;
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private boolean authorIsOwner(DiscordActions actions) {
+    private boolean authorIsOwner(MessageReceivedActions actions) {
         return isOwner(actions, actions.getAuthor().getIdLong());
     }
 
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void demote(long user, DiscordActions actions) throws AuthLevelConflictException, IOException {
+    public void demote(long user, MessageReceivedActions actions) throws AuthLevelConflictException, IOException {
         if (lookupOwner(actions) == user)
             throw new AuthLevelConflictException(user);
         if (isAdmin(actions, user)) {
@@ -73,21 +73,21 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthLevelConflictException(user);
     }
 
-    private boolean hasAdminPrivileges(DiscordActions actions) {
+    private boolean hasAdminPrivileges(MessageReceivedActions actions) {
         long authorId = actions.getAuthor().getIdLong();
         return isAdmin(actions, authorId) || isOwner(actions, authorId);
     }
 
-    private boolean isAdmin(DiscordActions actions, long id) {
+    private boolean isAdmin(MessageReceivedActions actions, long id) {
         Set<Long> guildAdmins = admins.get(actions.getGuildName());
         return guildAdmins != null && guildAdmins.contains(id);
     }
 
-    private boolean isOwner(DiscordActions actions, Long id) {
+    private boolean isOwner(MessageReceivedActions actions, Long id) {
         return lookupOwner(actions) == id;
     }
 
-    private long lookupOwner(DiscordActions actions) {
+    private long lookupOwner(MessageReceivedActions actions) {
         try {
             return actions.getOwner().getIdLong();
         } catch (NoOwnerException e) {

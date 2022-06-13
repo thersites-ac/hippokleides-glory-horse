@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.audio;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
@@ -19,7 +19,7 @@ public class SyncClipsCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) throws DiscordCommandException {
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         storageService.sync();
         actions.send("Got 'em all");
     }

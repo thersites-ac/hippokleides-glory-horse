@@ -1,7 +1,7 @@
 package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -34,7 +34,7 @@ public class SpellCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) throws DiscordCommandException {
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         try {
             MessageEmbed result = scrapeSpell(actions);
             actions.send(result);
@@ -67,7 +67,7 @@ public class SpellCommand implements DiscordCommand {
         return "spell (?<spell>.+)";
     }
 
-    private MessageEmbed scrapeSpell(DiscordActions actions) throws IOException, ResourceNotFoundException {
+    private MessageEmbed scrapeSpell(MessageReceivedActions actions) throws IOException, ResourceNotFoundException {
         String spell = actions.getArgument("spell");
         logger.info("Scraping {}", spell);
         ScrapeResult result = scraper.scrapeCoreSpell(spell);

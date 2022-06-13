@@ -1,7 +1,7 @@
 package tests;
 
-import net.picklepark.discord.service.impl.AuthServiceImpl;
-import tools.SpyDiscordActions;
+import net.picklepark.discord.service.impl.AuthManagerImpl;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.service.AuthConfigService;
@@ -16,21 +16,21 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
-public class AuthServiceImplTest {
+public class AuthManagerImplTest {
 
     private static final String GUILD_NAME = "Guild";
 
-    private AuthServiceImpl authService;
+    private AuthManagerImpl authService;
     private boolean decision;
     private AuthLevel level;
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
     private AuthConfigService testConfigService;
 
     @Before
     public void setup() {
         testConfigService = new TestConfigService();
-        authService = new AuthServiceImpl(testConfigService);
-        actions = new SpyDiscordActions();
+        authService = new AuthManagerImpl(testConfigService);
+        actions = new SpyMessageReceivedActions();
         actions.setGuildName(GUILD_NAME);
     }
 
@@ -128,7 +128,7 @@ public class AuthServiceImplTest {
     }
 
     private void whenRestart() {
-        authService = new AuthServiceImpl(testConfigService);
+        authService = new AuthManagerImpl(testConfigService);
     }
 
     private void thenUserIsAdmin(long id) {

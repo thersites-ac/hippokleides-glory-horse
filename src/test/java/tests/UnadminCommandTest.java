@@ -1,9 +1,9 @@
 package tests;
 
 import net.picklepark.discord.command.general.UnadminCommand;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.exception.DiscordCommandException;
-import tools.TestAuthService;
+import tools.TestAuthManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,14 +15,14 @@ import static org.junit.Assert.*;
 public class UnadminCommandTest {
 
     private UnadminCommand unadminCommand;
-    private TestAuthService authService;
-    private SpyDiscordActions actions;
+    private TestAuthManager authService;
+    private SpyMessageReceivedActions actions;
 
     @Before
     public void setup() {
-        authService = new TestAuthService();
+        authService = new TestAuthManager();
         unadminCommand = new UnadminCommand(authService);
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
     }
 
     @Test

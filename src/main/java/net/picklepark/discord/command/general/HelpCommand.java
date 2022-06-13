@@ -1,7 +1,7 @@
 package net.picklepark.discord.command.general;
 
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.adaptor.DiscordActions;
 import net.picklepark.discord.command.DiscordCommandRegistry;
 import net.picklepark.discord.constants.AuthLevel;
 
@@ -21,7 +21,7 @@ public class HelpCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         Collection<DiscordCommand> commands = registry.getCommands();
         commands.stream()
                 .map(this::commandHelpLine)

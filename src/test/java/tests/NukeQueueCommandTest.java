@@ -6,7 +6,7 @@ import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +15,7 @@ public class NukeQueueCommandTest {
 
     @Test
     public void emptiesQueue() throws DiscordCommandException, NotEnoughQueueCapacityException {
-        SpyDiscordActions actions = new SpyDiscordActions();
+        SpyMessageReceivedActions actions = new SpyMessageReceivedActions();
         actions.queue("foo");
         new NukeQueueCommand().execute(actions);
         assertEquals(0, actions.getQueuedAudio().size());

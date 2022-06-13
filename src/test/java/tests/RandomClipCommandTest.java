@@ -1,7 +1,7 @@
 package tests;
 
 import net.picklepark.discord.command.audio.RandomClipCommand;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.ClipManager;
@@ -19,14 +19,14 @@ import static org.junit.Assert.*;
 public class RandomClipCommandTest {
 
     private RandomClipCommand randomClipCommand;
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
     private ClipManager clipManager;
 
     @Before
     public void setup() {
         clipManager = new ClipManagerImpl();
         randomClipCommand = new RandomClipCommand(clipManager);
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
     }
 
     @Test

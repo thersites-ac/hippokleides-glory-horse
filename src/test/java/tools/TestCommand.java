@@ -1,13 +1,13 @@
 package tools;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 
 public class TestCommand extends SpyCommand {
 
     @Override
-    public void execute(DiscordActions actions) throws DiscordCommandException {
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         actions.send("OK");
         super.execute(actions);
     }

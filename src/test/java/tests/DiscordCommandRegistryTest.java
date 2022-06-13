@@ -1,9 +1,9 @@
 package tests;
 
 import net.picklepark.discord.command.DiscordCommandRegistry;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.command.general.IdkCommand;
-import tools.TestAuthService;
+import tools.TestAuthManager;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import tools.TestCommand;
 import org.junit.Before;
@@ -17,16 +17,16 @@ import static org.junit.Assert.*;
 public class DiscordCommandRegistryTest {
 
     private DiscordCommandRegistry registry;
-    private SpyDiscordActions actions;
-    private TestAuthService authService;
+    private SpyMessageReceivedActions actions;
+    private TestAuthManager authService;
 
     @Before
     public void setup() {
-        authService = new TestAuthService();
+        authService = new TestAuthManager();
         registry = new DiscordCommandRegistry(new ClipManagerImpl(), authService);
         registry.prefix('~');
         registry.register(new TestCommand());
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
     }
 
     @Test

@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class CommandRegistryTests {
 
     private DiscordCommandRegistry registry;
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
     private Collection<DiscordCommand> registeredCommands;
     private SpyCommand testCommand;
     private DiscordCommand anotherTestCommand;
@@ -25,7 +25,7 @@ public class CommandRegistryTests {
 
     @Before
     public void setup() {
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
         testCommand = new TestCommand();
         anotherTestCommand = new AnotherTestCommand();
         silentCommand = new SilentCommand();
@@ -91,7 +91,7 @@ public class CommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthService());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager());
     }
 
     private void givenRegisterCommand() {

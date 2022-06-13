@@ -1,11 +1,11 @@
 package tools;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.AuthLevelConflictException;
-import net.picklepark.discord.service.AuthService;
+import net.picklepark.discord.service.AuthManager;
 
-public class TestAuthService implements AuthService {
+public class TestAuthManager implements AuthManager {
 
     private boolean answer;
     private boolean throwAuthException;
@@ -15,7 +15,7 @@ public class TestAuthService implements AuthService {
     }
 
     @Override
-    public boolean isActionAuthorized(DiscordActions actions, AuthLevel level) {
+    public boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level) {
         return answer;
     }
 
@@ -24,7 +24,7 @@ public class TestAuthService implements AuthService {
     }
 
     @Override
-    public void demote(long user, DiscordActions actions) throws AuthLevelConflictException {
+    public void demote(long user, MessageReceivedActions actions) throws AuthLevelConflictException {
         if (throwAuthException)
             throw new AuthLevelConflictException(user);
     }

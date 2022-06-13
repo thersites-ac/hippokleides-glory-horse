@@ -1,12 +1,12 @@
 package tools;
 
 import net.picklepark.discord.service.AuthConfigService;
-import net.picklepark.discord.service.impl.AuthServiceImpl;
+import net.picklepark.discord.service.impl.AuthManagerImpl;
 
 import java.util.Set;
 
-public class SpyAuthService extends AuthServiceImpl {
-    public SpyAuthService(AuthConfigService configService) {
+public class SpyAuthManager extends AuthManagerImpl {
+    public SpyAuthManager(AuthConfigService configService) {
         super(configService);
     }
 

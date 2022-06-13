@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 
 import static org.junit.Assert.*;
 
@@ -14,13 +14,13 @@ public class QueueAudioCommandTest {
 
     private static final String CLIP_URI = "./some/clip.wav";
 
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
     private QueueAudioCommand command;
 
     @Before
     public void setup() {
         command = new QueueAudioCommand();
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
         actions.setArg(QueueAudioCommand.ARGUMENT, CLIP_URI);
     }
 

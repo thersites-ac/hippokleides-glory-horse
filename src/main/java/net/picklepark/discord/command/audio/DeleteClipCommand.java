@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.audio;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -21,7 +21,7 @@ public class DeleteClipCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) throws DiscordCommandException {
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         String clip = actions.getArgument("clip");
         storageService.delete(clip);
         commandManager.delete(clip);

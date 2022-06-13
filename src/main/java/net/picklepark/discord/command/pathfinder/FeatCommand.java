@@ -1,7 +1,7 @@
 package net.picklepark.discord.command.pathfinder;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.ResourceNotFoundException;
@@ -38,7 +38,7 @@ public class FeatCommand implements DiscordCommand {
     }
 
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         String feat = actions.getArgument("feat");
         try {
             MessageEmbed foundFeat = coreFeatOrNull(feat);

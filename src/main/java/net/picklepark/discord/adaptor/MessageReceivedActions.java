@@ -7,16 +7,16 @@ import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
-public interface DiscordActions {
-
-    public static final int MAX_QUEUE_SIZE = 20000;
-
+public interface MessageReceivedActions {
     void send(String message);
     void send(MessageEmbed embed);
+    // fixme: this is a bit different from the others...
     void setReceivingHandler(AudioReceiveHandler handler);
     void connect();
+    // fixme: don't return Users
     User getAuthor();
     User lookupUser(String user) throws UserIdentificationException;
+    User getOwner() throws NoOwnerException;
     String userInput();
     String getArgument(String arg);
     void setVolume(int volume);
@@ -29,6 +29,5 @@ public interface DiscordActions {
     void queue(String uri) throws NotEnoughQueueCapacityException;
     void initMatches(String regex, String message);
     String getGuildName();
-    User getOwner() throws NoOwnerException;
     int getAudioQueueSize();
 }

@@ -1,9 +1,9 @@
 package tests;
 
 import net.picklepark.discord.command.general.MakeAdminCommand;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.exception.DiscordCommandException;
-import tools.SpyAuthService;
+import tools.SpyAuthManager;
 import tools.TestConfigService;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
 public class MakeAdminCommandTest {
 
     private MakeAdminCommand makeAdminCommand;
-    private SpyAuthService spyAuthService;
-    private SpyDiscordActions actions;
+    private SpyAuthManager spyAuthService;
+    private SpyMessageReceivedActions actions;
 
     @Before
     public void setup() {
-        actions = new SpyDiscordActions();
-        spyAuthService = new SpyAuthService(new TestConfigService());
+        actions = new SpyMessageReceivedActions();
+        spyAuthService = new SpyAuthManager(new TestConfigService());
         makeAdminCommand = new MakeAdminCommand(spyAuthService);
         actions.setArg("username", "user");
         actions.setGuildName("guild");

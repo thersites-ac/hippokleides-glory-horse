@@ -3,13 +3,13 @@ package tools;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
 import java.util.*;
 
-public class SpyDiscordActions implements DiscordActions {
+public class SpyMessageReceivedActions implements MessageReceivedActions {
 
     private final List<String> sentMessages;
     private final List<MessageEmbed> sentEmbeds;
@@ -23,7 +23,7 @@ public class SpyDiscordActions implements DiscordActions {
     private boolean connected;
     private boolean wasNuked = false;
 
-    public SpyDiscordActions() {
+    public SpyMessageReceivedActions() {
         sentMessages = new ArrayList<>();
         sentEmbeds = new ArrayList<>();
         args = new HashMap<>();
@@ -98,7 +98,7 @@ public class SpyDiscordActions implements DiscordActions {
 
     @Override
     public void queue(String uri) throws NotEnoughQueueCapacityException {
-        if (queuedAudio.size() >= DiscordActions.MAX_QUEUE_SIZE)
+        if (queuedAudio.size() >= MessageReceivedActions.MAX_QUEUE_SIZE)
             throw new NotEnoughQueueCapacityException(MAX_QUEUE_SIZE + "");
         else
             queuedAudio.add(uri);

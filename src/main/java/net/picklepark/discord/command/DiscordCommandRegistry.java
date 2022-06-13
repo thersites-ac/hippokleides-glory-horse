@@ -1,12 +1,16 @@
 package net.picklepark.discord.command;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
+import net.picklepark.discord.adaptor.UserJoinedVoiceActions;
 import net.picklepark.discord.command.general.IdkCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;
-import net.picklepark.discord.service.AuthService;
+import net.picklepark.discord.model.LocalClip;
+import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.ClipManager;
+import net.picklepark.discord.service.WelcomeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +29,17 @@ public class DiscordCommandRegistry {
     private static final DiscordCommand NOOP = new IdkCommand();
 
     private final ClipManager commandManager;
+    private final WelcomeManager welcomeManager;
     private char prefix;
     private final Map<String, DiscordCommand> handlers;
-    private final AuthService authService;
+    private final AuthManager authManager;
 
     @Inject
-    public DiscordCommandRegistry(ClipManager commandManager, AuthService authService) {
+    public DiscordCommandRegistry(ClipManager commandManager, AuthManager authManager, WelcomeManager welcomeManager) {
         handlers = new ConcurrentHashMap<>();
         this.commandManager = commandManager;
-        this.authService = authService;
+        this.authManager = authManager;
+        this.welcomeManager = welcomeManager;
     }
 
     private Optional<DiscordCommand> getDynamic(String s) {
@@ -41,7 +47,8 @@ public class DiscordCommandRegistry {
         return Optional.ofNullable(command);
     }
 
-    public void execute(DiscordActions actions) {
+    // fixme - this logic should be in the bot
+    public void execute(MessageReceivedActions actions) {
         String message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
@@ -50,9 +57,9 @@ public class DiscordCommandRegistry {
         }
     }
 
-    private void executeAuthorized(DiscordCommand command, DiscordActions actions, String messageContent) {
+    private void executeAuthorized(DiscordCommand command, MessageReceivedActions actions, String messageContent) {
         AuthLevel level = command.requiredAuthLevel();
-        if (authService.isActionAuthorized(actions, level)) {
+        if (authManager.isActionAuthorized(actions, level)) {
             actions.initMatches(command.userInput(), messageContent);
             executeInContext(command, actions);
         } else {
@@ -60,12 +67,19 @@ public class DiscordCommandRegistry {
         }
     }
 
-    private void executeInContext(DiscordCommand command, DiscordActions actions) {
+    private void executeInContext(DiscordCommand command, MessageReceivedActions actions) {
         try {
             command.execute(actions);
         } catch (DiscordCommandException e) {
             actions.send("Oh no, I'm broken!");
             logger.error("Error executing discord command", e);
+        }
+    }
+
+    public void welcome(UserJoinedVoiceActions actions) throws NotEnoughQueueCapacityException {
+        LocalClip welcome = welcomeManager.welcome(actions.user(), actions.channel());
+        if (welcome != null && actions.isConnected()) {
+            actions.play(welcome.getPath());
         }
     }
 
@@ -102,5 +116,4 @@ public class DiscordCommandRegistry {
     private boolean hasPrefix(String message) {
         return message.length() > 0 && message.charAt(0) == prefix;
     }
-
 }

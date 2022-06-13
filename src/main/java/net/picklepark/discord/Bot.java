@@ -7,10 +7,13 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.picklepark.discord.adaptor.DiscordActions;
-import net.picklepark.discord.adaptor.impl.JdaDiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
+import net.picklepark.discord.adaptor.UserJoinedVoiceActions;
+import net.picklepark.discord.adaptor.impl.JdaMessageReceivedActions;
+import net.picklepark.discord.adaptor.impl.JdaUserJoinedVoiceActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.command.DiscordCommandRegistry;
 import net.picklepark.discord.command.audio.*;
@@ -22,12 +25,14 @@ import net.picklepark.discord.command.general.UnadminCommand;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
+import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +101,7 @@ public class Bot extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        DiscordActions actions = buildActions(event);
+        MessageReceivedActions actions = buildMessageRecievedActions(event);
         try {
             registry.execute(actions);
         } catch (Exception ex) {
@@ -106,9 +111,29 @@ public class Bot extends ListenerAdapter {
         super.onGuildMessageReceived(event);
     }
 
-    private DiscordActions buildActions(GuildMessageReceivedEvent event) {
-        AudioContext context = new AudioContext(event.getChannel(), getGuildPlayer(event.getGuild()), playerManager);
-        return new JdaDiscordActions(event, context);
+    @Override
+    public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
+        super.onGuildVoiceJoin(event);
+        String user = event.getMember().getUser().getAsTag();
+        String channel = event.getChannelJoined().getName();
+        logger.info(String.format("%s joined %s",
+                user,
+                channel));
+        try {
+            registry.welcome(buildUserJoinedVoiceActions(event));
+        } catch (NotEnoughQueueCapacityException ex) {
+            logger.error(String.format("Could not welcome %s to %s", user, channel), ex);
+        }
+    }
+
+    private UserJoinedVoiceActions buildUserJoinedVoiceActions(GuildVoiceJoinEvent event) {
+        AudioContext context = new AudioContext(event.getGuild(), getGuildPlayer(event.getGuild()), playerManager);
+        return new JdaUserJoinedVoiceActions(context, event);
+    }
+
+    private MessageReceivedActions buildMessageRecievedActions(GuildMessageReceivedEvent event) {
+        AudioContext context = new AudioContext(event.getGuild(), getGuildPlayer(event.getGuild()), playerManager);
+        return new JdaMessageReceivedActions(event, context);
     }
 
     private void register(List<Class<? extends DiscordCommand>> commands) {

@@ -3,9 +3,9 @@ package tests;
 import net.picklepark.discord.command.general.HelpCommand;
 import tools.AnotherTestCommand;
 import tools.SpyCommand;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.command.*;
-import tools.RubberstampAuthService;
+import tools.RubberstampAuthManager;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import tools.TestCommand;
 import org.junit.Before;
@@ -22,16 +22,16 @@ public class HelpCommandTest {
 
     private DiscordCommandRegistry registry;
     private SpyCommand testCommand;
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
     private DiscordCommand anotherCommand;
     private DiscordCommand helpCommand;
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthService());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager());
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
         helpCommand = new HelpCommand(registry);
         registry.prefix('~');
     }

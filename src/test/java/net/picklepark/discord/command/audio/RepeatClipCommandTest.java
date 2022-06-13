@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import tools.SpyDiscordActions;
+import tools.SpyMessageReceivedActions;
 
 import static org.junit.Assert.*;
 
@@ -24,11 +24,11 @@ public class RepeatClipCommandTest {
 
     private final ClipManager clipManager = new ClipManagerImpl();
     private final RepeatClipCommand command = new RepeatClipCommand(clipManager);
-    private SpyDiscordActions actions;
+    private SpyMessageReceivedActions actions;
 
     @Before
     public void setup() {
-        actions = new SpyDiscordActions();
+        actions = new SpyMessageReceivedActions();
         actions.setArg(RepeatClipCommand.ARGUMENT_NUMBER, "42");
         actions.setArg(RepeatClipCommand.ARGUMENT_TITLE, CLIP_TITLE);
         clipManager.put(CLIP);

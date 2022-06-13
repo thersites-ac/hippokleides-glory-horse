@@ -1,13 +1,13 @@
 package net.picklepark.discord.command.audio;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 
 public class ChangeVolumeAudioCommand implements DiscordCommand {
 
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         try {
             int volume = Integer.parseInt(actions.getArgument("volume"));
             setValidVolume(actions, volume);
@@ -16,7 +16,7 @@ public class ChangeVolumeAudioCommand implements DiscordCommand {
         }
     }
 
-    private void setValidVolume(DiscordActions actions, int volume) {
+    private void setValidVolume(MessageReceivedActions actions, int volume) {
         if (! isValid(volume)) {
             actions.send("Valid volumes are 0-1000. Don't ask me what's wrong with 1001, it's just bad.");
         } else {

@@ -1,12 +1,12 @@
 package tools;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 
 public class AnotherTestCommand implements DiscordCommand {
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         actions.send("OK again");
     }
 

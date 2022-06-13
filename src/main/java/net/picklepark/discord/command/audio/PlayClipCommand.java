@@ -1,6 +1,6 @@
 package net.picklepark.discord.command.audio;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;
@@ -19,7 +19,7 @@ public class PlayClipCommand implements net.picklepark.discord.command.DiscordCo
     }
 
     @Override
-    public void execute(DiscordActions actions) {
+    public void execute(MessageReceivedActions actions) {
         actions.connect();
         try {
             actions.queue(path);

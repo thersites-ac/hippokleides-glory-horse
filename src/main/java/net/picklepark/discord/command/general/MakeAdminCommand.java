@@ -1,13 +1,13 @@
 package net.picklepark.discord.command.general;
 
-import net.picklepark.discord.adaptor.DiscordActions;
+import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.constants.Messages;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UserIdentificationException;
-import net.picklepark.discord.service.AuthService;
+import net.picklepark.discord.service.AuthManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,20 +18,20 @@ public class MakeAdminCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(MakeAdminCommand.class);
 
-    private final AuthService authService;
+    private final AuthManager authManager;
 
     @Inject
-    public MakeAdminCommand(AuthService authService) {
-        this.authService = authService;
+    public MakeAdminCommand(AuthManager authManager) {
+        this.authManager = authManager;
     }
 
     @Override
-    public void execute(DiscordActions actions) throws DiscordCommandException {
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         String guildName = actions.getGuildName();
         String username = actions.getArgument("username");
         try {
             long userId = actions.lookupUser(username).getIdLong();
-            authService.addAdmin(guildName, userId);
+            authManager.addAdmin(guildName, userId);
             actions.send("Welcome to the inner circle, " + username + ".");
         } catch (UserIdentificationException e) {
             logger.warn("Could not find user " + username + " in channel " + guildName);
