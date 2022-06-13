@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
+// fixme: combine this with DiscordCommandRegistryTests
 @RunWith(JUnit4.class)
 public class CommandRegistryTests {
 
@@ -91,7 +92,7 @@ public class CommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager(), null);
     }
 
     private void givenRegisterCommand() {

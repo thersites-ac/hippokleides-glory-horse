@@ -1,6 +1,7 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
+import net.picklepark.discord.adaptor.impl.AudioActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
@@ -31,7 +32,7 @@ public class RepeatClipCommand implements DiscordCommand {
         String repetitionsInput = actions.getArgument(ARGUMENT_NUMBER);
         try {
             int repetitions = Integer.parseInt(repetitionsInput);
-            int capacity = MessageReceivedActions.MAX_QUEUE_SIZE - actions.getAudioQueueSize();
+            int capacity = AudioActions.MAX_QUEUE_SIZE - actions.getAudioQueueSize();
             if (capacity < repetitions)
                 throw new NotEnoughQueueCapacityException(capacity + "");
             else if (repetitions <= 0)

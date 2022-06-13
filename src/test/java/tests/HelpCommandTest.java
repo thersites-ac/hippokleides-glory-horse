@@ -28,7 +28,7 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager());
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager(), null);
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyMessageReceivedActions();

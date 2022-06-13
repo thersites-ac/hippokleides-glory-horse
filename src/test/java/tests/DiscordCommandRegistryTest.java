@@ -13,6 +13,7 @@ import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
 
+// fixme: combine this with CommandRegistryTests
 @RunWith(JUnit4.class)
 public class DiscordCommandRegistryTest {
 
@@ -23,7 +24,7 @@ public class DiscordCommandRegistryTest {
     @Before
     public void setup() {
         authService = new TestAuthManager();
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), authService);
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(), authService, null);
         registry.prefix('~');
         registry.register(new TestCommand());
         actions = new SpyMessageReceivedActions();

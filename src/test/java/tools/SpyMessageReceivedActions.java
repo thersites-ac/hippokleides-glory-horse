@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
+import net.picklepark.discord.adaptor.impl.AudioActions;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UserIdentificationException;
 
@@ -98,8 +99,8 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
 
     @Override
     public void queue(String uri) throws NotEnoughQueueCapacityException {
-        if (queuedAudio.size() >= MessageReceivedActions.MAX_QUEUE_SIZE)
-            throw new NotEnoughQueueCapacityException(MAX_QUEUE_SIZE + "");
+        if (queuedAudio.size() >= AudioActions.MAX_QUEUE_SIZE)
+            throw new NotEnoughQueueCapacityException(AudioActions.MAX_QUEUE_SIZE + "");
         else
             queuedAudio.add(uri);
     }
