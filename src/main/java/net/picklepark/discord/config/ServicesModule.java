@@ -4,6 +4,8 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import net.picklepark.discord.adaptor.Messager;
+import net.picklepark.discord.adaptor.impl.MessagerImpl;
 import net.picklepark.discord.service.*;
 import net.picklepark.discord.service.impl.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -25,6 +27,7 @@ public class ServicesModule extends AbstractModule {
         bind(ClipManager.class).to(ClipManagerImpl.class);
         bind(UrlShortener.class).to(BitlyUrlShortener.class);
         bind(WelcomeManager.class).to(WelcomeManagerImpl.class);
+        bind(Messager.class).to(MessagerImpl.class);
     }
 
     @Provides

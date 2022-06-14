@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -71,33 +72,29 @@ public class Bot extends ListenerAdapter {
             WelcomeCommand.class
     );
 
-    private final Injector injector;
-    private final Map<Long, GuildPlayer> guildPlayers;
-    private final AudioPlayerManager playerManager;
-    private final SqsPollingWorker worker;
- 
+    private static JDA jda;
+    private static Injector injector;
+    private static DiscordCommandRegistry registry;
+    private static SqsPollingWorker worker;
+    private static Map<Long, GuildPlayer> guildPlayers;
+    private static AudioPlayerManager playerManager;
+
     public static void main(String[] args) throws Exception {
-        JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
+        jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
                 .addEventListeners(new Bot())
                 .build();
-    }
-
-    private final DiscordCommandRegistry registry;
-
-    private Bot() {
+        injector = Guice.createInjector(new DefaultModule(jda));
+        registry = injector.getInstance(DiscordCommandRegistry.class);
+        register(COMMANDS);
+        worker = injector.getInstance(SqsPollingWorker.class);
+        worker.start();
         playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
-
         guildPlayers = new HashMap<>();
-
-        injector = Guice.createInjector(new DefaultModule());
-        registry = injector.getInstance(DiscordCommandRegistry.class);
-        register(COMMANDS);
-
-        worker = injector.getInstance(SqsPollingWorker.class);
-        worker.start();
     }
+
+    private Bot() { }
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
@@ -137,7 +134,7 @@ public class Bot extends ListenerAdapter {
         return new JdaMessageReceivedActions(event, context);
     }
 
-    private void register(List<Class<? extends DiscordCommand>> commands) {
+    private static void register(List<Class<? extends DiscordCommand>> commands) {
         for (Class<? extends DiscordCommand> command: commands) {
             try {
                 registry.register(injector.getInstance(command));

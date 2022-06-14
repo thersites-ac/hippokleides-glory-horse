@@ -2,6 +2,7 @@ package net.picklepark.discord.worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.picklepark.discord.adaptor.Messager;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.LocalClip;
@@ -31,6 +32,7 @@ public class SqsPollingWorker extends Thread {
 
     private final RemoteStorageService remoteStorageService;
     private final ClipManager commandManager;
+    private final Messager messager;
 
     private final String url;
     private final long interval;
@@ -39,6 +41,7 @@ public class SqsPollingWorker extends Thread {
     public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
                             ClipManager commandManager,
+                            Messager messager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.interval") long interval) {
         this.client = client;
@@ -46,6 +49,7 @@ public class SqsPollingWorker extends Thread {
         this.commandManager = commandManager;
         this.url = url;
         this.interval = interval;
+        this.messager = messager;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
                 .waitTimeSeconds(20)
@@ -100,12 +104,18 @@ public class SqsPollingWorker extends Thread {
         // in future, perhaps should confirm that the bucket name matches the expected bucket
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
+        LocalClip clip = null;
         try {
-            LocalClip clip = remoteStorageService.download(objectKey);
+            clip = remoteStorageService.download(objectKey);
             commandManager.put(clip);
+            // fixme: this isn't quite enough data to pick out the correct text channel
+            messager.send(clip.getGuild(), "I know how to " + clip.getTitle());
         } catch (Exception e) {
             logger.error("While downloading clip", e);
-            // FIXME: ideally we'd notify of failure, too
+            if (clip != null) {
+                messager.send(clip.getGuild(),
+                        String.format("I had an issue downloading %s; try using ~sync.", clip.getTitle()));
+            }
         }
     }
 
