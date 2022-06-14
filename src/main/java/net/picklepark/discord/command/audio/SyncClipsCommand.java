@@ -20,7 +20,7 @@ public class SyncClipsCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        storageService.sync();
+        storageService.sync(actions.getGuildId());
         actions.send("Got 'em all");
     }
 

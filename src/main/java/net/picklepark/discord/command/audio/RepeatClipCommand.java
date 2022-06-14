@@ -38,7 +38,7 @@ public class RepeatClipCommand implements DiscordCommand {
             else if (repetitions <= 0)
                 throw new NumberFormatException("Negative value for number of repetitions");
             String titleInput = actions.getArgument(ARGUMENT_TITLE);
-            PlayClipCommand foundClip = clipManager.lookup(titleInput);
+            PlayClipCommand foundClip = clipManager.lookup(actions.getGuildId(), titleInput);
             if (foundClip == null)
                 actions.send(String.format(BAD_CLIP_INPUT_MESSAGE, titleInput));
             else {

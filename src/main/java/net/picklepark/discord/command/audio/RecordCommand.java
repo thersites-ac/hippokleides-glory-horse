@@ -6,21 +6,23 @@ import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.handler.receive.DemultiplexingHandler;
 import net.picklepark.discord.service.RecordingService;
+import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-public class RecordCommand implements DiscordCommand {
+public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
 
     private final RecordingService recordingService;
 
     @Inject
-    public RecordCommand(RecordingService recordingService) {
+    public RecordCommand(RecordingService recordingService, RemoteStorageService storageService) {
+        super(storageService);
         this.recordingService = recordingService;
     }
 
     @Override
     public void execute(MessageReceivedActions actions) {
-        actions.connect();
+        ensureConnected(actions);
         recordingService.beginRecording();
         actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
         actions.send("Ready 4 u ;)");

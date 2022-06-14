@@ -10,4 +10,5 @@ import java.net.URL;
 public class Coordinates {
     private final URL url;
     private final String key;
+    private final String prefix;
 }

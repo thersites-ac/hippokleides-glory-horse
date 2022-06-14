@@ -1,6 +1,5 @@
 package net.picklepark.discord.command.audio;
 
-import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
@@ -36,25 +35,29 @@ public class WelcomeCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        String channel = actions.getGuildName();
+        String guild = actions.getGuildId();
         String user = actions.getArgument(USER);
         try {
-            String cannonicalUser = actions.lookupUser(user).getAsTag();
+            String canonicalUser = actions.lookupUser(user).getAsTag();
             String title = actions.getArgument(CLIP);
-            PlayClipCommand command = clipManager.lookup(title);
+            PlayClipCommand command = clipManager.lookup(actions.getGuildId(), title);
             if (command != null) {
                 String path = command.getPath();
-                LocalClip clip = LocalClip.builder().title(title).path(path).build();
-                welcomeManager.set(cannonicalUser, channel, clip);
+                LocalClip clip = LocalClip.builder()
+                        .title(title)
+                        .guild(actions.getGuildId())
+                        .path(path)
+                        .build();
+                welcomeManager.set(canonicalUser, guild, clip);
                 actions.send("Let the greetings commence!");
             } else {
                 actions.send("I've never heard of " + title);
             }
         } catch (IOException e) {
-            logger.error("While setting welcome for " + user + " in " + channel, e);
+            logger.error("While setting welcome for " + user + " in " + guild, e);
             throw new DiscordCommandException(e);
         } catch (UserIdentificationException e) {
-            logger.error("Unidentified user " + user + " in channel " + channel, e);
+            logger.error("Unidentified user " + user + " in channel " + guild, e);
             actions.send("I don't know who " + user + " is");
         }
     }

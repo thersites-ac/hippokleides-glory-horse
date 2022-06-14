@@ -42,8 +42,9 @@ public class DiscordCommandRegistry {
         this.welcomeManager = welcomeManager;
     }
 
-    private Optional<DiscordCommand> getDynamic(String s) {
-        DiscordCommand command = commandManager.lookup(s);
+    private Optional<DiscordCommand> getDynamic(String guild, String title) {
+        logger.info("Looking up command for " + guild + " and " + title);
+        DiscordCommand command = commandManager.lookup(guild, title);
         return Optional.ofNullable(command);
     }
 
@@ -52,7 +53,7 @@ public class DiscordCommandRegistry {
         String message = actions.userInput();
         if (hasPrefix(message)) {
             String tail = message.substring(1);
-            DiscordCommand command = lookupAction(tail);
+            DiscordCommand command = lookupAction(actions.getGuildId(), tail);
             executeAuthorized(command, actions, tail);
         }
     }
@@ -87,13 +88,13 @@ public class DiscordCommandRegistry {
         }
     }
 
-    private DiscordCommand lookupAction(String message) {
+    private DiscordCommand lookupAction(String guild, String message) {
         logger.info("looking up {}", message);
         return handlers.keySet().stream()
                 .filter(message::matches)
                 .findFirst()
                 .map(handlers::get)
-                .orElse(getDynamic(message).orElse(NOOP));
+                .orElse(getDynamic(guild, message).orElse(NOOP));
 
     }
 

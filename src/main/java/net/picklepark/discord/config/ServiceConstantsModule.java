@@ -11,7 +11,7 @@ public class ServiceConstantsModule extends AbstractModule {
     @Provides
     @Named("sqs.poll.interval")
     long sqsPollInterval() {
-        return 5000;
+        return 500;
     }
 
     @Provides

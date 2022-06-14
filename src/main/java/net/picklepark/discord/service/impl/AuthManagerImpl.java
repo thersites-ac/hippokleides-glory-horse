@@ -67,7 +67,7 @@ public class AuthManagerImpl implements AuthManager {
         if (lookupOwner(actions) == user)
             throw new AuthLevelConflictException(user);
         if (isAdmin(actions, user)) {
-            admins.get(actions.getGuildName()).remove(user);
+            admins.get(actions.getGuildId()).remove(user);
             configService.persistAdmins(admins);
         } else
             throw new AuthLevelConflictException(user);
@@ -79,7 +79,7 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     private boolean isAdmin(MessageReceivedActions actions, long id) {
-        Set<Long> guildAdmins = admins.get(actions.getGuildName());
+        Set<Long> guildAdmins = admins.get(actions.getGuildId());
         return guildAdmins != null && guildAdmins.contains(id);
     }
 

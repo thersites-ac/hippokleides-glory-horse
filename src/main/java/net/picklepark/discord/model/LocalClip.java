@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class LocalClip implements Serializable {
 
     private static final long serialVersionUid = 1L;
-
     private String path;
     private String title;
+    private String guild;
 }

@@ -110,7 +110,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
-    public String getGuildName() {
+    public String getGuildId() {
         return guildName;
     }
 

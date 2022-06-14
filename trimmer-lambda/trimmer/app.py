@@ -20,6 +20,7 @@ def lambda_handler(event, context):
     print('invoked with payload:', body)
 
     key = body['key']
+    prefix = body['prefix']
     start = body['start']
     end = body['end']
     title = body['title']
@@ -27,7 +28,7 @@ def lambda_handler(event, context):
     dest = '/tmp/' + key
 
     s3 = boto3.client('s3')
-    s3.download_file('discord-recordings', key, dest)
+    s3.download_file('discord-recordings', prefix + '/' + key, dest)
 
     skip_ms = int(start * 1000)
     copy_ms = int((end - start) * 1000)
@@ -37,7 +38,7 @@ def lambda_handler(event, context):
     trimmer.copy(copy_ms)
     result = trimmer.close()
 
-    trimmed_key = os.path.basename(result)
+    trimmed_key = prefix + '/' + os.path.basename(result)
 
     s3.upload_file(result, 'discord-output', trimmed_key, 
             ExtraArgs = { 'Tagging': 'title=' + title })

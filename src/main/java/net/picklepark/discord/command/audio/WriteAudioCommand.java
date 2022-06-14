@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Date;
 
 public class WriteAudioCommand implements DiscordCommand {
@@ -52,9 +51,10 @@ public class WriteAudioCommand implements DiscordCommand {
         String username = actions.getArgument("username");
         try {
             User user = actions.lookupUser(username);
+            String guild = actions.getGuildId();
             byte[] data = recordingService.getUser(user);
-            Coordinates coordinates = writeAudioData(data, username);
-            sendCropLink(actions, coordinates.getUrl(), coordinates.getKey());
+            Coordinates coordinates = writeAudioData(data, guild, username);
+            sendCropLink(actions, coordinates);
         } catch (NotRecordingException e) {
             actions.send("I'm not very turned on right now :(");
         } catch (NoSuchUserException e) {
@@ -90,11 +90,12 @@ public class WriteAudioCommand implements DiscordCommand {
         return "clip (?<username>.+)";
     }
 
-    private void sendCropLink(MessageReceivedActions actions, URL location, String key) throws IOException {
+    private void sendCropLink(MessageReceivedActions actions, Coordinates coordinates) throws IOException {
         try {
             URI cropLink = new URIBuilder(BASE_URL)
-                    .addParameter("uri", location.toString())
-                    .addParameter("key", key)
+                    .addParameter("uri", coordinates.getUrl().toString())
+                    .addParameter("key", coordinates.getKey())
+                    .addParameter("prefix", coordinates.getPrefix())
                     .build();
             String bitlyLink = urlShortener.shorten(cropLink.toString());
             actions.send("OK, now go to " + bitlyLink+ " to trim it.");
@@ -104,16 +105,18 @@ public class WriteAudioCommand implements DiscordCommand {
         }
     }
 
-    private Coordinates writeAudioData(byte[] data, String username) throws DiscordCommandException {
+    private Coordinates writeAudioData(byte[] data, String guild, String username) throws DiscordCommandException {
         try (AudioInputStream audioInputStream = new AudioInputStream(
                 new ByteArrayInputStream(data),
                 AudioReceiveHandler.OUTPUT_FORMAT,
                 data.length)) {
             String baseName = makeName(username);
-            String filename = "recordings/" + baseName;
+            String directory = "recordings/" + guild;
+            String filename = directory + "/" + baseName;
+            new File(directory).mkdirs();
             File output = new File(filename);
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
-            return remoteStorageService.store(output);
+            return remoteStorageService.store(guild, output);
         } catch (IOException e) {
             throw new DiscordCommandException(e);
         }

@@ -13,6 +13,7 @@ public interface MessageReceivedActions {
     // fixme: this is a bit different from the others...
     void setReceivingHandler(AudioReceiveHandler handler);
     void connect();
+    boolean isConnected();
     // fixme: don't return Users
     User getAuthor();
     User lookupUser(String user) throws UserIdentificationException;
@@ -28,6 +29,6 @@ public interface MessageReceivedActions {
     void nuke();
     void queue(String uri) throws NotEnoughQueueCapacityException;
     void initMatches(String regex, String message);
-    String getGuildName();
+    String getGuildId();
     int getAudioQueueSize();
 }

@@ -5,10 +5,14 @@ import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.ClipManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class ListCommandsCommand implements DiscordCommand {
+
+    private static final Logger logger = LoggerFactory.getLogger(ListCommandsCommand.class);
 
     private final ClipManager commandManager;
 
@@ -19,7 +23,8 @@ public class ListCommandsCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        commandManager.getAllCommandNames()
+        logger.info("Listing commands for channel " + actions.getGuildId());
+        commandManager.getAllCommandNames(actions.getGuildId())
                 .stream()
                 .reduce((s, t) -> s + ", " + t)
                 .ifPresentOrElse(

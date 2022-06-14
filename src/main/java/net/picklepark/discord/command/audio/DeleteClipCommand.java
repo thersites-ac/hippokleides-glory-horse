@@ -23,8 +23,8 @@ public class DeleteClipCommand implements DiscordCommand {
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         String clip = actions.getArgument("clip");
-        storageService.delete(clip);
-        commandManager.delete(clip);
+        String guild = actions.getGuildId();
+        storageService.delete(guild, clip);
         actions.send("It is gone forever.");
     }
 

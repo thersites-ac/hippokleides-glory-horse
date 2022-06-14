@@ -95,7 +95,6 @@ public class Bot extends ListenerAdapter {
         registry = injector.getInstance(DiscordCommandRegistry.class);
         register(COMMANDS);
 
-        injector.getInstance(RemoteStorageService.class).sync();
         worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();
     }
@@ -112,6 +111,7 @@ public class Bot extends ListenerAdapter {
         super.onGuildMessageReceived(event);
     }
 
+    // fixme: what if the user joins a different audio channel from the one the bot is in?
     @Override
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);

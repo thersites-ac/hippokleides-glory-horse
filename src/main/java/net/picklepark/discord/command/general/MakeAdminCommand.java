@@ -27,7 +27,7 @@ public class MakeAdminCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        String guildName = actions.getGuildName();
+        String guildName = actions.getGuildId();
         String username = actions.getArgument("username");
         try {
             long userId = actions.lookupUser(username).getIdLong();

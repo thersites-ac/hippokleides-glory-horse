@@ -44,8 +44,13 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
 
     @Override
     public void connect() {
-        if (!event.getGuild().getAudioManager().isConnected())
+        if (!isConnected())
             event.getGuild().getAudioManager().openAudioConnection(event.getGuild().getVoiceChannels().get(0));
+    }
+
+    @Override
+    public boolean isConnected() {
+        return event.getGuild().getAudioManager().isConnected();
     }
 
     @Override
@@ -142,8 +147,8 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
-    public String getGuildName() {
-        return event.getGuild().getName();
+    public String getGuildId() {
+        return event.getGuild().getId();
     }
 
     @Override

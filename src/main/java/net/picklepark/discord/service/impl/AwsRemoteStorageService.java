@@ -23,10 +23,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class AwsRemoteStorageService implements RemoteStorageService {
@@ -39,7 +39,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final String uploadsBucket;
     private final String clipsBucket;
     private final ClipManager clipManager;
-    private final Map<String, String> remoteKeys;
+    private final Map<String, Map<String, String>> remoteKeys;
     private final Duration timeToLive;
     private final String clipsDirectory;
 
@@ -60,52 +60,66 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         this.clipManager = clipManager;
         this.timeToLive = timeToLive;
         this.clipsDirectory = clipsDirectory;
-        remoteKeys = new HashMap<>();
+        remoteKeys = new ConcurrentHashMap<>();
     }
 
     @Override
-    public Coordinates store(File file) {
-        String key = upload(file);
-        URL url = presignedUrlFor(key);
+    public Coordinates store(String guild, File file) {
+        String canonicalKey = upload(guild, file);
+        URL url = presignedUrlFor(canonicalKey);
         return Coordinates.builder()
-                .key(key)
+                .key(file.getName())
+                .prefix(guild)
                 .url(url)
                 .build();
     }
 
     @Override
-    public LocalClip download(String objectKey) throws ResourceNotFoundException, IOException {
-        Optional<String> maybeTitle = readTitle(objectKey);
+    public LocalClip download(String canonicalKey) throws ResourceNotFoundException, IOException {
+        Optional<String> maybeTitle = readTitle(canonicalKey);
         if (maybeTitle.isPresent())
-            return downloadAs(objectKey, maybeTitle.get());
+            return downloadAs(canonicalKey, maybeTitle.get());
         else
-            throw new ResourceNotFoundException(objectKey, "s3://" + clipsBucket + "/" + objectKey);
+            throw new ResourceNotFoundException(canonicalKey, "s3://" + clipsBucket + "/" + canonicalKey);
     }
 
-    private LocalClip downloadAs(String objectKey, String title) throws IOException {
-        remoteKeys.put(title, objectKey);
+    private LocalClip downloadAs(String canonicalKey, String title) throws IOException {
+        // fixme: vomit
+        String guild = canonicalKey.split("/")[0];
+
+        putRemoteKey(canonicalKey, title);
 
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(clipsBucket)
-                .key(objectKey)
+                .key(canonicalKey)
                 .build();
 
         logger.info("Downloading {}", title);
-        String path = localPathOf(objectKey);
+        String path = localPathOf(canonicalKey);
+        new File(path).getParentFile().mkdirs();
+        logger.info("Made dirs: " + path);
         InputStream inputStream = trimmedClipsClient.getObject(request);
         Files.copy(inputStream, Path.of(path));
         inputStream.close();
         return LocalClip.builder()
+                .guild(guild)
                 .path(path)
                 .title(title)
                 .build();
     }
 
-    private Optional<String> readTitle(String objectKey) {
-        logger.info("Checking to download {}/{}", clipsBucket, objectKey);
+    private void putRemoteKey(String canonicalKey, String title) {
+        // fixme: gross
+        String guild = canonicalKey.split("/")[0];
+        remoteKeys.computeIfAbsent(guild, g -> new ConcurrentHashMap<>());
+        remoteKeys.get(guild).put(title, canonicalKey);
+    }
+
+    private Optional<String> readTitle(String canonicalKey) {
+        logger.info("Checking to download {}/{}", clipsBucket, canonicalKey);
         GetObjectTaggingRequest taggingRequest = GetObjectTaggingRequest.builder()
                 .bucket(clipsBucket)
-                .key(objectKey)
+                .key(canonicalKey)
                 .build();
         GetObjectTaggingResponse taggingResponse = trimmedClipsClient.getObjectTagging(taggingRequest);
 
@@ -115,26 +129,34 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 .map(Tag::value);
     }
 
+    private String toCanonicalKey(String guild, String objectKey) {
+        return guild + "/" + objectKey;
+    }
+
     @Override
-    public void sync() {
-        clipManager.clear();
+    public void sync(String guild) {
+        clipManager.clear(guild);
         ListObjectsRequest request = ListObjectsRequest.builder()
                 .bucket(clipsBucket)
+                .prefix(guild + "/")
                 .build();
         ListObjectsResponse response = trimmedClipsClient.listObjects(request);
         downloadAll(response.contents());
     }
 
     @Override
-    public void delete(String key) {
-        String remoteKey = remoteKeys.get(key);
-        logger.info("Deleting {} with AWS key {}", key, remoteKey);
-        DeleteObjectRequest request = DeleteObjectRequest.builder()
-                .bucket(clipsBucket)
-                .key(remoteKey)
-                .build();
-        trimmedClipsClient.deleteObject(request);
-        deleteLocal(remoteKey);
+    public void delete(String guild, String title) {
+        Map<String, String> guildTitles = remoteKeys.get(guild);
+        if (guild != null) {
+            String canonicalKey = guildTitles.get(title);
+            logger.info("Deleting {} with AWS key {}", title, canonicalKey);
+            DeleteObjectRequest request = DeleteObjectRequest.builder()
+                    .bucket(clipsBucket)
+                    .key(canonicalKey)
+                    .build();
+            trimmedClipsClient.deleteObject(request);
+            deleteLocal(canonicalKey);
+        }
     }
 
     private void deleteLocal(String filename) {
@@ -154,23 +176,27 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         }
     }
 
-    private LocalClip syncOneFile(String key) throws ResourceNotFoundException, IOException {
-        File file = new File(localPathOf(key));
+    private LocalClip syncOneFile(String canonicalKey) throws ResourceNotFoundException, IOException {
+        logger.info("Syncing " + canonicalKey);
+        File file = new File(localPathOf(canonicalKey));
         if (!file.exists())
-            return download(key);
+            return download(canonicalKey);
         else
-            return nameLocalFile(key);
+            return nameLocalFile(canonicalKey);
     }
 
     private LocalClip nameLocalFile(String key) throws ResourceNotFoundException {
+        // fixme: yuuuuck
+        String guild = key.split("/")[0];
         logger.info("{} already exists; looking up tagged title", key);
-        String path = "clips/" + key;
+        String path = localPathOf(key);
         Optional<String> maybeTitle = readTitle(key);
         if (maybeTitle.isPresent()) {
             String title = maybeTitle.get();
-            remoteKeys.put(title, key);
+            putRemoteKey(key, title);
             return LocalClip.builder()
                     .path(path)
+                    .guild(guild)
                     .title(title)
                     .build();
         }
@@ -178,21 +204,21 @@ public class AwsRemoteStorageService implements RemoteStorageService {
 
     }
 
-    private String upload(File file) {
-        String key = file.getName();
+    private String upload(String guild, File file) {
+        String canonicalKey = toCanonicalKey(guild, file.getName());
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(uploadsBucket)
-                .key(key)
+                .key(canonicalKey)
                 .storageClass(StorageClass.STANDARD)
                 .build();
         untrimmedClipsClient.putObject(request, Path.of(file.toURI()));
-        return key;
+        return canonicalKey;
     }
 
-    private URL presignedUrlFor(String key) {
+    private URL presignedUrlFor(String canonicalKey) {
         GetObjectRequest basicRequest = GetObjectRequest.builder()
                 .bucket(uploadsBucket)
-                .key(key)
+                .key(canonicalKey)
                 .build();
 
         GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
@@ -205,8 +231,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         return output.url();
     }
 
-    private String localPathOf(String objectKey) {
-        return clipsDirectory + "/" + objectKey;
+    private String localPathOf(String key) {
+        return clipsDirectory + "/" + key;
     }
-
 }

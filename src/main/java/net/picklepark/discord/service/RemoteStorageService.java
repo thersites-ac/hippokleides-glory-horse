@@ -12,8 +12,8 @@ import java.util.Collection;
 
 // FIXME: separate the logic of how to store and download from filenames and folders
 public interface RemoteStorageService {
-    Coordinates store(File file) throws MalformedURLException;
-    LocalClip download(String objectKey) throws URISyntaxException, ResourceNotFoundException, IOException;
-    void sync();
-    void delete(String key);
+    Coordinates store(String guild, File file) throws MalformedURLException;
+    LocalClip download(String fullKey) throws URISyntaxException, ResourceNotFoundException, IOException;
+    void sync(String guild);
+    void delete(String guild, String key);
 }
