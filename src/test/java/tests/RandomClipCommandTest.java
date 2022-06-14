@@ -18,15 +18,18 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class RandomClipCommandTest {
 
+    private static final String GUILD = "guild";
+
     private RandomClipCommand randomClipCommand;
     private SpyMessageReceivedActions actions;
     private ClipManager clipManager;
 
     @Before
     public void setup() {
-        clipManager = new ClipManagerImpl();
-        randomClipCommand = new RandomClipCommand(clipManager);
+        clipManager = new ClipManagerImpl(null);
+        randomClipCommand = new RandomClipCommand(clipManager, null);
         actions = new SpyMessageReceivedActions();
+        actions.setGuildName(GUILD);
     }
 
     @Test
@@ -48,19 +51,22 @@ public class RandomClipCommandTest {
         clipManager.put(LocalClip.builder()
                 .path("/example/foo")
                 .title("/foo")
+                .guild(GUILD)
                 .build());
         clipManager.put(LocalClip.builder()
                 .path("/example/bar")
                 .title("bar")
+                .guild(GUILD)
                 .build());
     }
 
     private void givenNoClipsExist() {
-        clipManager.clear();
+        clipManager.clear(GUILD);
     }
 
     private void whenInvoke() throws DiscordCommandException {
         actions.setUserInput("random");
+        actions.connect();
         randomClipCommand.execute(actions);
     }
 
@@ -69,22 +75,21 @@ public class RandomClipCommandTest {
         Queue<String> audioQueue = actions.getQueuedAudio();
         assertEquals(1, audioQueue.size());
         String uri = audioQueue.remove();
-        assertTrue(clipManager.getAllCommandNames().stream()
-                .anyMatch(name -> clipManager.lookup(name)
+        assertTrue(clipManager.getAllCommandNames(GUILD).stream()
+                .anyMatch(name -> clipManager.lookup(GUILD, name)
                         .getPath()
                         .equals(uri)));
     }
 
     private void thenSendsTitle() {
         assertEquals(1, actions.getSentMessage().size());
-        assertTrue(clipManager.getAllCommandNames().stream()
+        assertTrue(clipManager.getAllCommandNames(GUILD).stream()
                 .anyMatch(name -> actions.getSentMessage()
                         .get(0)
                         .contains(name)));
     }
 
     private void thenDoesNothingButComplain() {
-        assertFalse(actions.isConnected());
         assertEquals(0, actions.getQueuedAudio().size());
         assertEquals("I have never heard the sweet sound of your conversation.", actions.getSentMessage().get(0));
     }

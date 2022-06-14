@@ -17,7 +17,7 @@ public class ClipManagerImplTest {
 
     @Before
     public void setup() {
-        clipManager = new ClipManagerImpl();
+        clipManager = new ClipManagerImpl(null);
     }
 
     @Test
@@ -31,12 +31,13 @@ public class ClipManagerImplTest {
         LocalClip foo = LocalClip.builder()
                 .title("foo")
                 .path("bar")
+                .guild("baz")
                 .build();
         clipManager.put(foo);
     }
 
     private void whenLookup() {
-        foundCommand = clipManager.lookup("foo");
+        foundCommand = clipManager.lookup("baz", "foo");
     }
 
     private void thenGetSameClip() {

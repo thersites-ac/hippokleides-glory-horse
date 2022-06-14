@@ -20,9 +20,10 @@ public class RepeatClipCommandTest {
     private static final LocalClip CLIP = LocalClip.builder()
             .title(CLIP_TITLE)
             .path(CLIP_URI)
+            .guild("guild")
             .build();
 
-    private final ClipManager clipManager = new ClipManagerImpl();
+    private final ClipManager clipManager = new ClipManagerImpl(null);
     private final RepeatClipCommand command = new RepeatClipCommand(clipManager);
     private SpyMessageReceivedActions actions;
 
@@ -31,11 +32,13 @@ public class RepeatClipCommandTest {
         actions = new SpyMessageReceivedActions();
         actions.setArg(RepeatClipCommand.ARGUMENT_NUMBER, "42");
         actions.setArg(RepeatClipCommand.ARGUMENT_TITLE, CLIP_TITLE);
+        actions.setGuildName("guild");
         clipManager.put(CLIP);
     }
 
     @Test
     public void testHappyPath() throws DiscordCommandException {
+        actions.connect();
         command.execute(actions);
         assertEquals(42, actions.getQueuedAudio().size());
         actions.getQueuedAudio().forEach(item -> assertEquals(CLIP_URI, item));

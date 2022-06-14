@@ -27,6 +27,7 @@ public class CommandRegistryTests {
     @Before
     public void setup() {
         actions = new SpyMessageReceivedActions();
+        actions.setGuildName("guild");
         testCommand = new TestCommand();
         anotherTestCommand = new AnotherTestCommand();
         silentCommand = new SilentCommand();
@@ -92,7 +93,10 @@ public class CommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager(), null);
+        registry = new DiscordCommandRegistry(
+                new ClipManagerImpl(null),
+                new RubberstampAuthManager(),
+                null);
     }
 
     private void givenRegisterCommand() {

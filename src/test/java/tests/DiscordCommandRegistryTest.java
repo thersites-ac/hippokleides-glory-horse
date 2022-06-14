@@ -24,10 +24,11 @@ public class DiscordCommandRegistryTest {
     @Before
     public void setup() {
         authService = new TestAuthManager();
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), authService, null);
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(null), authService, null);
         registry.prefix('~');
         registry.register(new TestCommand());
         actions = new SpyMessageReceivedActions();
+        actions.setGuildName("guild");
     }
 
     @Test

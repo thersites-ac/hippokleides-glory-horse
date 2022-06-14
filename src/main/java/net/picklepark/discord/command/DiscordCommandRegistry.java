@@ -35,9 +35,9 @@ public class DiscordCommandRegistry {
     private final AuthManager authManager;
 
     @Inject
-    public DiscordCommandRegistry(ClipManager commandManager, AuthManager authManager, WelcomeManager welcomeManager) {
+    public DiscordCommandRegistry(ClipManager clipManager, AuthManager authManager, WelcomeManager welcomeManager) {
         handlers = new ConcurrentHashMap<>();
-        this.commandManager = commandManager;
+        this.commandManager = clipManager;
         this.authManager = authManager;
         this.welcomeManager = welcomeManager;
     }

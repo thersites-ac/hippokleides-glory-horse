@@ -28,10 +28,11 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(), new RubberstampAuthManager(), null);
+        registry = new DiscordCommandRegistry(new ClipManagerImpl(null), new RubberstampAuthManager(), null);
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyMessageReceivedActions();
+        actions.setGuildName("guild");
         helpCommand = new HelpCommand(registry);
         registry.prefix('~');
     }
