@@ -50,18 +50,24 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
-    public User getAuthor() {
-        return User.fromId(author);
+    public long getAuthorId() {
+        return author;
     }
 
     @Override
-    public User lookupUser(String user) throws UserIdentificationException {
+    public long lookupUserId(String user) throws UserIdentificationException {
         Long userId = members.get(user);
         if (userId == null)
             throw new UserIdentificationException(user);
         else
-            return User.fromId(userId);
+            return userId;
     }
+
+    @Override
+    public String canonicalUsername(String user) throws UserIdentificationException {
+        return user;
+    }
+
     @Override
     public String userInput() {
         return userInput;
@@ -115,8 +121,8 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
-    public User getOwner() {
-        return User.fromId(owner);
+    public long getOwnerId() {
+        return owner;
     }
 
     @Override

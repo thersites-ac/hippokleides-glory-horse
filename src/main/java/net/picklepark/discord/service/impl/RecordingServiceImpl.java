@@ -43,12 +43,11 @@ public class RecordingServiceImpl implements RecordingService {
     }
 
     @Override
-    public byte[] getUser(User user) throws NotRecordingException {
+    public byte[] getUser(long user) throws NotRecordingException {
         if (!recording)
             throw new NotRecordingException();
-        long id = user.getIdLong();
-        if (userRecordings.containsKey(id))
-            return userRecordings.get(id).retrieve();
+        if (userRecordings.containsKey(user))
+            return userRecordings.get(user).retrieve();
         else
             return new byte[0];
     }

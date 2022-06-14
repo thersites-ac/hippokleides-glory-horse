@@ -50,7 +50,7 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     private boolean authorIsOwner(MessageReceivedActions actions) {
-        return isOwner(actions, actions.getAuthor().getIdLong());
+        return isOwner(actions, actions.getAuthorId());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     private boolean hasAdminPrivileges(MessageReceivedActions actions) {
-        long authorId = actions.getAuthor().getIdLong();
+        long authorId = actions.getAuthorId();
         return isAdmin(actions, authorId) || isOwner(actions, authorId);
     }
 
@@ -89,7 +89,7 @@ public class AuthManagerImpl implements AuthManager {
 
     private long lookupOwner(MessageReceivedActions actions) {
         try {
-            return actions.getOwner().getIdLong();
+            return actions.getOwnerId();
         } catch (NoOwnerException e) {
             return -1;
         }

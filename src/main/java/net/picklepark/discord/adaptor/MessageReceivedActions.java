@@ -14,10 +14,10 @@ public interface MessageReceivedActions {
     void setReceivingHandler(AudioReceiveHandler handler);
     void connect();
     boolean isConnected();
-    // fixme: don't return Users
-    User getAuthor();
-    User lookupUser(String user) throws UserIdentificationException;
-    User getOwner() throws NoOwnerException;
+    long getAuthorId();
+    long lookupUserId(String user) throws UserIdentificationException;
+    String canonicalUsername(String user) throws UserIdentificationException;
+    long getOwnerId() throws NoOwnerException;
     String userInput();
     String getArgument(String arg);
     void setVolume(int volume);

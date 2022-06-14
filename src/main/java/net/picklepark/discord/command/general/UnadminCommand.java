@@ -29,8 +29,8 @@ public class UnadminCommand implements DiscordCommand {
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         String username = actions.getArgument("user");
         try {
-            User user = actions.lookupUser(username);
-            authManager.demote(user.getIdLong(), actions);
+            long user = actions.lookupUserId(username);
+            authManager.demote(user, actions);
             actions.send("You're fired, " + username);
         } catch (UserIdentificationException e) {
             actions.send("I don't know who " + username + " is.");

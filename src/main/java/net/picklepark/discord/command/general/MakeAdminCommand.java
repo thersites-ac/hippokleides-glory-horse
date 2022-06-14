@@ -30,7 +30,7 @@ public class MakeAdminCommand implements DiscordCommand {
         String guildName = actions.getGuildId();
         String username = actions.getArgument("username");
         try {
-            long userId = actions.lookupUser(username).getIdLong();
+            long userId = actions.lookupUserId(username);
             authManager.addAdmin(guildName, userId);
             actions.send("Welcome to the inner circle, " + username + ".");
         } catch (UserIdentificationException e) {

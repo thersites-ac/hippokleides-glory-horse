@@ -54,12 +54,21 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
-    public User getAuthor() {
-        return event.getAuthor();
+    public long getAuthorId() {
+        return event.getAuthor().getIdLong();
     }
 
     @Override
-    public User lookupUser(String user) throws UserIdentificationException {
+    public String canonicalUsername(String user) throws UserIdentificationException {
+        return lookupUser(user).getAsTag();
+    }
+
+    @Override
+    public long lookupUserId(String user) throws UserIdentificationException {
+        return lookupUser(user).getIdLong();
+    }
+
+    private User lookupUser(String user) throws UserIdentificationException {
         if (isTag(user))
             return lookupTag(user);
         else
@@ -152,12 +161,12 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
-    public User getOwner() throws NoOwnerException {
+    public long getOwnerId() throws NoOwnerException {
         Member owner = event.getGuild().getOwner();
         if (owner == null)
             throw new NoOwnerException(event.getGuild().getName());
         else
-            return owner.getUser();
+            return owner.getUser().getIdLong();
     }
 
     @Override

@@ -50,7 +50,7 @@ public class WriteAudioCommand implements DiscordCommand {
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         String username = actions.getArgument("username");
         try {
-            User user = actions.lookupUser(username);
+            long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
             byte[] data = recordingService.getUser(user);
             Coordinates coordinates = writeAudioData(data, guild, username);
