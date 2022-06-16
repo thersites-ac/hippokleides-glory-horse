@@ -18,7 +18,7 @@ public class WelcomeCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeCommand.class);
 
-    private static final String EXAMPLE = "welcome patick with hi";
+    private static final String EXAMPLE = "welcome";
     private static final String HELP_MESSAGE = "Tell me to play a clip whenever a user joins audio chat";
     private static final String USER = "user";
     private static final String CLIP = "clip";
