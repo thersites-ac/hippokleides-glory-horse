@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
+// TODO: absorb the Pattern/Matcher functionality into this so it's hidden
 public class CommandDsl {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandDsl.class);
