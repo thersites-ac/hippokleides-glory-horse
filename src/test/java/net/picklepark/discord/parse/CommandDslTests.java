@@ -33,6 +33,19 @@ public class CommandDslTests {
         thenDoesNotMatch("bar");
     }
 
+    @Test
+    public void matchesExactWhitespace() {
+        String s = "foo bar";
+        givenCompile(s);
+        thenMatches(s);
+    }
+
+    @Test
+    public void permitsExtraWhitespaceInMessage() {
+        givenCompile("foo bar");
+        thenMatches("foo \t \n  \rbar");
+    }
+
     private void givenCompile(String dsl) {
         pattern = new CommandDsl(dsl).toPattern();
     }
