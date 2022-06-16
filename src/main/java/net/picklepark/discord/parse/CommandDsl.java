@@ -10,19 +10,21 @@ public class CommandDsl {
     private static final Logger logger = LoggerFactory.getLogger(CommandDsl.class);
 
     private static final String WHITESPACE = "\\s+";
+    private static final String VARIABLE_DECLARATION = "<(\\w+)>";
+    private static final String VARIABLE_EXPRESSION = "\\(?<$1>\\\\w.*\\\\w\\)";
 
     private final String dsl;
-    private final String[] chunks;
     private final String regex;
 
     public CommandDsl(String dsl) {
         this.dsl = dsl;
-        chunks = dsl.split(" ");
-        regex = String.join(WHITESPACE, chunks);
+        regex = dsl
+                .replace(" ", WHITESPACE)
+                .replaceAll(VARIABLE_DECLARATION, VARIABLE_EXPRESSION);
     }
 
     public Pattern toPattern() {
-        logger.info("regex: " + regex);
+        logger.info("dsl: " + dsl + "; regex: " + regex);
         return Pattern.compile(regex);
     }
 }

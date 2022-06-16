@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
@@ -12,22 +13,23 @@ import static org.junit.Assert.*;
 public class CommandDslTests {
 
     private Pattern pattern;
+    private Matcher matcher;
 
     @Test
     public void emptyStringMatchesEmptyString() {
-        whenCompile("");
+        givenSyntax("");
         thenMatches("");
     }
 
     @Test
     public void emptyStringDoesNotMatchNonemptyString() {
-        whenCompile("");
+        givenSyntax("");
         thenDoesNotMatch("foo");
     }
 
     @Test
     public void constantStringMatchesConstantOnly() {
-        whenCompile("foo");
+        givenSyntax("foo");
         thenMatches("foo");
         thenDoesNotMatch("bar");
     }
@@ -35,46 +37,68 @@ public class CommandDslTests {
     @Test
     public void matchesExactWhitespace() {
         String s = "foo bar";
-        whenCompile(s);
+        givenSyntax(s);
         thenMatches(s);
     }
 
     @Test
     public void permitsExtraWhitespaceInMessage() {
-        whenCompile("foo bar");
+        givenSyntax("foo bar");
         thenMatches("foo \t \n  \rbar");
     }
 
     @Test
     public void requiresWhitespace() {
-        whenCompile("foo bar");
+        givenSyntax("foo bar");
         thenDoesNotMatch("foobar");
     }
 
     @Test
     public void matchesVariables() {
-        fail();
+        givenSyntax("<foo>");
+        thenMatches("bar");
+        thenVariableIs("foo", "bar");
+    }
+
+    @Test
+    public void variablesCannotBeEmtpy() {
+        givenSyntax("<foo>");
+        thenDoesNotMatch("");
     }
 
     @Test
     public void requiresVariables() {
-        fail();
-    }
-    
-    @Test
-    public void variablesStartAndEndWithNonWhitespace() {
-        fail();
+        givenSyntax("foo <bar>");
+        thenDoesNotMatch("foo ");
     }
 
-    private void whenCompile(String dsl) {
+    @Test
+    public void variablesStartAndEndWithNonWhitespace() {
+        givenSyntax("<foo>");
+        thenDoesNotMatch(" foo ");
+    }
+
+    @Test
+    public void keepsInternalWhitespace() {
+        givenSyntax("foo <bar> baz");
+        thenMatches("foo bar quux baz");
+        thenVariableIs("bar", "bar quux");
+    }
+
+    private void givenSyntax(String dsl) {
         pattern = new CommandDsl(dsl).toPattern();
     }
 
     private void thenMatches(String message) {
-        assertTrue(pattern.matcher(message).matches());
+        matcher = pattern.matcher(message);
+        assertTrue(matcher.matches());
     }
 
     private void thenDoesNotMatch(String message) {
         assertFalse(pattern.matcher(message).matches());
+    }
+
+    private void thenVariableIs(String variable, String value) {
+        assertEquals(value, matcher.group(variable));
     }
 }
