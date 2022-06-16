@@ -50,6 +50,7 @@ public class ClipManagerImpl implements ClipManager {
         return titles == null? Collections.emptySet(): titles.keySet();
     }
 
+    // fixme: this appears to be broken (used in `DeleteClipCommand`)
     @Override
     public void delete(String guild, String clip) {
         Map<String, PlayClipCommand> titles = localStore.get(guild);

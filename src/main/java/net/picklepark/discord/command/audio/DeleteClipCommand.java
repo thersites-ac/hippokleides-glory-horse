@@ -12,12 +12,12 @@ import javax.inject.Inject;
 public class DeleteClipCommand implements DiscordCommand {
 
     private static final String INPUT_STRING = "delete <clip>";
-    private final ClipManager commandManager;
+    private final ClipManager clipManager;
     private final RemoteStorageService storageService;
 
     @Inject
-    public DeleteClipCommand(ClipManager commandManager, RemoteStorageService storageService) {
-        this.commandManager = commandManager;
+    public DeleteClipCommand(ClipManager clipManager, RemoteStorageService storageService) {
+        this.clipManager = clipManager;
         this.storageService = storageService;
     }
 
@@ -26,6 +26,7 @@ public class DeleteClipCommand implements DiscordCommand {
         String clip = actions.getArgument("clip");
         String guild = actions.getGuildId();
         storageService.delete(guild, clip);
+        clipManager.delete(guild, clip);
         actions.send("It is gone forever.");
     }
 
