@@ -131,9 +131,7 @@ public class Bot extends ListenerAdapter {
         super.onGuildVoiceJoin(event);
         String user = event.getMember().getUser().getAsTag();
         String channel = event.getChannelJoined().getGuild().getName();
-        logger.info(String.format("%s joined %s",
-                user,
-                channel));
+        logger.info(String.format("%s joined %s", user, channel));
         try {
             registry.welcome(buildUserJoinedVoiceActions(event));
         } catch (NotEnoughQueueCapacityException ex) {
