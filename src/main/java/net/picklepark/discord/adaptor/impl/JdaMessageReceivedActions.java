@@ -148,6 +148,8 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
         addToQueue(uri);
     }
 
+    // TODO: the regex solution is bad in case users fuck up whitespace
+    // TODO: implement a DSL for this
     @Override
     public void initMatches(String regex, String message) {
         matcher = Pattern.compile(regex).matcher(message);
