@@ -1,0 +1,30 @@
+package net.picklepark.discord.parse;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertTrue;
+
+@RunWith(JUnit4.class)
+public class CommandDslTests {
+
+    private Pattern pattern;
+
+    @Test
+    public void emptyStringMatchesEmptyString() {
+        givenCompile("");
+        thenMatches("");
+    }
+
+    private void givenCompile(String dsl) {
+        pattern = new CommandDsl(dsl).toPattern();
+    }
+
+    private void thenMatches(String message) {
+        assertTrue(pattern.matcher(message).matches());
+    }
+
+}
