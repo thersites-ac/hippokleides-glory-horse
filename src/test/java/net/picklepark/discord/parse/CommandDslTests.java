@@ -42,7 +42,7 @@ public class CommandDslTests {
     }
 
     @Test
-    public void permitsExtraWhitespaceInMessage() {
+    public void permitsExtraWhitespaceBetweenTokens() {
         givenSyntax("foo bar");
         thenMatches("foo \t \n  \rbar");
     }
@@ -61,7 +61,7 @@ public class CommandDslTests {
     }
 
     @Test
-    public void variablesCannotBeEmtpy() {
+    public void variablesCannotBeEmpty() {
         givenSyntax("<foo>");
         thenDoesNotMatch("");
     }
@@ -73,16 +73,16 @@ public class CommandDslTests {
     }
 
     @Test
-    public void variablesStartAndEndWithNonWhitespace() {
+    public void variablesMustStartAndEndWithNonWhitespace() {
         givenSyntax("<foo>");
         thenDoesNotMatch(" foo ");
     }
 
     @Test
-    public void keepsInternalWhitespace() {
+    public void keepsWhitespaceInVariables() {
         givenSyntax("foo <bar> baz");
-        thenMatches("foo bar quux baz");
-        thenVariableIs("bar", "bar quux");
+        thenMatches("foo qu ux baz");
+        thenVariableIs("bar", "qu ux");
     }
 
     private void givenSyntax(String dsl) {
