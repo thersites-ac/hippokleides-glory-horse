@@ -9,7 +9,7 @@ public class CommandDsl {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandDsl.class);
 
-    private static final String WHITESPACE = "\\s*";
+    private static final String WHITESPACE = "\\s+";
 
     private final String dsl;
     private final String[] chunks;

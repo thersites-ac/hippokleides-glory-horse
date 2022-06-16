@@ -6,8 +6,7 @@ import org.junit.runners.JUnit4;
 
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class CommandDslTests {
@@ -16,19 +15,19 @@ public class CommandDslTests {
 
     @Test
     public void emptyStringMatchesEmptyString() {
-        givenCompile("");
+        whenCompile("");
         thenMatches("");
     }
 
     @Test
     public void emptyStringDoesNotMatchNonemptyString() {
-        givenCompile("");
+        whenCompile("");
         thenDoesNotMatch("foo");
     }
 
     @Test
     public void constantStringMatchesConstantOnly() {
-        givenCompile("foo");
+        whenCompile("foo");
         thenMatches("foo");
         thenDoesNotMatch("bar");
     }
@@ -36,17 +35,38 @@ public class CommandDslTests {
     @Test
     public void matchesExactWhitespace() {
         String s = "foo bar";
-        givenCompile(s);
+        whenCompile(s);
         thenMatches(s);
     }
 
     @Test
     public void permitsExtraWhitespaceInMessage() {
-        givenCompile("foo bar");
+        whenCompile("foo bar");
         thenMatches("foo \t \n  \rbar");
     }
 
-    private void givenCompile(String dsl) {
+    @Test
+    public void requiresWhitespace() {
+        whenCompile("foo bar");
+        thenDoesNotMatch("foobar");
+    }
+
+    @Test
+    public void matchesVariables() {
+        fail();
+    }
+
+    @Test
+    public void requiresVariables() {
+        fail();
+    }
+    
+    @Test
+    public void variablesStartAndEndWithNonWhitespace() {
+        fail();
+    }
+
+    private void whenCompile(String dsl) {
         pattern = new CommandDsl(dsl).toPattern();
     }
 
