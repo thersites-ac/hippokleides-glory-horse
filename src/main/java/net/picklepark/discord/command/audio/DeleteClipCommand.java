@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 public class DeleteClipCommand implements DiscordCommand {
 
+    private static final String INPUT_STRING = "delete <clip>";
     private final ClipManager commandManager;
     private final RemoteStorageService storageService;
 
@@ -45,6 +46,6 @@ public class DeleteClipCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "delete (?<clip>.*)";
+        return INPUT_STRING;
     }
 }

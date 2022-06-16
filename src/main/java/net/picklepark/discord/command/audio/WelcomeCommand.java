@@ -18,11 +18,10 @@ public class WelcomeCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(WelcomeCommand.class);
 
-    private static final String EXAMPLE = "welcome";
     private static final String HELP_MESSAGE = "Tell me to play a clip whenever a user joins audio chat";
     private static final String USER = "user";
     private static final String CLIP = "clip";
-    private static final String REGEX = String.format("welcome (?<%s>.+) with (?<%s>.+)", USER, CLIP);
+    private static final String INPUT_STRING = String.format("welcome <%s> with <%s>", USER, CLIP);
 
     private final WelcomeManager welcomeManager;
     private final ClipManager clipManager;
@@ -69,7 +68,7 @@ public class WelcomeCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return EXAMPLE;
+        return INPUT_STRING;
     }
 
     @Override
@@ -79,6 +78,6 @@ public class WelcomeCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return REGEX;
+        return INPUT_STRING;
     }
 }

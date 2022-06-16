@@ -32,6 +32,7 @@ public class WriteAudioCommand implements DiscordCommand {
     private static final String BASE_URL = "http://pickle-park.s3-website.us-east-2.amazonaws.com";
 
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
+    private static final String INPUT_STRING = "clip <username>";
 
     private final RecordingService recordingService;
     private final RemoteStorageService remoteStorageService;
@@ -87,7 +88,7 @@ public class WriteAudioCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "clip (?<username>.+)";
+        return INPUT_STRING;
     }
 
     private void sendCropLink(MessageReceivedActions actions, Coordinates coordinates) throws IOException {

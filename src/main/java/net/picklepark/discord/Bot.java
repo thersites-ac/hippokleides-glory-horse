@@ -1,10 +1,12 @@
 package net.picklepark.discord;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -26,6 +28,7 @@ import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
+import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
@@ -70,32 +73,43 @@ public class Bot extends ListenerAdapter {
             NukeQueueCommand.class,
             WelcomeCommand.class
     );
+    private static JDA jda;
+    private static Injector injector;
 
-    private final Injector injector;
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
-    private final SqsPollingWorker worker;
- 
+
     public static void main(String[] args) throws Exception {
-        JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
-                .addEventListeners(new Bot())
+        injector = Guice.createInjector(new DefaultModule());
+        var bot = injector.getInstance(Bot.class);
+        jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
+                .addEventListeners(bot)
                 .build();
+
+        // fixme: is there a cleaner way to schedule this after the connection is ready?
+        Thread.sleep(3000);
+        var remoteAudio = injector.getInstance(RemoteStorageService.class);
+        logger.info("I'm in " + jda.getGuilds().size() + " guilds");
+        jda.getGuilds().forEach(g -> {
+            logger.info(String.format("Setting up guild %s (%s)", g.getName(), g.getId()));
+            remoteAudio.sync(g.getId());
+        });
     }
 
     private final DiscordCommandRegistry registry;
 
-    private Bot() {
-        playerManager = new DefaultAudioPlayerManager();
+    @Inject
+    private Bot(DiscordCommandRegistry registry, SqsPollingWorker worker, AudioPlayerManager playerManager) {
+        this.playerManager = playerManager;
+        this.registry = registry;
+
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
 
         guildPlayers = new HashMap<>();
 
-        injector = Guice.createInjector(new DefaultModule());
-        registry = injector.getInstance(DiscordCommandRegistry.class);
         register(COMMANDS);
 
-        worker = injector.getInstance(SqsPollingWorker.class);
         worker.start();
     }
 
@@ -150,10 +164,10 @@ public class Bot extends ListenerAdapter {
         }
     }
 
+
     private GuildPlayer getGuildPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
         guildPlayers.computeIfAbsent(guildId, id -> new GuildPlayer(playerManager));
         return guildPlayers.get(guildId);
     }
-
 }

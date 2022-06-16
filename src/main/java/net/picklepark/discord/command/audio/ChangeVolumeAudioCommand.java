@@ -6,6 +6,8 @@ import net.picklepark.discord.constants.AuthLevel;
 
 public class ChangeVolumeAudioCommand implements DiscordCommand {
 
+    private static final String INPUT_STRING = "volume <volume>";
+
     @Override
     public void execute(MessageReceivedActions actions) {
         try {
@@ -46,7 +48,7 @@ public class ChangeVolumeAudioCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "volume (?<volume>.+)";
+        return INPUT_STRING;
     }
 
 }

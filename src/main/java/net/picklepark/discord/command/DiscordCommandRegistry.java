@@ -8,6 +8,7 @@ import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;
 import net.picklepark.discord.model.LocalClip;
+import net.picklepark.discord.parse.CommandDsl;
 import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.WelcomeManager;
@@ -20,6 +21,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Singleton
 public class DiscordCommandRegistry {
@@ -31,7 +34,7 @@ public class DiscordCommandRegistry {
     private final ClipManager commandManager;
     private final WelcomeManager welcomeManager;
     private char prefix;
-    private final Map<String, DiscordCommand> handlers;
+    private final Map<Pattern, DiscordCommand> handlers;
     private final AuthManager authManager;
 
     @Inject
@@ -91,7 +94,7 @@ public class DiscordCommandRegistry {
     private DiscordCommand lookupAction(String guild, String message) {
         logger.info("looking up {}", message);
         return handlers.keySet().stream()
-                .filter(message::matches)
+                .filter(p -> p.matcher(message).matches())
                 .findFirst()
                 .map(handlers::get)
                 .orElse(getDynamic(guild, message).orElse(NOOP));
@@ -102,7 +105,7 @@ public class DiscordCommandRegistry {
         if (command instanceof IdkCommand)
             throw new UnimplementedException();
         else
-            handlers.put(command.userInput(), command);
+            handlers.put(new CommandDsl(command.userInput()).toPattern(), command);
     }
 
     public void register(DiscordCommand... commands) {

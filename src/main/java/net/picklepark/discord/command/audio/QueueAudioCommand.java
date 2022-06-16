@@ -14,6 +14,7 @@ public class QueueAudioCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(QueueAudioCommand.class);
     private static final String WAIT_A_BIT_MESSAGE = "Wait out the current track of skip it, then try again.";
+    private static final String INPUT_STRING = "queue <uri>";
 
     @Override
     public void execute(MessageReceivedActions actions) {
@@ -44,7 +45,7 @@ public class QueueAudioCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "queue (?<uri>.+)";
+        return INPUT_STRING;
     }
 
 }

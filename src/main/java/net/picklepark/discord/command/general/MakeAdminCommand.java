@@ -17,6 +17,7 @@ import java.io.IOException;
 public class MakeAdminCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(MakeAdminCommand.class);
+    private static final String INPUT_STRING = "admin <username>";
 
     private final AuthManager authManager;
 
@@ -59,6 +60,6 @@ public class MakeAdminCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "admin (?<username>.+)";
+        return INPUT_STRING;
     }
 }

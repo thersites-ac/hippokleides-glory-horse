@@ -14,7 +14,7 @@ public class RepeatClipCommand implements DiscordCommand {
 
     public static final String ARGUMENT_NUMBER = "number";
     public static final String ARGUMENT_TITLE = "title";
-    public static final String REGEX = String.format("repeat (?<%s>.+) (?<%s>\\S+) times", ARGUMENT_TITLE, ARGUMENT_NUMBER);
+    public static final String INPUT_STRING = String.format("repeat <%s> <%s> times", ARGUMENT_TITLE, ARGUMENT_NUMBER);
     public static final String CONFIRMATION_MESSAGE = "Buckle up.";
     public static final String BAD_NUMBER_INPUT_MESSAGE = "How exactly do you expect me to repeat that %s times?";
     public static final String BAD_CLIP_INPUT_MESSAGE = "I definitely don't know how to %s.";
@@ -64,7 +64,7 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "repeat wow 42 times";
+        return INPUT_STRING;
     }
 
     @Override
@@ -74,6 +74,6 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return REGEX;
+        return INPUT_STRING;
     }
 }

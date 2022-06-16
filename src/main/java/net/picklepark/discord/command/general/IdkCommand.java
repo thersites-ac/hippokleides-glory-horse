@@ -9,7 +9,7 @@ public class IdkCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) {
-        actions.send("I don't know how to " + actions.userInput());
+        actions.send("I don't know how to " + actions.getArgument("command"));
     }
 
     @Override
@@ -29,6 +29,6 @@ public class IdkCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return ".*";
+        return "<command>";
     }
 }

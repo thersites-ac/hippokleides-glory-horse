@@ -23,6 +23,7 @@ public class FeatCommand implements DiscordCommand {
     private static final String CORE_FEATS = "https://legacy.aonprd.com/coreRulebook/feats.html";
     private static final String ADVANCED_CLASS_FEATS = "https://legacy.aonprd.com/advancedClassGuide/feats.html";
     private static final String ADVANCED_PLAYER_FEATS = "https://legacy.aonprd.com/advancedPlayersGuide/advancedFeats.html";
+    private static final String INPUT_STRING = "feat <feat>";
 
     private final ElementScraper scraper;
     private final EmbedRenderer<Feat> featRenderer;
@@ -73,7 +74,7 @@ public class FeatCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "feat (?<feat>.+)";
+        return INPUT_STRING;
     }
 
     private MessageEmbed advancedClassFeatOrNull(String feat) throws IOException {

@@ -17,6 +17,7 @@ import java.io.IOException;
 
 public class UnadminCommand implements DiscordCommand {
     private static final Logger logger = LoggerFactory.getLogger(UnadminCommand.class);
+    private static final String INPUT_STRING = "unadmin <user>";
 
     private final AuthManager authManager;
 
@@ -63,6 +64,6 @@ public class UnadminCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "unadmin (?<user>.+)";
+        return INPUT_STRING;
     }
 }

@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class SpellCommand implements DiscordCommand {
+
     private static final Logger logger = LoggerFactory.getLogger(SpellCommand.class);
+    private static final String INPUT_STRING = "spell <spell>";
+
     private final ElementScraper scraper;
     private final EmbedRenderer<Spell> spellEmbedRenderer;
     private final Transformer<Spell> spellTransformer;
@@ -54,7 +57,7 @@ public class SpellCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "spell <spell name>";
+        return INPUT_STRING;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class SpellCommand implements DiscordCommand {
 
     @Override
     public String userInput() {
-        return "spell (?<spell>.+)";
+        return INPUT_STRING;
     }
 
     private MessageEmbed scrapeSpell(MessageReceivedActions actions) throws IOException, ResourceNotFoundException {

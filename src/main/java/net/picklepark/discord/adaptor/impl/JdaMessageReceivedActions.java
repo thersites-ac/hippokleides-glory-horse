@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.exception.*;
+import net.picklepark.discord.parse.CommandDsl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -148,13 +149,11 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
         addToQueue(uri);
     }
 
-    // TODO: the regex solution is bad in case users fuck up whitespace
-    // TODO: implement a DSL for this
     @Override
-    public void initMatches(String regex, String message) {
-        matcher = Pattern.compile(regex).matcher(message);
+    public void initMatches(String dsl, String message) {
+        matcher = new CommandDsl(dsl).toPattern().matcher(message);
         if (!matcher.matches())
-            throw new RuntimeException("Pattern " + regex + " does not match" + message);
+            throw new RuntimeException("DSL " + dsl + " does not match" + message);
     }
 
     @Override

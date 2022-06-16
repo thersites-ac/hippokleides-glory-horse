@@ -9,6 +9,7 @@ import net.picklepark.discord.service.RemoteStorageService;
 public class PlayClipCommand extends JoinVoiceChannel implements net.picklepark.discord.command.DiscordCommand {
 
     private static final String TOO_MANY_CLIPS_QUEUED_EXCEPTION = "Stop it, I'm just one bot!";
+    private static final String INPUT_STRING = "<clip>";
     private final String path;
 
     public PlayClipCommand(RemoteStorageService storageService, String path) {
@@ -23,7 +24,6 @@ public class PlayClipCommand extends JoinVoiceChannel implements net.picklepark.
     @Override
     public void execute(MessageReceivedActions actions) {
         ensureConnected(actions);
-        actions.connect();
         try {
             actions.queue(path);
         } catch (NotEnoughQueueCapacityException ex) {
@@ -48,6 +48,6 @@ public class PlayClipCommand extends JoinVoiceChannel implements net.picklepark.
 
     @Override
     public String userInput() {
-        return ".*";
+        return INPUT_STRING;
     }
 }
