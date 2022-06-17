@@ -3,7 +3,6 @@ package net.picklepark.discord.service.impl;
 import net.picklepark.discord.command.audio.PlayClipCommand;
 import net.picklepark.discord.model.LocalClip;
 import net.picklepark.discord.service.ClipManager;
-import net.picklepark.discord.service.RecordingService;
 import net.picklepark.discord.service.RemoteStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ public class ClipManagerImpl implements ClipManager {
     public void delete(String guild, String clip) {
         Map<String, PlayClipCommand> titles = localStore.get(guild);
         if (titles != null)
-            titles.remove(guild);
+            titles.remove(clip);
     }
 
     @Override
