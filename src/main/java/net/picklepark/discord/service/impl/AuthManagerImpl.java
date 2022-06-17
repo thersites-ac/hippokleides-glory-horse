@@ -2,7 +2,9 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.exception.AuthException;
 import net.picklepark.discord.exception.AuthLevelConflictException;
+import net.picklepark.discord.exception.CannotDemoteSelfException;
 import net.picklepark.discord.exception.NoOwnerException;
 import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.AuthConfigService;
@@ -63,9 +65,9 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     @Override
-    public void demote(long user, MessageReceivedActions actions) throws AuthLevelConflictException, IOException {
+    public void demote(long user, MessageReceivedActions actions) throws AuthException, IOException {
         if (lookupOwner(actions) == user)
-            throw new AuthLevelConflictException(user);
+            throw new CannotDemoteSelfException();
         if (isAdmin(actions, user)) {
             admins.get(actions.getGuildId()).remove(user);
             configService.persistAdmins(admins);

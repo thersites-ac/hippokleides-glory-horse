@@ -5,9 +5,7 @@ import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
 import net.picklepark.discord.constants.AuthLevel;
 import net.picklepark.discord.constants.Messages;
-import net.picklepark.discord.exception.AuthLevelConflictException;
-import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.UserIdentificationException;
+import net.picklepark.discord.exception.*;
 import net.picklepark.discord.service.AuthManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +35,16 @@ public class UnadminCommand implements DiscordCommand {
             actions.send("I don't know who " + username + " is.");
             logger.warn("Ambiguous user for input " + username, e);
         } catch (AuthLevelConflictException e) {
-            // FIXME: there's a corner case here where the channel owner tries to unadmin himself and gets
-            // this nonsense message
             actions.send(username + " is already beneath my notice.");
             logger.warn("Attempted to demote non-admin user: " + username, e);
+        } catch (CannotDemoteSelfException e) {
+            actions.send("You can't step down from your responsibilities, " + username);
+            logger.warn("Attempted to demote self: " + username, e);
         } catch (IOException e) {
             logger.error("While removing admin privileges for " + username, e);
             actions.send(Messages.CANNOT_PERSIST_AUTH_STATE);
+        } catch (AuthException e) {
+            throw new DiscordCommandException(e);
         }
     }
 
