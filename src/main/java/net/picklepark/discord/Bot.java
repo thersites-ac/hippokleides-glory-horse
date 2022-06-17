@@ -9,9 +9,11 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.managers.AudioManager;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.adaptor.UserJoinedVoiceActions;
 import net.picklepark.discord.adaptor.impl.JdaMessageReceivedActions;
@@ -36,10 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
@@ -125,17 +125,24 @@ public class Bot extends ListenerAdapter {
         super.onGuildMessageReceived(event);
     }
 
-    // fixme: what if the user joins a different audio channel from the one the bot is in?
+    // TODO: validate this in a guild with multiple voice channels
     @Override
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);
         String user = event.getMember().getUser().getAsTag();
         String channel = event.getChannelJoined().getGuild().getName();
         logger.info(String.format("%s joined %s", user, channel));
-        try {
-            registry.welcome(buildUserJoinedVoiceActions(event));
-        } catch (NotEnoughQueueCapacityException ex) {
-            logger.error(String.format("Could not welcome %s to %s", user, channel), ex);
+        var voiceChannelIds = jda.getAudioManagers().stream()
+                .map(AudioManager::getConnectedChannel)
+                .filter(Objects::nonNull)
+                .map(ISnowflake::getIdLong)
+                .collect(Collectors.toSet());
+        if (voiceChannelIds.contains(event.getChannelJoined().getIdLong())) {
+            try {
+                registry.welcome(buildUserJoinedVoiceActions(event));
+            } catch (NotEnoughQueueCapacityException ex) {
+                logger.error(String.format("Could not welcome %s to %s", user, channel), ex);
+            }
         }
     }
 
