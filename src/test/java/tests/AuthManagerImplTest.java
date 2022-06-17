@@ -1,5 +1,7 @@
 package tests;
 
+import net.picklepark.discord.exception.AuthException;
+import net.picklepark.discord.exception.CannotDemoteSelfException;
 import net.picklepark.discord.service.impl.AuthManagerImpl;
 import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
@@ -82,7 +84,7 @@ public class AuthManagerImplTest {
     }
 
     @Test
-    public void demotedUserIsNotAdmin() throws AuthLevelConflictException, IOException {
+    public void demotedUserIsNotAdmin() throws AuthException, IOException {
         givenLevel(AuthLevel.ADMIN);
         givenAddAdmin(42);
         whenDemote(42);
@@ -91,12 +93,12 @@ public class AuthManagerImplTest {
     }
 
     @Test(expected = AuthLevelConflictException.class)
-    public void cannotDemotePeon() throws AuthLevelConflictException, IOException {
+    public void cannotDemotePeon() throws AuthException, IOException {
         whenDemote(42);
     }
 
-    @Test(expected = AuthLevelConflictException.class)
-    public void cannotDemoteGuildOwner() throws AuthLevelConflictException, IOException {
+    @Test(expected = CannotDemoteSelfException.class)
+    public void cannotDemoteGuildOwner() throws AuthException, IOException {
         givenUserIsOwner(42);
         whenDemote(42);
     }
@@ -117,7 +119,7 @@ public class AuthManagerImplTest {
         this.level = level;
     }
 
-    private void whenDemote(int user) throws AuthLevelConflictException, IOException {
+    private void whenDemote(int user) throws AuthException, IOException {
         actions.setGuildName(GUILD_NAME);
         authService.demote(user, actions);
     }

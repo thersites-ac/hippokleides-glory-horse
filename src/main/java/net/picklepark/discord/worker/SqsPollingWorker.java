@@ -105,7 +105,7 @@ public class SqsPollingWorker extends Thread {
         try {
             LocalClip clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
             commandManager.put(clip);
-        } catch (Exception | MalformedKeyException e) {
+        } catch (Exception e) {
             logger.error("While downloading clip", e);
             // fixme: ideally we'd notify of failure, too
         }
