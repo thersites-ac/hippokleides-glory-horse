@@ -18,8 +18,6 @@ public interface MessageReceivedActions {
     long lookupUserId(String user) throws UserIdentificationException;
     String canonicalUsername(String user) throws UserIdentificationException;
     long getOwnerId() throws NoOwnerException;
-    // fixme: this seems unnecessary given `getArgument`
-    String userInput();
     String getArgument(String arg);
     // fixme: this shouldn't be generally exposed
     void initMatches(String regex, String message);

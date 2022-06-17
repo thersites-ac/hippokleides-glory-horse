@@ -52,8 +52,7 @@ public class DiscordCommandRegistry {
     }
 
     // fixme - this logic should be in the bot
-    public void execute(MessageReceivedActions actions) {
-        String message = actions.userInput();
+    public void execute(MessageReceivedActions actions, String message) {
         if (hasPrefix(message)) {
             String tail = message.substring(1);
             DiscordCommand command = lookupAction(actions.getGuildId(), tail);

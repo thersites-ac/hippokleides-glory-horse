@@ -63,8 +63,9 @@ public class DiscordCommandRegistryTest {
     }
 
     private void whenUserInvokesWith(String s) {
-        actions.setUserInput("~" + s);
-        registry.execute(actions);
+        s = "~" + s;
+        actions.setUserInput(s);
+        registry.execute(actions, s);
     }
 
     private void thenTellsUserOff() {

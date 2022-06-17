@@ -51,8 +51,9 @@ public class HelpCommandTest {
     }
 
     private void whenRunHelp() {
-        actions.setUserInput("~help");
-        registry.execute(actions);
+        String message = "~help";
+        actions.setUserInput(message);
+        registry.execute(actions, message);
     }
 
     private void thenSentAllRegisteredHelpMessages() {

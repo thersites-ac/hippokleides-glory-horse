@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-// FIXME: separate the logic of how to store and download from filenames and folders
+// todo: separate the logic of how to store and download from filenames and folders
 public interface RemoteStorageService {
     Coordinates store(String guild, File file) throws MalformedURLException;
     LocalClip download(CanonicalKey key) throws URISyntaxException, ResourceNotFoundException, IOException;

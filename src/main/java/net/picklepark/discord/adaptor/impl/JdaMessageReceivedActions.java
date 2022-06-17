@@ -14,7 +14,6 @@ import net.picklepark.discord.parse.CommandDsl;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JdaMessageReceivedActions extends AudioActions implements MessageReceivedActions {
 
@@ -99,11 +98,6 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
             throw new AmbiguousUserException(user);
         else
             return members.stream().findFirst().get().getUser();
-    }
-
-    @Override
-    public String userInput() {
-        return event.getMessage().getContentRaw();
     }
 
     @Override

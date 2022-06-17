@@ -46,7 +46,7 @@ public class CommandRegistryTests {
     }
 
     @Test
-    public void usersUserInputAnnotation() {
+    public void usesUserInputAnnotation() {
         givenRegistryWithPrefixAndCommand(testCommand);
         whenReceiveMessage("test");
         thenExecutedCommand(testCommand);
@@ -117,8 +117,9 @@ public class CommandRegistryTests {
     }
 
     private void whenReceiveMessage(String message) {
-        actions.setUserInput("~" + message);
-        registry.execute(actions);
+        message = "~" + message;
+        actions.setUserInput(message);
+        registry.execute(actions, message);
     }
 
     private void thenListMatches() {

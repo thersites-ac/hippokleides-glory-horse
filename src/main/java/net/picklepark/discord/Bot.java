@@ -86,7 +86,7 @@ public class Bot extends ListenerAdapter {
                 .addEventListeners(bot)
                 .build();
 
-        // fixme: is there a cleaner way to schedule this after the connection is ready?
+        // todo: is there a cleaner way to schedule this after the connection is ready?
         Thread.sleep(3000);
         var remoteAudio = injector.getInstance(RemoteStorageService.class);
         logger.info("I'm in " + jda.getGuilds().size() + " guilds");
@@ -117,7 +117,7 @@ public class Bot extends ListenerAdapter {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         MessageReceivedActions actions = buildMessageRecievedActions(event);
         try {
-            registry.execute(actions);
+            registry.execute(actions, event.getMessage().getContentRaw());
         } catch (Exception ex) {
             actions.send("Oh no, I'm dying!");
             logger.error("Error processing guild message", ex);

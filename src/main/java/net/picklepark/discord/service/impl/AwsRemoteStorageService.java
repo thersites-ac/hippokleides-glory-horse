@@ -129,17 +129,6 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 .map(Tag::value);
     }
 
-    private CanonicalKey toCanonicalKey(String awsKey) throws MalformedKeyException {
-        var results = awsKey.split("/");
-        if (results.length != 2)
-            throw new MalformedKeyException(awsKey);
-        else
-            return CanonicalKey.builder()
-                    .guild(results[0])
-                    .key(results[1])
-                    .build();
-    }
-
     @Override
     public void sync(String guild) {
         clipManager.clear(guild);
@@ -175,7 +164,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private void downloadAll(List<S3Object> contents) {
         for (S3Object object: contents) {
             try {
-                var key = toCanonicalKey(object.key());
+                var key = CanonicalKey.fromString(object.key());
                 LocalClip clip = syncOneFile(key);
                 clipManager.put(clip);
             } catch (ResourceNotFoundException | IOException | MalformedKeyException e) {

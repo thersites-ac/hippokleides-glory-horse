@@ -14,7 +14,6 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
 
     private final List<String> sentMessages;
     private final List<MessageEmbed> sentEmbeds;
-    private String userInput;
     private final Map<String, String> args;
     private long owner;
     private long author;
@@ -23,6 +22,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     private final Queue<String> queuedAudio;
     private boolean connected;
     private boolean wasNuked = false;
+    private String userInput;
 
     public SpyMessageReceivedActions() {
         sentMessages = new ArrayList<>();
@@ -68,10 +68,6 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
         return user;
     }
 
-    @Override
-    public String userInput() {
-        return userInput;
-    }
     @Override
     public String getArgument(String arg) {
         return args.get(arg);

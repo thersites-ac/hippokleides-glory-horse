@@ -2,6 +2,8 @@ package net.picklepark.discord.worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.picklepark.discord.exception.MalformedKeyException;
+import net.picklepark.discord.model.CanonicalKey;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.model.LocalClip;
@@ -101,11 +103,11 @@ public class SqsPollingWorker extends Thread {
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         try {
-            LocalClip clip = remoteStorageService.download(objectKey);
+            LocalClip clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
             commandManager.put(clip);
-        } catch (Exception e) {
+        } catch (Exception | MalformedKeyException e) {
             logger.error("While downloading clip", e);
-            // FIXME: ideally we'd notify of failure, too
+            // fixme: ideally we'd notify of failure, too
         }
     }
 
