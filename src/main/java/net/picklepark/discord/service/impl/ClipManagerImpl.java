@@ -20,6 +20,7 @@ public class ClipManagerImpl implements ClipManager {
     private static final Logger logger = LoggerFactory.getLogger(ClipManagerImpl.class);
 
     private final Map<String, Map<String, PlayClipCommand>> localStore;
+    // fixme: both classes depend on the other
     private final RemoteStorageService storageService;
 
     @Inject

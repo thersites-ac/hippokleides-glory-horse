@@ -9,6 +9,7 @@ import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
+// fixme (important): handle error when user deletes a nonexistant clip
 public class DeleteClipCommand implements DiscordCommand {
 
     private static final String INPUT_STRING = "delete <clip>";

@@ -40,6 +40,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final S3Client untrimmedClipsClient;
     private final String uploadsBucket;
     private final String clipsBucket;
+    // fixme: both classes depend on the other
     private final ClipManager clipManager;
     private final Map<String, Map<String, CanonicalKey>> remoteKeys;
     private final Duration timeToLive;

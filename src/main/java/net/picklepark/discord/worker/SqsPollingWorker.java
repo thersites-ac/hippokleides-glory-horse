@@ -2,7 +2,6 @@ package net.picklepark.discord.worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.picklepark.discord.exception.MalformedKeyException;
 import net.picklepark.discord.model.CanonicalKey;
 import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
