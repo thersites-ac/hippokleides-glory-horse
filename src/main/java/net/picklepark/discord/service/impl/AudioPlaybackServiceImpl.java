@@ -16,8 +16,6 @@ public class AudioPlaybackServiceImpl implements AudioPlaybackService {
     private AudioInputStream channelOne;
     private AudioInputStream channelTwo;
     
-
-    // todo: change this to ByteBuffer
     private final byte[] averageFrame = new byte[PACKET_SIZE];
     private final byte[] channelOneFrame = new byte[PACKET_SIZE];
     private final byte[] channelTwoFrame = new byte[PACKET_SIZE];
