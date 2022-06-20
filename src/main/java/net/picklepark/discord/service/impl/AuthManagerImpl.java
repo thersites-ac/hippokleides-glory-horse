@@ -2,10 +2,7 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.constants.AuthLevel;
-import net.picklepark.discord.exception.AuthException;
-import net.picklepark.discord.exception.AuthLevelConflictException;
-import net.picklepark.discord.exception.CannotDemoteSelfException;
-import net.picklepark.discord.exception.NoOwnerException;
+import net.picklepark.discord.exception.*;
 import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.AuthConfigService;
 import org.slf4j.Logger;
@@ -56,11 +53,14 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     @Override
-    public void addAdmin(String guildName, long user) throws IOException {
-        admins.computeIfAbsent(guildName, key -> new HashSet<>());
-        if (admins.get(guildName).add(user)) {
+    public void addAdmin(String guildId, long user) throws IOException, AlreadyAdminException {
+        admins.computeIfAbsent(guildId, key -> new HashSet<>());
+        var guildAdmins = admins.get(guildId);
+        if (guildAdmins.add(user)) {
             configService.persistAdmins(admins);
-            logger.info("Updated persistent admins after user {} was added in guild {}", user, guildName);
+            logger.info("Updated persistent admins after user {} was added in guild {}", user, guildId);
+        } else {
+            throw new AlreadyAdminException(user);
         }
     }
 

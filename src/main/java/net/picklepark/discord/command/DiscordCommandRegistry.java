@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.String.format;
 
 @Singleton
 public class DiscordCommandRegistry {
@@ -67,6 +68,12 @@ public class DiscordCommandRegistry {
             executeInContext(command, actions);
         } else {
             actions.send("Lol no");
+            logger.warn(format("User %s (%s) tried to execute %s in guild %s (%s) without authorization",
+                    actions.getAuthorUsername(),
+                    actions.getAuthorId(),
+                    messageContent,
+                    actions.getGuildName(),
+                    actions.getGuildId()));
         }
     }
 
@@ -86,7 +93,7 @@ public class DiscordCommandRegistry {
         if (welcome != null && actions.isConnected()) {
             actions.play(welcome.getPath());
         } else {
-            logger.error(String.format("Welcome was null in %s for %s", channel, user));
+            logger.error(format("Welcome was null in %s for %s", channel, user));
         }
     }
 

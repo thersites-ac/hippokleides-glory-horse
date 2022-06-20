@@ -55,6 +55,11 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
+    public String getAuthorUsername() {
+        return author + "";
+    }
+
+    @Override
     public long lookupUserId(String user) throws UserIdentificationException {
         Long userId = members.get(user);
         if (userId == null)
@@ -164,5 +169,9 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
 
     public Queue<String> getQueuedAudio() {
         return new LinkedList<>(queuedAudio);
+    }
+
+    public String getGuildName() {
+        return guildName;
     }
 }

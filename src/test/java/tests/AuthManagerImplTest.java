@@ -1,5 +1,6 @@
 package tests;
 
+import net.picklepark.discord.exception.AlreadyAdminException;
 import net.picklepark.discord.exception.AuthException;
 import net.picklepark.discord.exception.CannotDemoteSelfException;
 import net.picklepark.discord.service.impl.AuthManagerImpl;
@@ -68,7 +69,7 @@ public class AuthManagerImplTest {
     }
 
     @Test
-    public void canAddAdmins() throws IOException {
+    public void canAddAdmins() throws IOException, AlreadyAdminException {
         givenLevel(AuthLevel.ADMIN);
         givenUserIsNotOwner(42);
         givenAddAdmin(42);
@@ -77,14 +78,14 @@ public class AuthManagerImplTest {
     }
 
     @Test
-    public void authSettingsPersistAcrossInstances() throws IOException {
+    public void authSettingsPersistAcrossInstances() throws IOException, AlreadyAdminException {
         givenAddAdmin(42);
         whenRestart();
         thenUserIsAdmin(42);
     }
 
     @Test
-    public void demotedUserIsNotAdmin() throws AuthException, IOException {
+    public void demotedUserIsNotAdmin() throws AuthException, IOException, AlreadyAdminException {
         givenLevel(AuthLevel.ADMIN);
         givenAddAdmin(42);
         whenDemote(42);
@@ -103,7 +104,7 @@ public class AuthManagerImplTest {
         whenDemote(42);
     }
 
-    private void givenAddAdmin(long user) throws IOException {
+    private void givenAddAdmin(long user) throws IOException, AlreadyAdminException {
         authService.addAdmin(GUILD_NAME, user);
     }
 

@@ -15,6 +15,7 @@ public interface MessageReceivedActions {
     void connect();
     boolean isConnected();
     long getAuthorId();
+    String getAuthorUsername();
     long lookupUserId(String user) throws UserIdentificationException;
     String canonicalUsername(String user) throws UserIdentificationException;
     long getOwnerId() throws NoOwnerException;
@@ -30,5 +31,6 @@ public interface MessageReceivedActions {
     void nuke();
     void queue(String uri) throws NotEnoughQueueCapacityException;
     String getGuildId();
+    String getGuildName();
     int getAudioQueueSize();
 }

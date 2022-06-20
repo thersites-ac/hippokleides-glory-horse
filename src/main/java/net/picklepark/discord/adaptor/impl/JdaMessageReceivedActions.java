@@ -59,6 +59,11 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
+    public String getAuthorUsername() {
+        return event.getAuthor().getName();
+    }
+
+    @Override
     public String canonicalUsername(String user) throws UserIdentificationException {
         return lookupUser(user).getAsTag();
     }
@@ -153,6 +158,11 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     @Override
     public String getGuildId() {
         return event.getGuild().getId();
+    }
+
+    @Override
+    public String getGuildName() {
+        return event.getGuild().getName();
     }
 
     @Override
