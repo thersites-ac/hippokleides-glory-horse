@@ -9,6 +9,8 @@
     * error handling in the Python Lambda
     * better auth groups
     * handle error when user tries to delete a nonexistent clip
+    * improve trimmer UI
+    * combine repos
 * other
     * add CORS headers to API Gateway error responses
     * inform channel members after the clip has been loaded (feature/chatty-polling)
