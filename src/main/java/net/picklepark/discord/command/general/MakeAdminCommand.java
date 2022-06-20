@@ -2,7 +2,7 @@ package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.constants.HelpMessages;
 import net.picklepark.discord.constants.Messages;
 import net.picklepark.discord.exception.AlreadyAdminException;

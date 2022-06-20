@@ -1,7 +1,7 @@
 package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;
 import net.picklepark.discord.service.RemoteStorageService;

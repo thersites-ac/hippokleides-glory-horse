@@ -1,7 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.*;
 import net.picklepark.discord.service.AuthManager;
 import net.picklepark.discord.service.AuthConfigService;

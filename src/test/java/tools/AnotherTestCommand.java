@@ -2,7 +2,7 @@ package tools;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 
 public class AnotherTestCommand implements DiscordCommand {
     @Override

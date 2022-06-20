@@ -3,7 +3,7 @@ package net.picklepark.discord.command.pathfinder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.Feat;
 import net.picklepark.discord.model.ScrapeResult;

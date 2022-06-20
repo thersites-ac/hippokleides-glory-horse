@@ -5,7 +5,7 @@ import net.picklepark.discord.exception.AuthException;
 import net.picklepark.discord.exception.CannotDemoteSelfException;
 import net.picklepark.discord.service.impl.AuthManagerImpl;
 import tools.SpyMessageReceivedActions;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.service.AuthConfigService;
 import tools.TestConfigService;

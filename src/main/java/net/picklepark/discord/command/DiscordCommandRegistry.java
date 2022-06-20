@@ -3,7 +3,7 @@ package net.picklepark.discord.command;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.adaptor.UserJoinedVoiceActions;
 import net.picklepark.discord.command.general.IdkCommand;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.exception.UnimplementedException;

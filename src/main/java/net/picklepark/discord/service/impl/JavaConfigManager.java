@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.*;
 import java.nio.file.Path;
 
+// TODO (important): replace this with something scalable
 public class JavaConfigManager<T> {
 
     private final S3Client client;

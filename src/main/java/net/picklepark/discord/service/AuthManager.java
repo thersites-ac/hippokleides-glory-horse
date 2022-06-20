@@ -1,10 +1,9 @@
 package net.picklepark.discord.service;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.AlreadyAdminException;
 import net.picklepark.discord.exception.AuthException;
-import net.picklepark.discord.exception.AuthLevelConflictException;
 
 import java.io.IOException;
 

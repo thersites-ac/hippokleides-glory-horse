@@ -3,14 +3,11 @@ Hobby bot with miscellaneous functionality. Sit and spin.
 
 # To Do
 * important:
-    * hall of fame clips to avoid accidental deletion
-    * clip channel isolation
-* other
-    * track speaker of clips in order to create `~impersonate` command
-    * add some degree of fuzzy id matching or in-text search
-    * Lambda should assign a new id to each generated clip to avoid collision
-        * the use case for this is when a user clips two portions of the same recording--currently they get uploaded with the same key and one version overrides the other
+    * rename
+    * modularize (yes, going back to that pattern)
+    * sort out bugs related to clip ID/title collision
     * error handling in the Python Lambda
+* other
     * add CORS headers to API Gateway error responses
     * inform channel members after the clip has been loaded
     * group clips by channel in the bucket
@@ -28,3 +25,7 @@ Hobby bot with miscellaneous functionality. Sit and spin.
     * functional testing (set up another bot for this)
     * more tags for randomized selections
     * random youtube playback (search and play back audio from first result) - Eli
+
+# Feature requests
+    * hall of fame clips to avoid accidental deletion
+    * track speaker of clips in order to create `~impersonate` command

@@ -3,7 +3,7 @@ package net.picklepark.discord.command.audio;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.adaptor.impl.AudioActions;
 import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.constants.AuthLevel;
+import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
 import net.picklepark.discord.service.ClipManager;
