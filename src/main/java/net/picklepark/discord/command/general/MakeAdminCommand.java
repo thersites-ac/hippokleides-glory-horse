@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Locale;
 
 import static java.lang.String.format;
 
@@ -38,8 +37,8 @@ public class MakeAdminCommand implements DiscordCommand {
         try {
             long userId = actions.lookupUserId(username);
             authManager.addAdmin(guildId, userId);
-            // fixme: this sends the command argument `username`, which is approximate. Send a canonical form instead.
-            actions.send("Welcome to the inner circle, " + username + ".");
+            String tag = actions.lookupUserTag(username);
+            actions.send("Welcome to the inner circle, " + tag + ".");
         } catch (UserIdentificationException e) {
             logger.warn("Could not find user " + username + " in channel " + guildId);
             actions.send("I can't find a user named " + username);

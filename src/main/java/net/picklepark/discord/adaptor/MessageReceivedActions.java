@@ -17,7 +17,7 @@ public interface MessageReceivedActions {
     long getAuthorId();
     String getAuthorUsername();
     long lookupUserId(String user) throws UserIdentificationException;
-    String canonicalUsername(String user) throws UserIdentificationException;
+    String lookupUserTag(String user) throws UserIdentificationException;
     long getOwnerId() throws NoOwnerException;
     String getArgument(String arg);
     // fixme: this shouldn't be generally exposed

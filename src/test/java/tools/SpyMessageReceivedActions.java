@@ -69,7 +69,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
-    public String canonicalUsername(String user) throws UserIdentificationException {
+    public String lookupUserTag(String user) throws UserIdentificationException {
         return user;
     }
 

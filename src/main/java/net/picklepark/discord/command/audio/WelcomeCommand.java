@@ -37,7 +37,7 @@ public class WelcomeCommand implements DiscordCommand {
         String guild = actions.getGuildId();
         String user = actions.getArgument(USER);
         try {
-            String canonicalUser = actions.canonicalUsername(user);
+            String canonicalUser = actions.lookupUserTag(user);
             String title = actions.getArgument(CLIP);
             PlayClipCommand command = clipManager.lookup(actions.getGuildId(), title);
             if (command != null) {

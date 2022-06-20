@@ -64,7 +64,7 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
-    public String canonicalUsername(String user) throws UserIdentificationException {
+    public String lookupUserTag(String user) throws UserIdentificationException {
         return lookupUser(user).getAsTag();
     }
 
