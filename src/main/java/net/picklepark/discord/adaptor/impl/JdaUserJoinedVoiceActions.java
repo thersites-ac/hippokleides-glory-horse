@@ -20,8 +20,13 @@ public class JdaUserJoinedVoiceActions extends AudioActions implements UserJoine
     }
 
     @Override
-    public String channel() {
+    public String guildName() {
         return event.getChannelJoined().getGuild().getName();
+    }
+
+    @Override
+    public String guildId() {
+        return event.getChannelJoined().getGuild().getId();
     }
 
     @Override

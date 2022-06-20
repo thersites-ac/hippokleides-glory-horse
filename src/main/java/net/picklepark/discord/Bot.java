@@ -125,19 +125,19 @@ public class Bot extends ListenerAdapter {
         super.onGuildMessageReceived(event);
     }
 
-    // TODO: validate this in a guild with multiple voice channels
     @Override
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);
         String user = event.getMember().getUser().getAsTag();
         String channel = event.getChannelJoined().getGuild().getName();
-        logger.info(String.format("%s joined %s", user, channel));
+        long channelId = event.getChannelJoined().getIdLong();
+        logger.info(String.format("%s joined %s (%s)", user, channel, channelId));
         var voiceChannelIds = jda.getAudioManagers().stream()
                 .map(AudioManager::getConnectedChannel)
                 .filter(Objects::nonNull)
                 .map(ISnowflake::getIdLong)
                 .collect(Collectors.toSet());
-        if (voiceChannelIds.contains(event.getChannelJoined().getIdLong())) {
+        if (voiceChannelIds.contains(channelId)) {
             try {
                 registry.welcome(buildUserJoinedVoiceActions(event));
             } catch (NotEnoughQueueCapacityException ex) {
