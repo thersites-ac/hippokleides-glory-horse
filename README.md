@@ -31,3 +31,4 @@
     * image search by keyword (from deviantart, wikihow, google images, etc.)
     * random youtube playback (search and play back audio from first result)
     * more tags for randomized selections
+    * share clips between channels
