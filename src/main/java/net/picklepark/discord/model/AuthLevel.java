@@ -6,3 +6,12 @@ public enum AuthLevel {
     ADMIN,
     OWNER
 }
+
+// something like:
+enum Privilege {
+    TEXT,
+    AUDIO_READ,
+    AUDIO_WRITE,
+    MODERATOR,
+    CHANNEL_OWNER
+}
