@@ -1,5 +1,6 @@
 package net.picklepark.discord.service;
 
+import net.picklepark.discord.exception.NoSuchClipException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.CanonicalKey;
 import net.picklepark.discord.model.Coordinates;
@@ -16,5 +17,5 @@ public interface RemoteStorageService {
     Coordinates store(String guild, File file) throws MalformedURLException;
     LocalClip download(CanonicalKey key) throws URISyntaxException, ResourceNotFoundException, IOException;
     void sync(String guild);
-    void delete(String guild, String key);
+    void delete(String guild, String key) throws NoSuchClipException;
 }

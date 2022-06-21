@@ -11,6 +11,7 @@
     * handle error when user tries to delete a nonexistent clip
     * improve trimmer UI
     * combine repos
+    * qa/prod environments
 * other
     * add CORS headers to API Gateway error responses
     * inform channel members after the clip has been loaded (feature/chatty-polling)

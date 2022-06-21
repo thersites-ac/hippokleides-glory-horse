@@ -1,6 +1,7 @@
 package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.exception.MalformedKeyException;
+import net.picklepark.discord.exception.NoSuchClipException;
 import net.picklepark.discord.exception.ResourceNotFoundException;
 import net.picklepark.discord.model.CanonicalKey;
 import net.picklepark.discord.service.ClipManager;
@@ -142,9 +143,9 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     @Override
-    public void delete(String guild, String title) {
+    public void delete(String guild, String title) throws NoSuchClipException {
         Map<String, CanonicalKey> guildTitles = remoteKeys.get(guild);
-        if (guild != null) {
+        if (guild != null && guildTitles.get(title) != null) {
             CanonicalKey canonicalKey = guildTitles.get(title);
             logger.info("Deleting {} with AWS key {}", title, canonicalKey);
             DeleteObjectRequest request = DeleteObjectRequest.builder()
@@ -153,6 +154,8 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                     .build();
             trimmedClipsClient.deleteObject(request);
             deleteLocal(canonicalKey);
+        } else {
+            throw new NoSuchClipException(guild, title);
         }
     }
 
