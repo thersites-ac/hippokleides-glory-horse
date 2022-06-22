@@ -85,6 +85,21 @@ public class CommandDslTests {
         thenVariableIs("bar", "qu ux");
     }
 
+    @Test
+    public void minVariableLengthIsOneCharacter() {
+        givenSyntax("repeat <foo> <bar> times");
+        thenMatches("repeat wow 9 times");
+        thenVariableIs("foo", "wow");
+        thenVariableIs("bar", "9");
+    }
+
+    @Test
+    public void greedilyConsumesWhitespace() {
+        givenSyntax("foo <bar> baz");
+        thenMatches("foo  bar  baz");
+        thenVariableIs("bar", "bar");
+    }
+
     private void givenSyntax(String dsl) {
         pattern = new CommandDsl(dsl).toPattern();
     }

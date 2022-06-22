@@ -12,7 +12,7 @@ public class CommandDsl {
 
     private static final String WHITESPACE = "\\s+";
     private static final String VARIABLE_DECLARATION = "<(\\w+)>";
-    private static final String VARIABLE_EXPRESSION = "\\(?<$1>\\\\w.*\\\\w\\)";
+    private static final String VARIABLE_SEMANTICS = "(?<$1>(\\\\w|\\\\w.*\\\\w))";
 
     private final String dsl;
     private final String regex;
@@ -21,7 +21,7 @@ public class CommandDsl {
         this.dsl = dsl;
         regex = dsl
                 .replace(" ", WHITESPACE)
-                .replaceAll(VARIABLE_DECLARATION, VARIABLE_EXPRESSION);
+                .replaceAll(VARIABLE_DECLARATION, VARIABLE_SEMANTICS);
     }
 
     public Pattern toPattern() {
