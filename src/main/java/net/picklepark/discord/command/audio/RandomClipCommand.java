@@ -49,7 +49,7 @@ public class RandomClipCommand extends JoinVoiceChannel implements DiscordComman
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.ADMIN;
+        return AuthLevel.USER;
     }
 
     @Override

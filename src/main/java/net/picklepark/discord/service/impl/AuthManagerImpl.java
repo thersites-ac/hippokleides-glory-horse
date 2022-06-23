@@ -37,7 +37,7 @@ public class AuthManagerImpl implements AuthManager {
     @Override
     public boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level) {
         switch (level) {
-            case ANY:
+            case USER:
                 return true;
             case OWNER:
                 return authorIsOwner(actions);

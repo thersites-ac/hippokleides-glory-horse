@@ -12,7 +12,7 @@ public class SilentCommand extends SpyCommand {
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.ANY;
+        return AuthLevel.USER;
     }
 
     @Override

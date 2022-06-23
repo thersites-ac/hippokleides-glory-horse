@@ -23,14 +23,11 @@ import net.picklepark.discord.command.DiscordCommandRegistry;
 import net.picklepark.discord.command.audio.*;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
-import net.picklepark.discord.command.general.HelpCommand;
-import net.picklepark.discord.command.general.MakeAdminCommand;
-import net.picklepark.discord.command.general.UnadminCommand;
+import net.picklepark.discord.command.general.*;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
-import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +68,9 @@ public class Bot extends ListenerAdapter {
             RandomClipCommand.class,
             RepeatClipCommand.class,
             NukeQueueCommand.class,
-            WelcomeCommand.class
+            WelcomeCommand.class,
+            BanCommand.class,
+            UnbanCommand.class
     );
     private static JDA jda;
     private static Injector injector;

@@ -47,7 +47,7 @@ public class DeleteClipCommand implements DiscordCommand {
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.OWNER;
+        return AuthLevel.ADMIN;
     }
 
     @Override

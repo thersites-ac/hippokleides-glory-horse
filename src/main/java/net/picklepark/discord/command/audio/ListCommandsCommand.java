@@ -34,7 +34,7 @@ public class ListCommandsCommand implements DiscordCommand {
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.ANY;
+        return AuthLevel.USER;
     }
 
     @Override

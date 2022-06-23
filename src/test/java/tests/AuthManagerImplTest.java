@@ -39,7 +39,7 @@ public class AuthManagerImplTest {
 
     @Test
     public void anyAlwaysSucceeds() {
-        givenLevel(AuthLevel.ANY);
+        givenLevel(AuthLevel.USER);
         whenTestAuthFor(42);
         thenDecisionIsPass();
     }
