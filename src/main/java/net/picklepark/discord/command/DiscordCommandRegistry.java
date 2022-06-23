@@ -27,6 +27,7 @@ import static java.lang.String.format;
 
 @Singleton
 public class DiscordCommandRegistry {
+    public static final String UNAUTHORIZED_MESSAGE = "Lol no";
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
 
@@ -67,7 +68,7 @@ public class DiscordCommandRegistry {
             actions.initMatches(command.userInput(), messageContent);
             executeInContext(command, actions);
         } else {
-            actions.send("Lol no");
+            actions.send(UNAUTHORIZED_MESSAGE);
             logger.warn(format("User %s (%s) tried to execute %s in guild %s (%s) without authorization",
                     actions.getAuthorUsername(),
                     actions.getAuthorId(),

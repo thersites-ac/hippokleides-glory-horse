@@ -3,6 +3,7 @@ package tests;
 import net.picklepark.discord.command.DiscordCommandRegistry;
 import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.command.general.IdkCommand;
+import tools.StubDiscordCommandRegistry;
 import tools.TestAuthManager;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
 import tools.TestCommand;
@@ -24,7 +25,7 @@ public class DiscordCommandRegistryTest {
     @Before
     public void setup() {
         authService = new TestAuthManager();
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(null), authService, null);
+        registry = new StubDiscordCommandRegistry(authService);
         registry.prefix('~');
         registry.register(new TestCommand());
         actions = new SpyMessageReceivedActions();

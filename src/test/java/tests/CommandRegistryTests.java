@@ -93,10 +93,7 @@ public class CommandRegistryTests {
     }
 
     private void givenRegistry() {
-        registry = new DiscordCommandRegistry(
-                new ClipManagerImpl(null),
-                new RubberstampAuthManager(),
-                null);
+        registry = StubDiscordCommandRegistry.withRubberstampAuthManager();
     }
 
     private void givenRegisterCommand() {

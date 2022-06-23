@@ -9,6 +9,6 @@ import java.io.IOException;
 
 public interface AuthManager {
     boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level);
-    void addAdmin(String channelName, long user) throws IOException, AlreadyAdminException;
+    void addAdmin(String guildId, long user) throws IOException, AlreadyAdminException;
     void demote(long user, MessageReceivedActions actions) throws IOException, AuthException;
 }

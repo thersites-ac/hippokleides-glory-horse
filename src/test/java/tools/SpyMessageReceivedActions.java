@@ -122,7 +122,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     }
 
     @Override
-    public long getOwnerId() {
+    public long getGuildOwnerId() {
         return owner;
     }
 

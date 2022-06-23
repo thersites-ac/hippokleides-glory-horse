@@ -6,28 +6,31 @@ import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.model.AuthLevel;
 
 public class BanCommand implements DiscordCommand {
+    private static final String DSL = "ban <user>";
+    private static final String HELP_MESSAGE = "Block someone from interacting with me";
+
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-
+        actions.send("You done goofed, " + actions.getArgument("user"));
     }
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return null;
+        return AuthLevel.ADMIN;
     }
 
     @Override
     public String example() {
-        return null;
+        return DSL;
     }
 
     @Override
     public String helpMessage() {
-        return null;
+        return HELP_MESSAGE;
     }
 
     @Override
     public String userInput() {
-        return null;
+        return DSL;
     }
 }

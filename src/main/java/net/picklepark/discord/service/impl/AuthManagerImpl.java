@@ -91,7 +91,7 @@ public class AuthManagerImpl implements AuthManager {
 
     private long lookupOwner(MessageReceivedActions actions) {
         try {
-            return actions.getOwnerId();
+            return actions.getGuildOwnerId();
         } catch (NoOwnerException e) {
             return -1;
         }

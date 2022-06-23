@@ -18,7 +18,7 @@ public interface MessageReceivedActions {
     String getAuthorUsername();
     long lookupUserId(String user) throws UserIdentificationException;
     String lookupUserTag(String user) throws UserIdentificationException;
-    long getOwnerId() throws NoOwnerException;
+    long getGuildOwnerId() throws NoOwnerException;
     String getArgument(String arg);
     // fixme: this shouldn't be generally exposed
     void initMatches(String regex, String message);
