@@ -32,4 +32,8 @@ public class TestAuthManager implements AuthManager {
     public void throwAuthException() {
         throwAuthException = true;
     }
+
+    @Override
+    public void ban(String guildId, long userId) {
+    }
 }

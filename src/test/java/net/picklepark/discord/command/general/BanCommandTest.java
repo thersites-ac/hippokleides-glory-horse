@@ -24,9 +24,10 @@ public class BanCommandTest {
 
     @Before
     public void setup() {
-        registry = new StubDiscordCommandRegistry(new InMemoryAuthManager());
+        var authManager = new InMemoryAuthManager();
+        registry = new StubDiscordCommandRegistry(authManager);
         registry.prefix('~');
-        registry.register(new TestCommand(), new BanCommand());
+        registry.register(new TestCommand(), new BanCommand(authManager));
     }
 
     @Test
@@ -56,8 +57,11 @@ public class BanCommandTest {
         assertEquals("Lol no", actions.getSentMessage().get(0));
     }
 
+    // TODO: more tests
+
     private SpyMessageReceivedActions actions(Long author) {
         var actions = new SpyMessageReceivedActions();
+        actions.addGuildMember(VICTIM + "", VICTIM);
         actions.setAuthor(author);
         actions.setGuildName(GUILD);
         actions.setGuildOwner(CHANNEL_OWNER);

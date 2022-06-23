@@ -104,8 +104,32 @@ public class AuthManagerImplTest {
         whenDemote(42);
     }
 
+    @Test
+    public void afterBanNothingIsAuthorized() {
+        var user = 42;
+        givenUserIsNotOwner(user);
+        givenLevel(AuthLevel.USER);
+        whenTestAuthFor(user);
+        thenDecisionIsPass();
+
+        givenBan(user);
+        whenTestAuthFor(user);
+        thenDecisionIsFail();
+    }
+
+    @Test
+    public void persistsBans() {
+        fail();
+    }
+
+    // TODO: more tests for ban
+
     private void givenAddAdmin(long user) throws IOException, AlreadyAdminException {
         authService.addAdmin(GUILD_NAME, user);
+    }
+
+    private void givenBan(int user) {
+        authService.ban(GUILD_NAME, user);
     }
 
     private void givenUserIsNotOwner(long user) {

@@ -17,4 +17,8 @@ public class RubberstampAuthManager implements AuthManager {
     @Override
     public void demote(long user, MessageReceivedActions actions) {
     }
+
+    @Override
+    public void ban(String guild, long user) {
+    }
 }

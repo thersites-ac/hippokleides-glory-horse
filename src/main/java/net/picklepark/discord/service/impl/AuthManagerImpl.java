@@ -1,5 +1,6 @@
 package net.picklepark.discord.service.impl;
 
+import io.netty.util.internal.ConcurrentSet;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.*;
@@ -11,15 +12,18 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class AuthManagerImpl implements AuthManager {
     private static final Logger logger = LoggerFactory.getLogger(AuthManagerImpl.class);
-    protected final ConcurrentHashMap<String, Set<Long>> admins;
+    protected final Map<String, Set<Long>> admins;
     private final AuthConfigService configService;
+    private final Map<String, Set<Long>> bans;
 
     @Inject
     public AuthManagerImpl(AuthConfigService configService) {
@@ -32,10 +36,13 @@ public class AuthManagerImpl implements AuthManager {
             tempAdmins = new ConcurrentHashMap<>();
         }
         admins = tempAdmins;
+        bans = new ConcurrentHashMap<>();
     }
 
     @Override
     public boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level) {
+        if (isBanned(actions.getGuildId(), actions.getAuthorId()))
+            return false;
         switch (level) {
             case USER:
                 return true;
@@ -46,6 +53,10 @@ public class AuthManagerImpl implements AuthManager {
             default:
                 return false;
         }
+    }
+
+    private boolean isBanned(String guildId, long authorId) {
+        return bans.getOrDefault(guildId, Collections.emptySet()).contains(authorId);
     }
 
     private boolean authorIsOwner(MessageReceivedActions actions) {
@@ -73,6 +84,11 @@ public class AuthManagerImpl implements AuthManager {
             configService.persistAdmins(admins);
         } else
             throw new AuthLevelConflictException(user);
+    }
+
+    @Override
+    public void ban(String guildId, long userId) {
+        bans.computeIfAbsent(guildId, g -> new ConcurrentSet<>()).add(userId);
     }
 
     private boolean hasAdminPrivileges(MessageReceivedActions actions) {
