@@ -10,7 +10,7 @@ import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-// fixme (important): I'm pretty sure this affects all channels
+// fixme (important): this is bugged when multiple channels are involved
 public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
 
     private final RecordingService recordingService;

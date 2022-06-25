@@ -7,7 +7,6 @@
     * sort out bugs related to clip ID/title collision
       * handle invalid command names (in UI, lambda, and bot)
     * error handling in the Python Lambda
-    * better auth groups
     * improve trimmer UI
     * combine repos
     * qa/prod environments

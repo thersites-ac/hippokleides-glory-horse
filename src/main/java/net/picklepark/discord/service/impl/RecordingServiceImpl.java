@@ -2,7 +2,6 @@ package net.picklepark.discord.service.impl;
 
 import net.dv8tion.jda.api.audio.CombinedAudio;
 import net.dv8tion.jda.api.audio.UserAudio;
-import net.dv8tion.jda.api.entities.User;
 import net.picklepark.discord.audio.DiscontinuousAudioArray;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.RecordingService;
@@ -15,6 +14,7 @@ import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
+// fixme (important): TDD to ensure that this distinguishes channels
 @Singleton
 public class RecordingServiceImpl implements RecordingService {
 
@@ -52,6 +52,7 @@ public class RecordingServiceImpl implements RecordingService {
             return new byte[0];
     }
 
+    // fixme: unwrap UserAudio in the handler that talks to this
     @Override
     public void receive(UserAudio userAudio) throws NotRecordingException {
         if (!recording)
@@ -61,6 +62,7 @@ public class RecordingServiceImpl implements RecordingService {
         userRecordings.get(id).store(userAudio.getAudioData(1));
     }
 
+    // fixme: unwrap CombinedAudio as above
     @Override
     public void receive(CombinedAudio audio) throws NotRecordingException {
         if (!recording)
