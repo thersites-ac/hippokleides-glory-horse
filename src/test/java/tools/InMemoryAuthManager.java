@@ -60,4 +60,12 @@ public class InMemoryAuthManager implements AuthManager {
         bans.computeIfAbsent(guildId, g -> new HashSet<>());
         bans.get(guildId).add(userId);
     }
+
+    @Override
+    public void unban(String guildId, long userId) {
+        var guildBans = bans.get(guildId);
+        if (guildBans != null) {
+            guildBans.remove(userId);
+        }
+    }
 }

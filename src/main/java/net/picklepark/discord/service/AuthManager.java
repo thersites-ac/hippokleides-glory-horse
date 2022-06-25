@@ -12,4 +12,5 @@ public interface AuthManager {
     void addAdmin(String guildId, long user) throws IOException, AlreadyAdminException;
     void demote(long user, MessageReceivedActions actions) throws IOException, AuthException;
     void ban(String guildId, long userId) throws IOException;
+    void unban(String guildId, long userId) throws IOException;
 }

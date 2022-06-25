@@ -36,4 +36,8 @@ public class TestAuthManager implements AuthManager {
     @Override
     public void ban(String guildId, long userId) {
     }
+
+    @Override
+    public void unban(String guildId, long userId) {
+    }
 }

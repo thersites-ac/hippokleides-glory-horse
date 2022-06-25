@@ -107,6 +107,15 @@ public class AuthManagerImpl implements AuthManager {
         banPersister.persist(bans);
     }
 
+    @Override
+    public void unban(String guildId, long userId) throws IOException {
+        Set<Long> guildBans = bans.get(guildId);
+        if (guildBans != null && guildBans.contains(userId)) {
+            guildBans.remove(userId);
+            banPersister.persist(bans);
+        }
+    }
+
     private boolean hasAdminPrivileges(MessageReceivedActions actions) {
         long authorId = actions.getAuthorId();
         return isAdmin(actions, authorId) || isOwner(actions, authorId);

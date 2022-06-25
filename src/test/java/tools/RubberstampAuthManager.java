@@ -21,4 +21,8 @@ public class RubberstampAuthManager implements AuthManager {
     @Override
     public void ban(String guild, long user) {
     }
+
+    @Override
+    public void unban(String guildId, long userId) {
+    }
 }
