@@ -23,14 +23,11 @@ import net.picklepark.discord.command.DiscordCommandRegistry;
 import net.picklepark.discord.command.audio.*;
 import net.picklepark.discord.audio.AudioContext;
 import net.picklepark.discord.audio.GuildPlayer;
-import net.picklepark.discord.command.general.HelpCommand;
-import net.picklepark.discord.command.general.MakeAdminCommand;
-import net.picklepark.discord.command.general.UnadminCommand;
+import net.picklepark.discord.command.general.*;
 import net.picklepark.discord.command.pathfinder.FeatCommand;
 import net.picklepark.discord.command.pathfinder.SpellCommand;
 import net.picklepark.discord.config.DefaultModule;
 import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
-import net.picklepark.discord.service.ClipManager;
 import net.picklepark.discord.service.RemoteStorageService;
 import net.picklepark.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +68,9 @@ public class Bot extends ListenerAdapter {
             RandomClipCommand.class,
             RepeatClipCommand.class,
             NukeQueueCommand.class,
-            WelcomeCommand.class
+            WelcomeCommand.class,
+            BanCommand.class,
+            UnbanCommand.class
     );
     private static JDA jda;
     private static Injector injector;
@@ -80,6 +79,15 @@ public class Bot extends ListenerAdapter {
     private final AudioPlayerManager playerManager;
 
     public static void main(String[] args) throws Exception {
+        boolean collision =
+                COMMANDS.stream().anyMatch(c -> c.equals(QueueAudioCommand.class)) &&
+                COMMANDS.stream().anyMatch(c -> c.equals(PlayClipCommand.class)
+                        || c.equals(RandomClipCommand.class)
+                        || c.equals(RepeatClipCommand.class));
+        if (collision) {
+            logger.warn("Risk of audio queue contention because both clip and other audio playback is allowed");
+        }
+        // fixme: collisions will also occur if any user has a welcome set and other audio is playing
         injector = Guice.createInjector(new DefaultModule());
         var bot = injector.getInstance(Bot.class);
         jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)

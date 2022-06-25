@@ -1,5 +1,6 @@
 package net.picklepark.discord.service.impl;
 
+import io.netty.util.internal.ConcurrentSet;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.*;
@@ -9,35 +10,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static net.picklepark.discord.constants.Names.AUTH_BAN_PERSISTER;
 
 @Singleton
 public class AuthManagerImpl implements AuthManager {
     private static final Logger logger = LoggerFactory.getLogger(AuthManagerImpl.class);
-    protected final ConcurrentHashMap<String, Set<Long>> admins;
+    protected final Map<String, Set<Long>> admins;
     private final AuthConfigService configService;
+    private final Map<String, Set<Long>> bans;
+    private final JavaConfigManager<Map<String, Set<Long>>> banPersister;
 
+    // fixme: kind of gross how the two parameters are basically identical
     @Inject
-    public AuthManagerImpl(AuthConfigService configService) {
-        ConcurrentHashMap<String, Set<Long>> tempAdmins;
+    public AuthManagerImpl(AuthConfigService configService,
+                           @Named(AUTH_BAN_PERSISTER) JavaConfigManager<Map<String, Set<Long>>> banPersister) {
+        this.banPersister = banPersister;
         this.configService = configService;
+
+        Map<String, Set<Long>> tempAdmins = new ConcurrentHashMap<>();
         try {
             tempAdmins = new ConcurrentHashMap<>(configService.getCurrentAdmins());
         } catch (Exception e) {
             logger.error("While initializing admins", e);
-            tempAdmins = new ConcurrentHashMap<>();
         }
         admins = tempAdmins;
+
+        Map<String, Set<Long>> tempBans = new ConcurrentHashMap<>();
+        try {
+            tempBans = new ConcurrentHashMap<>(banPersister.getRemote());
+        } catch (Exception e) {
+            logger.error("While initializing bans", e);
+        }
+        bans = tempBans;
+
     }
 
     @Override
     public boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level) {
+        if (isBanned(actions.getGuildId(), actions.getAuthorId()))
+            return false;
         switch (level) {
-            case ANY:
+            case USER:
                 return true;
             case OWNER:
                 return authorIsOwner(actions);
@@ -46,6 +68,10 @@ public class AuthManagerImpl implements AuthManager {
             default:
                 return false;
         }
+    }
+
+    private boolean isBanned(String guildId, long authorId) {
+        return bans.getOrDefault(guildId, Collections.emptySet()).contains(authorId);
     }
 
     private boolean authorIsOwner(MessageReceivedActions actions) {
@@ -75,6 +101,12 @@ public class AuthManagerImpl implements AuthManager {
             throw new AuthLevelConflictException(user);
     }
 
+    @Override
+    public void ban(String guildId, long userId) throws IOException {
+        bans.computeIfAbsent(guildId, g -> new ConcurrentSet<>()).add(userId);
+        banPersister.persist(bans);
+    }
+
     private boolean hasAdminPrivileges(MessageReceivedActions actions) {
         long authorId = actions.getAuthorId();
         return isAdmin(actions, authorId) || isOwner(actions, authorId);
@@ -91,7 +123,7 @@ public class AuthManagerImpl implements AuthManager {
 
     private long lookupOwner(MessageReceivedActions actions) {
         try {
-            return actions.getOwnerId();
+            return actions.getGuildOwnerId();
         } catch (NoOwnerException e) {
             return -1;
         }

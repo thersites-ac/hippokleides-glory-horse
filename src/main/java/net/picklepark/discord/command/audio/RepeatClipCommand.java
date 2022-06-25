@@ -59,7 +59,7 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.ADMIN;
+        return AuthLevel.USER;
     }
 
     @Override

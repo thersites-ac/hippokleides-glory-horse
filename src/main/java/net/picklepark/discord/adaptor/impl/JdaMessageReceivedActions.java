@@ -166,7 +166,7 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     }
 
     @Override
-    public long getOwnerId() throws NoOwnerException {
+    public long getGuildOwnerId() throws NoOwnerException {
         Member owner = event.getGuild().getOwner();
         if (owner == null)
             throw new NoOwnerException(event.getGuild().getName());

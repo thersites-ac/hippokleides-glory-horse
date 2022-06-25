@@ -1,13 +1,9 @@
 package tests;
 
 import net.picklepark.discord.command.general.HelpCommand;
-import tools.AnotherTestCommand;
-import tools.SpyCommand;
-import tools.SpyMessageReceivedActions;
+import tools.*;
 import net.picklepark.discord.command.*;
-import tools.RubberstampAuthManager;
 import net.picklepark.discord.service.impl.ClipManagerImpl;
-import tools.TestCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +24,7 @@ public class HelpCommandTest {
 
     @Before
     public void setup() {
-        registry = new DiscordCommandRegistry(new ClipManagerImpl(null), new RubberstampAuthManager(), null);
+        registry = StubDiscordCommandRegistry.withRubberstampAuthManager();
         testCommand = new TestCommand();
         anotherCommand = new AnotherTestCommand();
         actions = new SpyMessageReceivedActions();

@@ -33,7 +33,7 @@ public class PlayClipCommand extends JoinVoiceChannel implements net.picklepark.
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.ADMIN;
+        return AuthLevel.USER;
     }
 
     @Override

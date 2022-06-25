@@ -1,32 +1,33 @@
-package tools;
+package net.picklepark.discord.command.general;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.model.AuthLevel;
 
-public class AnotherTestCommand implements DiscordCommand {
+public class UnbanCommand implements DiscordCommand {
     @Override
-    public void execute(MessageReceivedActions actions) {
-        actions.send("OK again");
+    public void execute(MessageReceivedActions actions) throws DiscordCommandException {
+
     }
 
     @Override
     public AuthLevel requiredAuthLevel() {
-        return AuthLevel.USER;
+        return null;
     }
 
     @Override
     public String example() {
-        return "other";
+        return null;
     }
 
     @Override
     public String helpMessage() {
-        return "plz help";
+        return null;
     }
 
     @Override
     public String userInput() {
-        return "another test";
+        return null;
     }
 }

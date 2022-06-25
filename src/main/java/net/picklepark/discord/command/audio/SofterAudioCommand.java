@@ -16,8 +16,6 @@ public class SofterAudioCommand implements DiscordCommand {
   @Override
   public AuthLevel requiredAuthLevel() {
     return AuthLevel.ADMIN;
-
-
   }
 
   @Override

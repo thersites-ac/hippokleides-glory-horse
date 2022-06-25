@@ -8,7 +8,6 @@
       * handle invalid command names (in UI, lambda, and bot)
     * error handling in the Python Lambda
     * better auth groups
-    * handle error when user tries to delete a nonexistent clip
     * improve trimmer UI
     * combine repos
     * qa/prod environments

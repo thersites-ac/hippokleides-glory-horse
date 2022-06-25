@@ -4,6 +4,7 @@ import net.picklepark.discord.exception.AlreadyAdminException;
 import net.picklepark.discord.exception.AuthException;
 import net.picklepark.discord.exception.CannotDemoteSelfException;
 import net.picklepark.discord.service.impl.AuthManagerImpl;
+import tools.InMemoryBanPersister;
 import tools.SpyMessageReceivedActions;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.AuthLevelConflictException;
@@ -31,15 +32,17 @@ public class AuthManagerImplTest {
 
     @Before
     public void setup() {
+        var banPersister = new InMemoryBanPersister();
+        banPersister.reset();
         testConfigService = new TestConfigService();
-        authService = new AuthManagerImpl(testConfigService);
+        authService = new AuthManagerImpl(testConfigService, banPersister);
         actions = new SpyMessageReceivedActions();
         actions.setGuildName(GUILD_NAME);
     }
 
     @Test
     public void anyAlwaysSucceeds() {
-        givenLevel(AuthLevel.ANY);
+        givenLevel(AuthLevel.USER);
         whenTestAuthFor(42);
         thenDecisionIsPass();
     }
@@ -104,8 +107,34 @@ public class AuthManagerImplTest {
         whenDemote(42);
     }
 
+    @Test
+    public void afterBanNothingIsAuthorized() throws IOException {
+        var user = 42;
+        givenUserIsNotOwner(user);
+        givenLevel(AuthLevel.USER);
+        whenTestAuthFor(user);
+        thenDecisionIsPass();
+
+        givenBan(user);
+        thenUserIsBanned(user);
+    }
+
+    @Test
+    public void persistsBans() throws IOException {
+        var user = 42;
+        givenBan(user);
+        whenRestart();
+        thenUserIsBanned(42);
+    }
+
+    // TODO: more tests for ban
+
     private void givenAddAdmin(long user) throws IOException, AlreadyAdminException {
         authService.addAdmin(GUILD_NAME, user);
+    }
+
+    private void givenBan(int user) throws IOException {
+        authService.ban(GUILD_NAME, user);
     }
 
     private void givenUserIsNotOwner(long user) {
@@ -131,7 +160,7 @@ public class AuthManagerImplTest {
     }
 
     private void whenRestart() {
-        authService = new AuthManagerImpl(testConfigService);
+        authService = new AuthManagerImpl(testConfigService, new InMemoryBanPersister());
     }
 
     private void thenUserIsAdmin(long id) {
@@ -148,4 +177,8 @@ public class AuthManagerImplTest {
         assertTrue(decision);
     }
 
+    private void thenUserIsBanned(int user) {
+        whenTestAuthFor(user);
+        thenDecisionIsFail();
+    }
 }
