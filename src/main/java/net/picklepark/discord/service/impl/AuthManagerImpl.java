@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Collections;
@@ -18,25 +19,39 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static net.picklepark.discord.constants.Names.AUTH_BAN_PERSISTER;
+
 @Singleton
 public class AuthManagerImpl implements AuthManager {
     private static final Logger logger = LoggerFactory.getLogger(AuthManagerImpl.class);
     protected final Map<String, Set<Long>> admins;
     private final AuthConfigService configService;
     private final Map<String, Set<Long>> bans;
+    private final JavaConfigManager<Map<String, Set<Long>>> banPersister;
 
+    // fixme: kind of gross how the two parameters are basically identical
     @Inject
-    public AuthManagerImpl(AuthConfigService configService) {
-        ConcurrentHashMap<String, Set<Long>> tempAdmins;
+    public AuthManagerImpl(AuthConfigService configService,
+                           @Named(AUTH_BAN_PERSISTER) JavaConfigManager<Map<String, Set<Long>>> banPersister) {
+        this.banPersister = banPersister;
         this.configService = configService;
+
+        Map<String, Set<Long>> tempAdmins = new ConcurrentHashMap<>();
         try {
             tempAdmins = new ConcurrentHashMap<>(configService.getCurrentAdmins());
         } catch (Exception e) {
             logger.error("While initializing admins", e);
-            tempAdmins = new ConcurrentHashMap<>();
         }
         admins = tempAdmins;
-        bans = new ConcurrentHashMap<>();
+
+        Map<String, Set<Long>> tempBans = new ConcurrentHashMap<>();
+        try {
+            tempBans = new ConcurrentHashMap<>(banPersister.getRemote());
+        } catch (Exception e) {
+            logger.error("While initializing bans", e);
+        }
+        bans = tempBans;
+
     }
 
     @Override
@@ -87,8 +102,9 @@ public class AuthManagerImpl implements AuthManager {
     }
 
     @Override
-    public void ban(String guildId, long userId) {
+    public void ban(String guildId, long userId) throws IOException {
         bans.computeIfAbsent(guildId, g -> new ConcurrentSet<>()).add(userId);
+        banPersister.persist(bans);
     }
 
     private boolean hasAdminPrivileges(MessageReceivedActions actions) {

@@ -8,6 +8,8 @@ import net.picklepark.discord.exception.UserIdentificationException;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.service.AuthManager;
 
+import java.io.IOException;
+
 import static java.lang.String.format;
 
 public class BanCommand implements DiscordCommand {
@@ -33,6 +35,8 @@ public class BanCommand implements DiscordCommand {
             actions.send("You done goofed, " + actions.getArgument("user"));
         } catch (UserIdentificationException e) {
             actions.send(format(UNCLEAR_USER_MESSAGE, user));
+        } catch (IOException e) {
+            throw new DiscordCommandException(e);
         }
     }
 

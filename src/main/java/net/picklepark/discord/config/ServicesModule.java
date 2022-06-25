@@ -16,6 +16,11 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.util.Map;
+import java.util.Set;
+
+import static net.picklepark.discord.constants.Names.*;
+
 public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
@@ -63,7 +68,7 @@ public class ServicesModule extends AbstractModule {
 
     @Provides
     @Singleton
-    @Named("s3.client.config")
+    @Named(S3_CLIENT_CONFIG)
     S3Client configS3Client(AwsCredentialsProvider provider) {
         return S3Client.builder()
                 .region(Region.US_EAST_2)
@@ -86,4 +91,11 @@ public class ServicesModule extends AbstractModule {
         return new NetHttpTransport().createRequestFactory();
     }
 
+    @Provides
+    @Named(AUTH_BAN_PERSISTER)
+    @Singleton
+    JavaConfigManager<Map<String, Set<Long>>> banPersister(@Named(S3_BUCKET_CONFIG) String configBucket,
+                                                           @Named(S3_CLIENT_CONFIG) S3Client configClient) {
+        return new JavaConfigManager<Map<String, Set<Long>>>(configBucket, configClient, AUTH_BAN_PERSISTER);
+    }
 }

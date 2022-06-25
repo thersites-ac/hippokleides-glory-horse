@@ -6,6 +6,8 @@ import com.google.inject.Provides;
 import javax.inject.Named;
 import java.time.Duration;
 
+import static net.picklepark.discord.constants.Names.S3_BUCKET_CONFIG;
+
 public class ServiceConstantsModule extends AbstractModule {
 
     @Provides
@@ -69,7 +71,7 @@ public class ServiceConstantsModule extends AbstractModule {
     }
 
     @Provides
-    @Named("s3.bucket.config")
+    @Named(S3_BUCKET_CONFIG)
     String configBucket() {
         return "discord-config";
     }
