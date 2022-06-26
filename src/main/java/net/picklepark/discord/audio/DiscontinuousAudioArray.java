@@ -1,11 +1,13 @@
 package net.picklepark.discord.audio;
 
+import net.picklepark.discord.exception.InvalidAudioPacketException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
 import static net.picklepark.discord.constants.AudioConstants.SILENCE_DATA;
 
 public class DiscontinuousAudioArray {
@@ -21,16 +23,18 @@ public class DiscontinuousAudioArray {
         maxInterval = 30000L;
     }
 
-    public DiscontinuousAudioArray(long recordDuration) {
-        this.maxInterval = recordDuration;
+    public DiscontinuousAudioArray(long maxInterval) {
+        this.maxInterval = maxInterval;
         audio = new LinkedList<>();
     }
 
     public byte[] retrieve() {
-        return new PacketInterpolator(audio).interpolate();
+       return new PacketInterpolator(audio).interpolate();
     }
 
-    public void store(byte[] data) {
+    public void store(byte[] data) throws InvalidAudioPacketException {
+        if (data.length != PACKET_SIZE)
+            throw new InvalidAudioPacketException(data.length);
         removeOldData();
         if (isSilence(data))
             audio.add(TimestampedPacket.silence());

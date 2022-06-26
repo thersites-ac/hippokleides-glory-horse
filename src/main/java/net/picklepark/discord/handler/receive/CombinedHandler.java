@@ -24,7 +24,7 @@ public class CombinedHandler implements AudioReceiveHandler {
     @Override
     public void handleCombinedAudio(@Nonnull CombinedAudio combinedAudio) {
         try {
-            recordingService.receive(combinedAudio);
+//            recordingService.receive(combinedAudio);
         } catch (Exception e) {
             e.printStackTrace();
             error = true;

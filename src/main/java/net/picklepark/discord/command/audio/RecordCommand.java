@@ -24,7 +24,8 @@ public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
     @Override
     public void execute(MessageReceivedActions actions) {
         ensureConnected(actions);
-        recordingService.beginRecording();
+        String guild = actions.getGuildId();
+        recordingService.beginRecording(guild);
         actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
         actions.send("Ready 4 u ;)");
     }

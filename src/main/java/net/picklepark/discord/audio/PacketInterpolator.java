@@ -51,7 +51,7 @@ public class PacketInterpolator {
     }
 
     public byte[] interpolate() {
-        continuousSilences = 0;
+       continuousSilences = 0;
         for (TimestampedPacket packet: audio)
             appendPacket(packet);
         return everything;

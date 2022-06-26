@@ -3,10 +3,17 @@ package net.picklepark.discord.handler.receive;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.audio.UserAudio;
 import net.picklepark.discord.service.RecordingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
+import static java.lang.String.format;
+
 public class DemultiplexingHandler implements AudioReceiveHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(DemultiplexingHandler.class);
+    private static final String MESSAGE = "While processing %s (%s)";
 
     private final RecordingService recordingService;
     private boolean error;
@@ -24,9 +31,11 @@ public class DemultiplexingHandler implements AudioReceiveHandler {
     @Override
     public void handleUserAudio(@Nonnull UserAudio userAudio) {
         try {
-            recordingService.receive(userAudio);
+            recordingService.receive("", userAudio);
         } catch (Exception e) {
-            e.printStackTrace();
+            String userId = userAudio.getUser().getId();
+            String userTag = userAudio.getUser().getAsTag();
+            logger.error(format(MESSAGE, userTag, userId), e);
             error = true;
         }
     }

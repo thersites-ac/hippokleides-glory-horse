@@ -1,7 +1,12 @@
 package net.picklepark.discord.exception;
 
+import static java.lang.String.format;
+
 public class NotRecordingException extends Exception {
-    public NotRecordingException() {
-        super();
+
+    private static final String MESSAGE = "Not recording guild %s";
+
+    public NotRecordingException(String guild) {
+        super(format(MESSAGE, guild));
     }
 }

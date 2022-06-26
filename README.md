@@ -30,3 +30,4 @@
     * random youtube playback (search and play back audio from first result)
     * more tags for randomized selections
     * share clips between channels
+    * record only individual users, or allow users to opt out of recording

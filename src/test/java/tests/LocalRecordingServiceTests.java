@@ -1,7 +1,8 @@
 package tests;
 
-import net.dv8tion.jda.api.audio.CombinedAudio;
+import net.dv8tion.jda.api.audio.UserAudio;
 import net.dv8tion.jda.api.entities.User;
+import net.picklepark.discord.exception.InvalidAudioPacketException;
 import net.picklepark.discord.exception.NotRecordingException;
 import net.picklepark.discord.service.impl.RecordingServiceImpl;
 import org.junit.Assert;
@@ -10,34 +11,34 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
 
 @RunWith(JUnit4.class)
 public class LocalRecordingServiceTests {
 
-    private static final int packetsPerSec = 50;
-    private static final int secToProvide = 70;
-    private static final int maxSecToStore = 60;
-    private static final int totalPacketsProvided = packetsPerSec * secToProvide;
-    private static final int maxPacketsStored = packetsPerSec * maxSecToStore;
+    private static final String GUILD = "testGuild";
 
-    private RecordingServiceImpl localRecordingService;
-    private CombinedAudio audio;
-    private List<User> users;
+    private static final int MAX_SEC_TO_STORE = 60;
+    private static final int PACKET_SIZE_IN_SHORTS = PACKET_SIZE / 2;
+
+    private RecordingServiceImpl recordingService;
+    private UserAudio audio;
+    private User user;
     private short[] data;
     private byte[] out;
 
     @Before
     public void setup() {
-        localRecordingService = new RecordingServiceImpl(maxSecToStore);
-        users = new ArrayList<>();
-        data = new short[]{0};
-        audio = new CombinedAudio(users, data);
+        recordingService = new RecordingServiceImpl(MAX_SEC_TO_STORE);
+        user = User.fromId(42L);
+        data = new short[PACKET_SIZE_IN_SHORTS];
+        audio = new UserAudio(user, data);
     }
 
     @Test(expected = NotRecordingException.class)
-    public void mustPrepareToRecord() throws NotRecordingException {
+    public void mustPrepareToRecord() throws NotRecordingException, InvalidAudioPacketException {
         whenReceiveOnePacket();
     }
 
@@ -47,7 +48,7 @@ public class LocalRecordingServiceTests {
     }
 
     @Test
-    public void storesAudio() throws NotRecordingException {
+    public void storesAudio() throws NotRecordingException, InvalidAudioPacketException {
         givenRecordingStarted();
         whenReceiveOnePacket();
         thenSavedStreamMatchesInput();
@@ -59,49 +60,44 @@ public class LocalRecordingServiceTests {
     }
 
     @Test
-    public void storesChosenAmountOfAudio() throws NotRecordingException {
-        givenRecordingStarted();
-        whenProvideExcessAudio();
-        thenOnlyLastMinuteSaved();
-    }
-
-    @Test
-    public void lastInFirstOut() throws NotRecordingException {
+    public void lastInFirstOut() throws NotRecordingException, InvalidAudioPacketException {
         givenRecordingStarted();
         whenReceiveData((short) 1);
         whenReceiveData((short) 2);
         thenResultOrderIs((short) 1, (short) 2);
     }
 
-    private void givenRecordingStarted() {
-        localRecordingService.beginRecording();
-    }
-
-    private void whenReceiveOnePacket() throws NotRecordingException {
-        localRecordingService.receive(audio);
-    }
-
-    private void whenReceiveData(short i) throws NotRecordingException {
-        data = new short[]{i};
-        audio = new CombinedAudio(users, data);
+    @Test(expected = NotRecordingException.class)
+    public void cannotReceiveAfterStopRecording() throws NotRecordingException, InvalidAudioPacketException {
+        givenRecordingStarted();
+        givenRecordingStopped();
         whenReceiveOnePacket();
     }
 
-    private void whenProvideExcessAudio() throws NotRecordingException {
-        for (int i = 0; i < totalPacketsProvided; i++)
-            whenReceiveOnePacket();
+    private void givenRecordingStopped() {
+        recordingService.stopRecording(GUILD);
+    }
+
+    private void givenRecordingStarted() {
+        recordingService.beginRecording(GUILD);
+    }
+
+    private void whenReceiveOnePacket() throws NotRecordingException, InvalidAudioPacketException {
+        recordingService.receive(GUILD, audio);
+    }
+
+    private void whenReceiveData(short i) throws NotRecordingException, InvalidAudioPacketException {
+        var copy = Arrays.copyOf(data, data.length);
+        Arrays.fill(copy, i);
+        audio = new UserAudio(user, copy);
+        whenReceiveOnePacket();
     }
 
     private void thenFetchRecording() throws NotRecordingException {
-        out = localRecordingService.getCombined();
+        out = recordingService.getUser(GUILD, user.getIdLong());
     }
 
-    private void thenOnlyLastMinuteSaved() throws NotRecordingException {
-        thenFetchRecording();
-        Assert.assertEquals(maxPacketsStored * audio.getAudioData(1).length, out.length);
-    }
-
-    private void thenResultOrderIs(short i, short j) throws NotRecordingException {
+    private void thenResultOrderIs(short i, short j) throws NotRecordingException, InvalidAudioPacketException {
         thenFetchRecording();
         whenReceiveData(i);
         byte[] first = audio.getAudioData(1);

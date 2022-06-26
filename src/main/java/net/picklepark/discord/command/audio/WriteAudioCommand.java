@@ -52,7 +52,7 @@ public class WriteAudioCommand implements DiscordCommand {
         try {
             long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
-            byte[] data = recordingService.getUser(user);
+            byte[] data = recordingService.getUser(guild, user);
             Coordinates coordinates = writeAudioData(data, guild, username);
             sendCropLink(actions, coordinates);
         } catch (NotRecordingException e) {

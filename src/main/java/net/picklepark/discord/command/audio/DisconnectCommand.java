@@ -20,7 +20,7 @@ public class DisconnectCommand implements DiscordCommand {
     @Override
     public void execute(MessageReceivedActions actions) {
         actions.disconnect();
-        recordingService.stopRecording();
+        recordingService.stopRecording(actions.getGuildId());
     }
 
     @Override

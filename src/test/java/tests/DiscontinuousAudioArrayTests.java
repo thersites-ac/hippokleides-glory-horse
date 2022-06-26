@@ -1,6 +1,7 @@
 package tests;
 
 import net.picklepark.discord.audio.DiscontinuousAudioArray;
+import net.picklepark.discord.exception.InvalidAudioPacketException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +23,13 @@ public class DiscontinuousAudioArrayTests {
     }
 
     @Test
-    public void storesAudio() {
+    public void storesAudio() throws InvalidAudioPacketException {
         whenProvideAudio();
         thenCanRetrieveIt();
     }
 
     @Test
-    public void canSetMaximumRecordingLength() throws InterruptedException {
+    public void canSetMaximumRecordingLength() throws InterruptedException, InvalidAudioPacketException {
         givenShortMaxRecordingLength();
         whenInterpolateLongAudio();
         thenResultDropsOldPackets();
@@ -38,13 +39,13 @@ public class DiscontinuousAudioArrayTests {
         discontinuousAudioArray = new DiscontinuousAudioArray(40);
     }
 
-    private void whenInterpolateLongAudio() throws InterruptedException {
+    private void whenInterpolateLongAudio() throws InterruptedException, InvalidAudioPacketException {
         whenProvideAudio();
         Thread.sleep(41);
         whenProvideAudio();
     }
 
-    private void whenProvideAudio() {
+    private void whenProvideAudio() throws InvalidAudioPacketException {
         discontinuousAudioArray.store(data);
     }
 
