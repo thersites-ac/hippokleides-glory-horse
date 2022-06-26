@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public class ListCommandsCommand implements DiscordCommand {
+public class ListClipsCommand implements DiscordCommand {
 
-    private static final Logger logger = LoggerFactory.getLogger(ListCommandsCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListClipsCommand.class);
 
     private final ClipManager clipManager;
 
     @Inject
-    public ListCommandsCommand(ClipManager clipManager) {
+    public ListClipsCommand(ClipManager clipManager) {
         this.clipManager = clipManager;
     }
 

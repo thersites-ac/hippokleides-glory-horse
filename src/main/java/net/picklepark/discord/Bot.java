@@ -50,7 +50,7 @@ public class Bot extends ListenerAdapter {
             FeatCommand.class,
             GetVolumeAudioCommand.class,
             HelpCommand.class,
-            ListCommandsCommand.class,
+            ListClipsCommand.class,
             LouderAudioCommand.class,
             MakeAdminCommand.class,
             NukeQueueCommand.class,
