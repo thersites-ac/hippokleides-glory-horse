@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class SpyAuthManager extends AuthManagerImpl {
     public SpyAuthManager(AuthConfigService configService) {
-        super(configService, NoopJavaConfigManager.instance);
+        super(configService, new NoopJavaConfigManager<>());
     }
 
     public Set<Long> getAdminsFor(String guild) {
@@ -18,7 +18,9 @@ public class SpyAuthManager extends AuthManagerImpl {
 
     private static class NoopJavaConfigManager<T> extends JavaConfigManager<T> {
 
-        public static final NoopJavaConfigManager instance = new NoopJavaConfigManager(null, null, null);
+        public NoopJavaConfigManager() {
+            super(null, null, null);
+        }
 
         private NoopJavaConfigManager(String configBucket, S3Client configFetcher, String configKey) {
             super(configBucket, configFetcher, configKey);

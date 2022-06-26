@@ -11,7 +11,6 @@ public class DisconnectCommand implements DiscordCommand {
 
     private final RecordingService recordingService;
 
-
     @Inject
     public DisconnectCommand(RecordingService recordingService) {
         this.recordingService = recordingService;
