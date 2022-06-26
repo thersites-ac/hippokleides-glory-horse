@@ -10,7 +10,6 @@ import net.picklepark.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-// fixme (important): this is bugged when multiple channels are involved
 public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
 
     private final RecordingService recordingService;
@@ -27,7 +26,7 @@ public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
         String guild = actions.getGuildId();
         recordingService.beginRecording(guild);
         actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
-        actions.send("Ready 4 u ;)");
+        actions.send("I'm listening!");
     }
 
     @Override
