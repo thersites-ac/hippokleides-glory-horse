@@ -13,6 +13,7 @@
     * how is scalability? double check that commands don't get processed on the main thread
     * deployment, monitoring/alerting, resilience strategy
 * other (post-release maintenance)
+    * the various classes that fetch stored config have turned into a mess
     * combine repos
     * rename
     * modularize (yes, going back to that pattern)
@@ -32,3 +33,4 @@
     * share clips between channels
     * record only individual users, or allow users to opt out of recording
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
+    * opt-in recording: has `AuthLevel.USER`, but requires people in the voice chat to respond to a bot message to be recorded

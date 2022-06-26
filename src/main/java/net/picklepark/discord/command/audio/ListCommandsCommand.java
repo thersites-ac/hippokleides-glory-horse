@@ -14,18 +14,19 @@ public class ListCommandsCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(ListCommandsCommand.class);
 
-    private final ClipManager commandManager;
+    private final ClipManager clipManager;
 
     @Inject
-    public ListCommandsCommand(ClipManager commandManager) {
-        this.commandManager = commandManager;
+    public ListCommandsCommand(ClipManager clipManager) {
+        this.clipManager = clipManager;
     }
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        logger.info("Listing commands for channel " + actions.getGuildId());
-        commandManager.getAllCommandNames(actions.getGuildId())
+        logger.info("Listing clips for channel " + actions.getGuildId());
+        clipManager.getAllCommandNames(actions.getGuildId())
                 .stream()
+                .sorted()
                 .reduce((s, t) -> s + ", " + t)
                 .ifPresentOrElse(
                         s -> actions.send("Clips: " + s),

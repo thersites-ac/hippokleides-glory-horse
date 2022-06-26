@@ -4,7 +4,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -43,34 +42,34 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 public class Bot extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
-    private static final List<Class<? extends DiscordCommand>> COMMANDS = Arrays.asList(
-            HelpCommand.class,
-            FeatCommand.class,
-            SpellCommand.class,
+    private static final Set<Class<? extends DiscordCommand>> COMMANDS = Set.of(
+            BanCommand.class,
             ChangeVolumeAudioCommand.class,
+            DeleteClipCommand.class,
             DisconnectCommand.class,
+            FeatCommand.class,
             GetVolumeAudioCommand.class,
+            HelpCommand.class,
+            ListCommandsCommand.class,
             LouderAudioCommand.class,
+            MakeAdminCommand.class,
+            NukeQueueCommand.class,
             PauseAudioCommand.class,
             QueueAudioCommand.class,
+            RamRanchCommand.class,
+            RandomClipCommand.class,
             RecordCommand.class,
+            RepeatClipCommand.class,
             SkipAudioCommand.class,
             SofterAudioCommand.class,
-            UnpauseAudioCommand.class,
-            WriteAudioCommand.class,
-            RamRanchCommand.class,
-            SyncClipsCommand.class,
-            DeleteClipCommand.class,
-            ListCommandsCommand.class,
-            MakeAdminCommand.class,
-            UnadminCommand.class,
+            SpellCommand.class,
             StopRecordingCommand.class,
-            RandomClipCommand.class,
-            RepeatClipCommand.class,
-            NukeQueueCommand.class,
+            SyncClipsCommand.class,
+            UnadminCommand.class,
+            UnbanCommand.class,
+            UnpauseAudioCommand.class,
             WelcomeCommand.class,
-            BanCommand.class,
-            UnbanCommand.class
+            WriteAudioCommand.class
     );
     private static JDA jda;
     private static Injector injector;
@@ -164,7 +163,7 @@ public class Bot extends ListenerAdapter {
         return new JdaMessageReceivedActions(event, context);
     }
 
-    private void register(List<Class<? extends DiscordCommand>> commands) {
+    private void register(Set<Class<? extends DiscordCommand>> commands) {
         for (Class<? extends DiscordCommand> command: commands) {
             try {
                 registry.register(injector.getInstance(command));
