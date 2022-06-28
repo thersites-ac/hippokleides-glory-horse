@@ -5,7 +5,11 @@ public enum AuthLevel implements Comparable<AuthLevel> {
     ANY,
     USER,
     ADMIN,
-    OWNER
+    OWNER;
+
+    public boolean satisfies(AuthLevel level) {
+        return compareTo(level) >= 0;
+    }
 }
 
 class demo {

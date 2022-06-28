@@ -8,6 +8,7 @@ import net.picklepark.discord.exception.AuthException;
 import java.io.IOException;
 
 public interface AuthManager {
+    // fixme: decouple this from `MessageReceivedActions`
     boolean isActionAuthorized(MessageReceivedActions actions, AuthLevel level);
     void addAdmin(String guildId, long user) throws IOException, AlreadyAdminException;
     void demote(long user, MessageReceivedActions actions) throws IOException, AuthException;

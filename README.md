@@ -34,3 +34,4 @@
     * record only individual users, or allow users to opt out of recording
     * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
     * opt-in recording: has `AuthLevel.USER`, but requires people in the voice chat to respond to a bot message to be recorded
+    * multichannel welcome over regular clip playback
