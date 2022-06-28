@@ -45,20 +45,27 @@ public class PersistenceAuthManagerImpl implements AuthManager {
 
     @Override
     public void addAdmin(String guildId, long user) throws IOException, AlreadyAdminException {
-        cache.computeIfAbsent(guildId, g -> new ConcurrentHashMap<>()).put(user, AuthLevel.ADMIN);
+        set(guildId, user, AuthLevel.ADMIN);
     }
 
+    // fixme: needs to check user status first
     @Override
     public void demote(long user, MessageReceivedActions actions) throws IOException, AuthException {
-        Optional.ofNullable(cache.get(actions.getGuildId()))
-                .map(guildLevels -> guildLevels.remove(user));
+        set(actions.getGuildId(), user, AuthLevel.USER);
     }
 
     @Override
     public void ban(String guildId, long userId) throws IOException {
+        set(guildId, userId, AuthLevel.BANNED);
     }
 
+    // fixme: needs to check user status first
     @Override
     public void unban(String guildId, long userId) throws IOException {
+        set(guildId, userId, AuthLevel.USER);
+    }
+
+    private void set(String guildId, long user, AuthLevel admin) {
+        cache.computeIfAbsent(guildId, g -> new ConcurrentHashMap<>()).put(user, AuthLevel.ADMIN);
     }
 }

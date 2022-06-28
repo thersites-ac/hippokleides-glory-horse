@@ -1,6 +1,5 @@
 package net.picklepark.discord.service.impl;
 
-import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.exception.AlreadyAdminException;
 import net.picklepark.discord.exception.AuthException;
 import net.picklepark.discord.exception.NoOwnerException;
@@ -84,6 +83,11 @@ public class PersistenceAuthManagerImplTest {
     }
 
     @Test
+    public void canOnlyDemoteAdmins() {
+        fail();
+    }
+
+    @Test
     public void ownerCanDoEverything() throws Exception {
         actions.setAuthor(OWNER);
         var ownerResult = whenCheckForLevel(AuthLevel.OWNER);
@@ -101,6 +105,11 @@ public class PersistenceAuthManagerImplTest {
 
     @Test
     public void unbanReversesBan() {
+        fail();
+    }
+
+    @Test
+    public void canOnlyUnbanBannedMembers() {
         fail();
     }
 
