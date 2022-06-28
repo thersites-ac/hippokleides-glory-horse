@@ -1,7 +1,7 @@
 package net.picklepark.discord.exception;
 
-public class NoOwnerException extends Throwable {
+public class NoOwnerException extends Exception {
     public NoOwnerException(String name) {
-        super("Channel " + name + " has no owner");
+        super("Guild " + name + " has no owner");
     }
 }
