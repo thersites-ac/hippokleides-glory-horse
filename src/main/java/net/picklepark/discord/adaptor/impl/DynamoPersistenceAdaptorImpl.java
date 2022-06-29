@@ -2,6 +2,7 @@ package net.picklepark.discord.adaptor.impl;
 
 import com.google.inject.Inject;
 import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
+import net.picklepark.discord.exception.DataMappingException;
 import net.picklepark.discord.persistence.MappingFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -33,7 +34,7 @@ public class DynamoPersistenceAdaptorImpl<T> implements DataPersistenceAdaptor<T
     }
 
     @Override
-    public T read(Map<String, String> key) {
+    public T read(Map<String, String> key) throws DataMappingException {
         var request = GetItemRequest.builder()
                 .tableName(factory.getTable())
                 .key(wrap(key))

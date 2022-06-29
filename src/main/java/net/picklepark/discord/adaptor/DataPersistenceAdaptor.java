@@ -1,10 +1,10 @@
 package net.picklepark.discord.adaptor;
 
-import java.util.List;
+import net.picklepark.discord.exception.DataMappingException;
+
 import java.util.Map;
 
 public interface DataPersistenceAdaptor<T> {
     void write(T object);
-    // fixme: this may eventually need to be a stream
-    T read(Map<String, String> key);
+    T read(Map<String, String> key) throws DataMappingException;
 }

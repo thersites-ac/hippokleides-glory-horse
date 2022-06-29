@@ -2,10 +2,7 @@ package net.picklepark.discord.service.impl;
 
 import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.exception.AlreadyAdminException;
-import net.picklepark.discord.exception.AuthException;
-import net.picklepark.discord.exception.AuthLevelConflictException;
-import net.picklepark.discord.exception.NoOwnerException;
+import net.picklepark.discord.exception.*;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.model.AuthRecord;
 import net.picklepark.discord.service.AuthManager;
@@ -16,16 +13,17 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PersistenceAuthManagerImpl implements AuthManager {
+import static net.picklepark.discord.persistence.AuthRecordMappingFactory.GUILD_ID;
+import static net.picklepark.discord.persistence.AuthRecordMappingFactory.USER_ID;
 
-    public static final String USER_ID = "user_id";
-    public static final String GUILD_ID = "guild_id";
+public class PersistenceAuthManagerImpl implements AuthManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceAuthManagerImpl.class);
 
     private final Map<String, Map<Long, AuthLevel>> cache;
     private final DataPersistenceAdaptor<AuthRecord> data;
 
+    // fixme: the dependency doesn't exist yet
     public PersistenceAuthManagerImpl(DataPersistenceAdaptor<AuthRecord> data) {
         cache = new ConcurrentHashMap<>();
         this.data = data;
@@ -70,7 +68,6 @@ public class PersistenceAuthManagerImpl implements AuthManager {
         }
     }
 
-    // fixme: needs to check user status first
     @Override
     public void unban(String guildId, long userId) throws IOException, AuthLevelConflictException {
         changeLevelFromTo(AuthLevel.BANNED, AuthLevel.USER, guildId, userId);
@@ -90,12 +87,17 @@ public class PersistenceAuthManagerImpl implements AuthManager {
         if (guildLevels != null && guildLevels.containsKey(actor)) {
             return guildLevels.get(actor);
         } else {
-            var remote = readFromCache(guildId, actor);
-            return remote == null? AuthLevel.USER: remote.getLevel();
+            AuthRecord remote = null;
+            try {
+                remote = readFromCache(guildId, actor);
+            } catch (DataMappingException ex) {
+                logger.error("While reading AuthLevel from remote", ex);
+            }
+            return remote == null ? AuthLevel.USER : remote.getLevel();
         }
     }
 
-    private AuthRecord readFromCache(String guildId, long actor) {
+    private AuthRecord readFromCache(String guildId, long actor) throws DataMappingException {
         var result = data.read(key(guildId, actor));
         if (result != null) {
             logger.info("Read a new entry from remote: " + result.toString());
