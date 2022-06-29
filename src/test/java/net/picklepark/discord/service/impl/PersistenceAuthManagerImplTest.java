@@ -1,13 +1,16 @@
 package net.picklepark.discord.service.impl;
 
+import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
 import net.picklepark.discord.exception.AlreadyAdminException;
 import net.picklepark.discord.exception.AuthException;
-import net.picklepark.discord.exception.NoOwnerException;
+import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.model.AuthLevel;
+import net.picklepark.discord.model.AuthRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import tools.InMemoryAuthPersistenceAdaptor;
 import tools.SpyMessageReceivedActions;
 
 import java.io.IOException;
@@ -23,6 +26,7 @@ public class PersistenceAuthManagerImplTest {
 
     private SpyMessageReceivedActions actions;
     private PersistenceAuthManagerImpl authManager;
+    private DataPersistenceAdaptor<AuthRecord> data;
 
     @Before
     public void setup() {
@@ -30,65 +34,66 @@ public class PersistenceAuthManagerImplTest {
         actions.setAuthor(USER);
         actions.setGuildOwner(OWNER);
         actions.setGuildName(GUILD);
-        authManager = new PersistenceAuthManagerImpl();
+        data = new InMemoryAuthPersistenceAdaptor();
+        authManager = new PersistenceAuthManagerImpl(data);
     }
 
     @Test
-    public void defaultLevelIsUser() throws NoOwnerException {
+    public void defaultLevelIsUser() {
         var result = whenCheckForLevel(AuthLevel.USER);
         assertTrue(result);
     }
 
     @Test
-    public void userCannotPerformAdminTasks() throws NoOwnerException {
+    public void userCannotPerformAdminTasks() {
         var result = whenCheckForLevel(AuthLevel.ADMIN);
         assertFalse(result);
     }
 
     @Test
-    public void userCannotPerformOwnerTasks() throws NoOwnerException {
+    public void userCannotPerformOwnerTasks() {
         var result = whenCheckForLevel(AuthLevel.OWNER);
         assertFalse(result);
     }
 
     @Test
-    public void adminCanPerformAdminTasks() throws IOException, AlreadyAdminException, NoOwnerException {
-        givenPromote(USER);
+    public void adminCanPerformAdminTasks() throws IOException, AlreadyAdminException {
+        givenPromote();
         var result = whenCheckForLevel(AuthLevel.ADMIN);
         assertTrue(result);
     }
 
     @Test
     public void adminCannotPerformOwnerTasks() throws Exception {
-        givenPromote(USER);
+        givenPromote();
         var result = whenCheckForLevel(AuthLevel.OWNER);
         assertFalse(result);
     }
 
     @Test
     public void adminCanPerformUserTasks() throws Exception {
-        givenPromote(USER);
+        givenPromote();
         var result = whenCheckForLevel(AuthLevel.USER);
         assertTrue(result);
     }
 
     @Test
     public void demotedAdminIsUser() throws Exception {
-        givenPromote(USER);
-        givenDemote(USER);
+        givenPromote();
+        givenDemote();
         var adminResult = whenCheckForLevel(AuthLevel.ADMIN);
         var userResult = whenCheckForLevel(AuthLevel.USER);
         assertFalse(adminResult);
         assertTrue(userResult);
     }
 
-    @Test
-    public void canOnlyDemoteAdmins() {
-        fail();
+    @Test(expected = AuthLevelConflictException.class)
+    public void canOnlyDemoteAdmins() throws IOException, AuthException {
+        givenDemote();
     }
 
     @Test
-    public void ownerCanDoEverything() throws Exception {
+    public void ownerCanDoEverything() {
         actions.setAuthor(OWNER);
         var ownerResult = whenCheckForLevel(AuthLevel.OWNER);
         var adminResult = whenCheckForLevel(AuthLevel.ADMIN);
@@ -99,34 +104,66 @@ public class PersistenceAuthManagerImplTest {
     }
 
     @Test
-    public void loseUserPrivilegesAfterBan() {
-        fail();
+    public void loseUserPrivilegesAfterBan() throws IOException {
+        givenBan();
+        var userResult = whenCheckForLevel(AuthLevel.USER);
+        var banResult = whenCheckForLevel(AuthLevel.BANNED);
+        assertFalse(userResult);
+        assertTrue(banResult);
     }
 
     @Test
-    public void unbanReversesBan() {
-        fail();
+    public void unbanReversesBan() throws IOException, AuthException {
+        givenBan();
+        givenUnban();
+        var adminResult = whenCheckForLevel(AuthLevel.ADMIN);
+        var userResult = whenCheckForLevel(AuthLevel.USER);
+        assertFalse(adminResult);
+        assertTrue(userResult);
+    }
+
+    @Test(expected = AuthLevelConflictException.class)
+    public void canOnlyUnbanBannedMembers() throws IOException, AuthException {
+        givenUnban();
     }
 
     @Test
-    public void canOnlyUnbanBannedMembers() {
-        fail();
+    public void persistsAdmins() throws IOException, AlreadyAdminException {
+        givenPromote();
+        givenRestart();
+        var result = whenCheckForLevel(AuthLevel.ADMIN);
+        assertTrue(result);
     }
 
     @Test
-    public void persistsData() {
-        fail("This needs to be several different tests");
+    public void persistsBans() throws IOException {
+        givenBan();
+        givenRestart();
+        var result = whenCheckForLevel(AuthLevel.BANNED);
+        assertTrue(result);
     }
 
-    private void givenPromote(long user) throws IOException, AlreadyAdminException {
-        authManager.addAdmin(GUILD, user);
+    private void givenPromote() throws IOException, AlreadyAdminException {
+        authManager.addAdmin(GUILD, USER);
     }
 
-    private void givenDemote(long user) throws IOException, AuthException {
-        authManager.demote(user, actions);
+    private void givenDemote() throws IOException, AuthException {
+        authManager.demote(USER, actions);
     }
 
-    private boolean whenCheckForLevel(AuthLevel level) throws NoOwnerException {
+    private void givenBan() throws IOException {
+        authManager.ban(GUILD, USER);
+    }
+
+    private void givenUnban() throws IOException, AuthException {
+        authManager.unban(GUILD, USER);
+    }
+
+    private void givenRestart() {
+        authManager = new PersistenceAuthManagerImpl(data);
+    }
+
+    private boolean whenCheckForLevel(AuthLevel level) {
         return authManager.isActionAuthorized(actions, level);
     }
 }

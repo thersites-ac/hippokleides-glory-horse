@@ -24,18 +24,18 @@ public class DynamoPersistenceAdaptorImpl<T> implements DataPersistenceAdaptor<T
     }
 
     @Override
-    public void write(String table, T object) {
+    public void write(T object) {
         var request = PutItemRequest.builder()
-                .tableName(table)
+                .tableName(factory.getTable())
                 .item(wrap(factory.toMap(object)))
                 .build();
         client.putItem(request);
     }
 
     @Override
-    public T read(String table, Map<String, String> key) {
+    public T read(Map<String, String> key) {
         var request = GetItemRequest.builder()
-                .tableName(table)
+                .tableName(factory.getTable())
                 .key(wrap(key))
                 .build();
         var result = unwrap(client.getItem(request).item());

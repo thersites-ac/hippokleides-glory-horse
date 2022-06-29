@@ -3,6 +3,7 @@ package net.picklepark.discord.command.general;
 import com.google.inject.Inject;
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.exception.AuthLevelConflictException;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.exception.UserIdentificationException;
 import net.picklepark.discord.model.AuthLevel;
@@ -16,6 +17,7 @@ public class UnbanCommand implements DiscordCommand {
     private static final String USER = "user";
     private static final String DSL = format("unban <%s>", USER);
     private static final String HELP_MESSAGE = "Unban a banned user";
+    private static final String USER_ALREADY_UNBANNED = "%s was never banned to begin with";
 
     private final AuthManager authManager;
 
@@ -37,6 +39,8 @@ public class UnbanCommand implements DiscordCommand {
             actions.send(format("Wish I could, but I have no idea who %s is", user));
         } catch (IOException e) {
             throw new DiscordCommandException(e);
+        } catch (AuthLevelConflictException e) {
+            actions.send(format(USER_ALREADY_UNBANNED, user));
         }
     }
 
