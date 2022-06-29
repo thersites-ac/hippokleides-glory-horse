@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static net.picklepark.discord.service.impl.PersistenceAuthManagerImpl.GUILD_ID;
-import static net.picklepark.discord.service.impl.PersistenceAuthManagerImpl.USER_ID;
+import static net.picklepark.discord.persistence.AuthRecordMappingFactory.GUILD_ID;
+import static net.picklepark.discord.persistence.AuthRecordMappingFactory.USER_ID;
 
 public class InMemoryAuthPersistenceAdaptor implements DataPersistenceAdaptor<AuthRecord> {
     private final Set<AuthRecord> data;

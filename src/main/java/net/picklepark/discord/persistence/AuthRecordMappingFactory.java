@@ -4,11 +4,8 @@ import net.picklepark.discord.exception.DataMappingException;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.model.AuthRecord;
 
-import javax.inject.Singleton;
 import java.util.Map;
 
-// TODO (important): tests, especially fromMap
-@Singleton
 public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
 
     public static final String USER_ID = "user_id";
@@ -32,8 +29,12 @@ public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
         String user = map.get(USER_ID);
         String level = map.get(LEVEL);
         try {
+            long userId = Long.parseLong(user);
+            if (userId < 0) {
+                throw new DataMappingException(map);
+            }
             return AuthRecord.builder()
-                    .userId(Long.parseLong(user))
+                    .userId(userId)
                     .guildId(guild)
                     .level(AuthLevel.valueOf(level))
                     .build();

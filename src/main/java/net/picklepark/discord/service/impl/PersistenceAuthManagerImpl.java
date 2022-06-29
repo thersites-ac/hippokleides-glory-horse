@@ -9,6 +9,8 @@ import net.picklepark.discord.service.AuthManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static net.picklepark.discord.persistence.AuthRecordMappingFactory.GUILD_ID;
 import static net.picklepark.discord.persistence.AuthRecordMappingFactory.USER_ID;
 
+@Singleton
 public class PersistenceAuthManagerImpl implements AuthManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceAuthManagerImpl.class);
@@ -23,7 +26,7 @@ public class PersistenceAuthManagerImpl implements AuthManager {
     private final Map<String, Map<Long, AuthLevel>> cache;
     private final DataPersistenceAdaptor<AuthRecord> data;
 
-    // fixme: the dependency doesn't exist yet
+    @Inject
     public PersistenceAuthManagerImpl(DataPersistenceAdaptor<AuthRecord> data) {
         cache = new ConcurrentHashMap<>();
         this.data = data;
@@ -74,12 +77,14 @@ public class PersistenceAuthManagerImpl implements AuthManager {
     }
 
     private void set(String guildId, long user, AuthLevel level) {
-        data.write(AuthRecord.builder()
+        var record = AuthRecord.builder()
                 .guildId(guildId)
                 .userId(user)
                 .level(level)
-                .build());
+                .build();
+        data.write(record);
         cache.computeIfAbsent(guildId, g -> new ConcurrentHashMap<>()).put(user, level);
+        logger.info("Wrote through record: " + record);
     }
 
     private AuthLevel get(String guildId, long actor) {

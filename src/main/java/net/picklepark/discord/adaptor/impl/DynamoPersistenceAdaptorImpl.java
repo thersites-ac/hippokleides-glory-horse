@@ -1,6 +1,5 @@
 package net.picklepark.discord.adaptor.impl;
 
-import com.google.inject.Inject;
 import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
 import net.picklepark.discord.exception.DataMappingException;
 import net.picklepark.discord.persistence.MappingFactory;
@@ -17,8 +16,6 @@ public class DynamoPersistenceAdaptorImpl<T> implements DataPersistenceAdaptor<T
     private final DynamoDbClient client;
     private final MappingFactory<T> factory;
 
-    // fixme: not added to any module yet
-    @Inject
     public DynamoPersistenceAdaptorImpl(DynamoDbClient client, MappingFactory<T> factory) {
         this.client = client;
         this.factory = factory;

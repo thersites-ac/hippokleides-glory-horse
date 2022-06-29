@@ -4,11 +4,17 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
+import net.picklepark.discord.adaptor.impl.DynamoPersistenceAdaptorImpl;
+import net.picklepark.discord.model.AuthRecord;
+import net.picklepark.discord.persistence.AuthRecordMappingFactory;
+import net.picklepark.discord.persistence.MappingFactory;
 import net.picklepark.discord.service.*;
 import net.picklepark.discord.service.impl.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -97,5 +103,27 @@ public class ServicesModule extends AbstractModule {
     JavaConfigManager<Map<String, Set<Long>>> banPersister(@Named(S3_BUCKET_CONFIG) String configBucket,
                                                            @Named(S3_CLIENT_CONFIG) S3Client configClient) {
         return new JavaConfigManager<Map<String, Set<Long>>>(configBucket, configClient, AUTH_BAN_PERSISTER);
+    }
+
+    @Provides
+    @Singleton
+    DynamoDbClient dynamoDbClient() {
+        return DynamoDbClient.builder()
+                .region(Region.US_EAST_2)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    DataPersistenceAdaptor<AuthRecord> dynamoAuthRecordPersistenceAdaptor(
+            DynamoDbClient client,
+            MappingFactory<AuthRecord> factory) {
+        return new DynamoPersistenceAdaptorImpl<>(client, factory);
+    }
+
+    @Provides
+    @Singleton
+    MappingFactory<AuthRecord> authRecordMappingFactory() {
+        return new AuthRecordMappingFactory();
     }
 }
