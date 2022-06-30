@@ -17,9 +17,11 @@ public class DemultiplexingHandler implements AudioReceiveHandler {
 
     private final RecordingService recordingService;
     private boolean error;
+    private final String guild;
 
-    public DemultiplexingHandler(RecordingService recordingService) {
+    public DemultiplexingHandler(String guild, RecordingService recordingService) {
         this.recordingService = recordingService;
+        this.guild = guild;
         error = false;
     }
 
@@ -31,7 +33,7 @@ public class DemultiplexingHandler implements AudioReceiveHandler {
     @Override
     public void handleUserAudio(@Nonnull UserAudio userAudio) {
         try {
-            recordingService.receive("", userAudio);
+            recordingService.receive(guild, userAudio);
         } catch (Exception e) {
             String userId = userAudio.getUser().getId();
             String userTag = userAudio.getUser().getAsTag();

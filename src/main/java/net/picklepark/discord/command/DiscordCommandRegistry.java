@@ -88,7 +88,7 @@ public class DiscordCommandRegistry {
     }
 
     public void welcome(UserJoinedVoiceActions actions) throws NotEnoughQueueCapacityException {
-        String user = actions.user();
+        long user = actions.user();
         String guildName = actions.guildName();
         String guildId = actions.guildId();
         LocalClip welcome = welcomeManager.welcome(actions.user(), guildId);

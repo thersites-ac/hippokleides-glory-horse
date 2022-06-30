@@ -7,8 +7,10 @@ import com.google.inject.Provides;
 import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
 import net.picklepark.discord.adaptor.impl.DynamoPersistenceAdaptorImpl;
 import net.picklepark.discord.model.AuthRecord;
+import net.picklepark.discord.model.WelcomeRecord;
 import net.picklepark.discord.persistence.AuthRecordMappingFactory;
 import net.picklepark.discord.persistence.MappingFactory;
+import net.picklepark.discord.persistence.WelcomeRecordMappingFactory;
 import net.picklepark.discord.service.*;
 import net.picklepark.discord.service.impl.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -35,7 +37,7 @@ public class ServicesModule extends AbstractModule {
         bind(RecordingService.class).to(RecordingServiceImpl.class);
         bind(ClipManager.class).to(ClipManagerImpl.class);
         bind(UrlShortener.class).to(BitlyUrlShortener.class);
-        bind(WelcomeManager.class).to(WelcomeManagerImpl.class);
+        bind(WelcomeManager.class).to(PersistenceWelcomeManagerImpl.class);
     }
 
     @Provides
@@ -125,5 +127,19 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     MappingFactory<AuthRecord> authRecordMappingFactory() {
         return new AuthRecordMappingFactory();
+    }
+
+    @Provides
+    @Singleton
+    DataPersistenceAdaptor<WelcomeRecord> welcomeRecordDataPersistenceAdaptor(
+            DynamoDbClient client,
+            MappingFactory<WelcomeRecord> factory) {
+        return new DynamoPersistenceAdaptorImpl<>(client, factory);
+    }
+
+    @Provides
+    @Singleton
+    MappingFactory<WelcomeRecord> welcomeRecordMappingFactory() {
+        return new WelcomeRecordMappingFactory();
     }
 }

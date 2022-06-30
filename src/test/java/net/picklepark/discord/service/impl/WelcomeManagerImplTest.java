@@ -18,8 +18,8 @@ import static org.mockito.Mockito.*;
 @RunWith(JUnit4.class)
 public class WelcomeManagerImplTest {
 
-    private static final String USER = "user";
-    private static final String ANOTHER_USER = "another user";
+    private static final Long USER = 123L;
+    private static final Long ANOTHER_USER = 234L;
     private static final String CHANNEL = "channel";
     private static final String ANOTHER_CHANNEL = "another channel";
     private static final String BUCKET = "bucket";

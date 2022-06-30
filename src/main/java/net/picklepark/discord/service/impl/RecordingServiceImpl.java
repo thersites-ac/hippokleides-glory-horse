@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
+import static net.picklepark.discord.constants.Names.CLIP_DURATION;
 
 @Singleton
 public class RecordingServiceImpl implements RecordingService {
@@ -27,7 +28,7 @@ public class RecordingServiceImpl implements RecordingService {
     private final Logger logger = LoggerFactory.getLogger(RecordingServiceImpl.class);
 
     @Inject
-    public RecordingServiceImpl(@Named("recording.clip.duration") int clipDuration) {
+    public RecordingServiceImpl(@Named(CLIP_DURATION) int clipDuration) {
         this.clipDuration = clipDuration;
         recordings = new ConcurrentHashMap<>();
     }

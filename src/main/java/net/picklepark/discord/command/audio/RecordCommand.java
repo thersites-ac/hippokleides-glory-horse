@@ -25,7 +25,7 @@ public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
         ensureConnected(actions);
         String guild = actions.getGuildId();
         recordingService.beginRecording(guild);
-        actions.setReceivingHandler(new DemultiplexingHandler(recordingService));
+        actions.setReceivingHandler(new DemultiplexingHandler(guild, recordingService));
         actions.send("I'm listening!");
     }
 

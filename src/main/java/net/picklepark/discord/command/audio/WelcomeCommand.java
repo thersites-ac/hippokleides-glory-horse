@@ -37,7 +37,7 @@ public class WelcomeCommand implements DiscordCommand {
         String guild = actions.getGuildId();
         String user = actions.getArgument(USER);
         try {
-            String canonicalUser = actions.lookupUserTag(user);
+            long userId = actions.lookupUserId(user);
             String title = actions.getArgument(CLIP);
             PlayClipCommand command = clipManager.lookup(actions.getGuildId(), title);
             if (command != null) {
@@ -47,7 +47,7 @@ public class WelcomeCommand implements DiscordCommand {
                         .guild(actions.getGuildId())
                         .path(path)
                         .build();
-                welcomeManager.set(canonicalUser, guild, clip);
+                welcomeManager.set(userId, guild, clip);
                 actions.send("Let the greetings commence!");
             } else {
                 actions.send("I've never heard of " + title);

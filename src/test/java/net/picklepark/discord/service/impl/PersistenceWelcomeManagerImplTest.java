@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class PersistenceWelcomeManagerImplTest {
 
-    private static final String USER = "123";
+    private static final long USER = 123L;
     private static final String GUILD = "234";
     private static final String TITLE = "foo";
     private static final String PATH = "path/";

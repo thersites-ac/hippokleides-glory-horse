@@ -15,8 +15,8 @@ public class JdaUserJoinedVoiceActions extends AudioActions implements UserJoine
     }
 
     @Override
-    public String user() {
-        return event.getMember().getUser().getAsTag();
+    public long user() {
+        return event.getMember().getUser().getIdLong();
     }
 
     @Override

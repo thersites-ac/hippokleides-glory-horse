@@ -5,7 +5,6 @@ import net.picklepark.discord.service.WelcomeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,18 +15,18 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
-public class WelcomeManagerImpl extends JavaConfigManager<Map<String, Map<String, LocalClip>>> implements WelcomeManager {
+public class WelcomeManagerImpl extends JavaConfigManager<Map<String, Map<Long, LocalClip>>> implements WelcomeManager {
 
     private static final String WELCOMES_KEY = "discord-bot-welcomes-config";
     private static final Logger logger = LoggerFactory.getLogger(WelcomeManagerImpl.class);
 
-    private final Map<String, Map<String, LocalClip>> welcomes;
+    private final Map<String, Map<Long, LocalClip>> welcomes;
 
     @Inject
     public WelcomeManagerImpl(@Named("s3.bucket.config") String configBucket,
                               @Named("s3.client.config") S3Client configFetcher) {
         super(configBucket, configFetcher, WELCOMES_KEY);
-        Map<String, Map<String, LocalClip>> tmp;
+        Map<String, Map<Long, LocalClip>> tmp;
         try {
             tmp = getRemote();
         } catch (IOException e) {
@@ -38,17 +37,17 @@ public class WelcomeManagerImpl extends JavaConfigManager<Map<String, Map<String
     }
 
     @Override
-    public LocalClip welcome(String user, String guild) {
-        return Optional.ofNullable(welcomes.get(user))
-                .map(m -> m.get(guild))
+    public LocalClip welcome(long user, String guild) {
+        return Optional.ofNullable(welcomes.get(guild))
+                .map(m -> m.get(user))
                 .orElse(null);
     }
 
     @Override
-    public void set(String user, String guild, LocalClip clip) throws IOException {
+    public void set(long user, String guild, LocalClip clip) throws IOException {
         logger.info(String.format("Welcoming %s in %s with %s", user, guild, clip));
-        welcomes.computeIfAbsent(user, u -> new ConcurrentHashMap<>());
-        welcomes.get(user).put(guild, clip);
+        welcomes.computeIfAbsent(guild, g -> new ConcurrentHashMap<>());
+        welcomes.get(guild).put(user, clip);
         persist(welcomes);
     }
 }

@@ -6,6 +6,7 @@ import com.google.inject.Provides;
 import javax.inject.Named;
 import java.time.Duration;
 
+import static net.picklepark.discord.constants.Names.CLIP_DURATION;
 import static net.picklepark.discord.constants.Names.S3_BUCKET_CONFIG;
 
 public class ServiceConstantsModule extends AbstractModule {
@@ -35,9 +36,9 @@ public class ServiceConstantsModule extends AbstractModule {
     }
 
     @Provides
-    @Named("recording.clip.duration")
+    @Named(CLIP_DURATION)
     int recordingClipDuration() {
-        return 30;
+        return 30000;
     }
 
     @Provides

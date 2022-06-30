@@ -2,6 +2,7 @@ package net.picklepark.discord.command.audio;
 
 import net.picklepark.discord.adaptor.MessageReceivedActions;
 import net.picklepark.discord.command.DiscordCommand;
+import net.picklepark.discord.handler.receive.NoopHandler;
 import net.picklepark.discord.model.AuthLevel;
 import net.picklepark.discord.exception.DiscordCommandException;
 import net.picklepark.discord.service.RecordingService;
@@ -20,6 +21,7 @@ public class StopRecordingCommand implements DiscordCommand {
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
         recordingService.stopRecording(actions.getGuildId());
+        actions.setReceivingHandler(NoopHandler.INSTANCE);
         actions.send("Can't hear a thing");
     }
 
