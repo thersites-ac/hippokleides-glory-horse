@@ -29,7 +29,8 @@ public class PersistenceWelcomeManagerImpl implements WelcomeManager {
     @Override
     public LocalClip welcome(String user, String guild) {
         if (cache.containsKey(guild) && cache.get(guild).containsKey(user)) {
-            return cache.get(guild).get(user);
+            var clip = cache.get(guild).get(user);
+            return clip == NO_CLIP? null: clip;
         } else {
             var remoteKey = key(user, guild);
             try {

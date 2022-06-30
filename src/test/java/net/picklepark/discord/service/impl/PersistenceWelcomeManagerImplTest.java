@@ -80,4 +80,10 @@ public class PersistenceWelcomeManagerImplTest {
         var result = welcomeManager.welcome(USER, GUILD);
         assertEquals(CLIP, result);
     }
+
+    @Test
+    public void returnsNullTwice() {
+        returnsNullIfWelcomeUnset();
+        returnsNullIfWelcomeUnset();
+    }
 }
