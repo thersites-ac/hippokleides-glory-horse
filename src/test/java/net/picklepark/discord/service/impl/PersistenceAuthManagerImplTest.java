@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import tools.InMemoryAuthPersistenceAdaptor;
+import tools.InMemoryPersistenceAdaptor;
 import tools.SpyMessageReceivedActions;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class PersistenceAuthManagerImplTest {
         actions.setAuthor(USER);
         actions.setGuildOwner(OWNER);
         actions.setGuildName(GUILD);
-        data = new InMemoryAuthPersistenceAdaptor();
+        data = InMemoryPersistenceAdaptor.forAuthRecords();
         authManager = new PersistenceAuthManagerImpl(data);
     }
 

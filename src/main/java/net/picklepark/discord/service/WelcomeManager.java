@@ -5,6 +5,6 @@ import net.picklepark.discord.model.LocalClip;
 import java.io.IOException;
 
 public interface WelcomeManager {
-    LocalClip welcome(String user, String channel);
-    void set(String user, String channel, LocalClip clip) throws IOException;
+    LocalClip welcome(String user, String guild);
+    void set(String user, String guild, LocalClip clip) throws IOException;
 }

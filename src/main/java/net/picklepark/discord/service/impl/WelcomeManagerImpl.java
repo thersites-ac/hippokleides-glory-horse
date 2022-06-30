@@ -38,17 +38,17 @@ public class WelcomeManagerImpl extends JavaConfigManager<Map<String, Map<String
     }
 
     @Override
-    public LocalClip welcome(String user, String channel) {
+    public LocalClip welcome(String user, String guild) {
         return Optional.ofNullable(welcomes.get(user))
-                .map(m -> m.get(channel))
+                .map(m -> m.get(guild))
                 .orElse(null);
     }
 
     @Override
-    public void set(String user, String channel, LocalClip clip) throws IOException {
-        logger.info(String.format("Welcoming %s in %s with %s", user, channel, clip));
+    public void set(String user, String guild, LocalClip clip) throws IOException {
+        logger.info(String.format("Welcoming %s in %s with %s", user, guild, clip));
         welcomes.computeIfAbsent(user, u -> new ConcurrentHashMap<>());
-        welcomes.get(user).put(channel, clip);
+        welcomes.get(user).put(guild, clip);
         persist(welcomes);
     }
 }
