@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+hooks:
+  BeforeInstall:
+    - location: scripts/preinstall.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/go.sh
+      timeout: 300
+      runas: root
