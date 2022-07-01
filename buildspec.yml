@@ -17,3 +17,4 @@ phases:
 artifacts:
   files:
     - build/libs/hippokleides-glory-horse-uber.jar
+    - appspec.yml
