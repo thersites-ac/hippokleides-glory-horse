@@ -18,3 +18,5 @@ artifacts:
   files:
     - build/libs/hippokleides-glory-horse-uber.jar
     - appspec.yml
+    - scripts/go.sh
+    - scripts/preinstall.sh
