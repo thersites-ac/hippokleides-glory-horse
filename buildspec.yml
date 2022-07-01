@@ -14,6 +14,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo `ls build/libs`
 artifacts:
   files:
     - build/libs/bot-uber.jar
