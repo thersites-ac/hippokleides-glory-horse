@@ -39,12 +39,19 @@ public class WelcomeRecordMappingFactory implements MappingFactory<WelcomeRecord
                 .build();
         var guild = getValidMapEntry(map, GUILD_ID);
         var user = getValidMapEntry(map, USER_ID);
-        long userId = Long.parseLong(user);
-        return WelcomeRecord.builder()
-                .localClip(clip)
-                .userId(userId)
-                .guildId(guild)
-                .build();
+        try {
+            long userId = Long.parseLong(user);
+            if (userId < 0) {
+                throw new DataMappingException(map);
+            }
+            return WelcomeRecord.builder()
+                    .localClip(clip)
+                    .userId(userId)
+                    .guildId(guild)
+                    .build();
+        } catch (NumberFormatException e) {
+            throw new DataMappingException(map, e);
+        }
     }
 
     @Override

@@ -109,14 +109,16 @@ public class WelcomeRecordMappingFactoryTest {
         fieldCannotEmpty(WelcomeRecordMappingFactory.CLIP_PATH);
     }
 
-    @Test
-    public void userIdMustBeValidLong() {
-        fail();
+    @Test(expected = DataMappingException.class)
+    public void userIdMustBeValidLong() throws DataMappingException {
+        var deviant = mapWith(WelcomeRecordMappingFactory.USER_ID, "abc");
+        factory.fromMap(deviant);
     }
 
-    @Test
-    public void userIdMustBePositive() {
-        fail();
+    @Test(expected = DataMappingException.class)
+    public void userIdMustBePositive() throws DataMappingException {
+        var deviant = mapWith(WelcomeRecordMappingFactory.USER_ID, "-1");
+        factory.fromMap(deviant);
     }
 
     private void fieldCannotBeNull(String field) throws DataMappingException {
