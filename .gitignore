@@ -18,3 +18,4 @@ clips
 /infra/terraform/terraform.tfstate.backup
 bot.log
 scripts/upload.sh
+scripts/startup.sh

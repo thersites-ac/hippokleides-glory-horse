@@ -22,6 +22,7 @@
   * is the trimmer lambda worth it? why not make that an endpoint on the same VM as hippo?
   * make injection names constants in the Names.java file
   * the clip polling worker still seems broken
+  * reorganize clip buckets
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
