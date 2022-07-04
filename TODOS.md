@@ -8,7 +8,8 @@
     * security
   * qa/prod environments
   * how is scalability? double check that commands don't get processed on the main thread
-  * deployment, monitoring/alerting, resilience strategy
+  * alerting, custom metrics
+  * resilience
 
 # other (post-release maintenance)
   * the various classes that fetch stored config have turned into a mess
