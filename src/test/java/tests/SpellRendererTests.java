@@ -1,9 +1,9 @@
 package tests;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.picklepark.discord.model.Spell;
-import net.picklepark.discord.service.EmbedRenderer;
-import net.picklepark.discord.service.impl.SpellRenderer;
+import cogbog.discord.model.Spell;
+import cogbog.discord.service.EmbedRenderer;
+import cogbog.discord.service.impl.SpellRenderer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

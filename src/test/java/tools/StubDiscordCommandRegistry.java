@@ -1,8 +1,8 @@
 package tools;
 
-import net.picklepark.discord.command.DiscordCommandRegistry;
-import net.picklepark.discord.service.AuthManager;
-import net.picklepark.discord.service.impl.ClipManagerImpl;
+import cogbog.discord.command.DiscordCommandRegistry;
+import cogbog.discord.service.AuthManager;
+import cogbog.discord.service.impl.ClipManagerImpl;
 
 public class StubDiscordCommandRegistry extends DiscordCommandRegistry {
 

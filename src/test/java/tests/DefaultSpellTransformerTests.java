@@ -1,9 +1,9 @@
 package tests;
 
-import net.picklepark.discord.model.ScrapeResult;
-import net.picklepark.discord.model.Spell;
-import net.picklepark.discord.service.Transformer;
-import net.picklepark.discord.service.impl.DefaultSpellTransformer;
+import cogbog.discord.model.ScrapeResult;
+import cogbog.discord.model.Spell;
+import cogbog.discord.service.Transformer;
+import cogbog.discord.service.impl.DefaultSpellTransformer;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.junit.Assert;

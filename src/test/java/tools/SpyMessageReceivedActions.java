@@ -2,11 +2,10 @@ package tools;
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.adaptor.impl.AudioActions;
-import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
-import net.picklepark.discord.exception.UserIdentificationException;
+import cogbog.discord.adaptor.MessageReceivedActions;
+import cogbog.discord.adaptor.impl.AudioActions;
+import cogbog.discord.exception.NotEnoughQueueCapacityException;
+import cogbog.discord.exception.UserIdentificationException;
 
 import java.util.*;
 

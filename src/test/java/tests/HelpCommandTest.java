@@ -1,9 +1,9 @@
 package tests;
 
-import net.picklepark.discord.command.general.HelpCommand;
+import cogbog.discord.command.DiscordCommand;
+import cogbog.discord.command.DiscordCommandRegistry;
+import cogbog.discord.command.general.HelpCommand;
 import tools.*;
-import net.picklepark.discord.command.*;
-import net.picklepark.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

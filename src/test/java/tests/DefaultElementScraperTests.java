@@ -1,11 +1,11 @@
 package tests;
 
-import net.picklepark.discord.model.ScrapeResult;
-import net.picklepark.discord.exception.ResourceNotFoundException;
-import net.picklepark.discord.exception.NullDocumentException;
-import net.picklepark.discord.service.DocumentFetcher;
-import net.picklepark.discord.service.ElementScraper;
-import net.picklepark.discord.service.impl.DefaultElementScraper;
+import cogbog.discord.model.ScrapeResult;
+import cogbog.discord.exception.ResourceNotFoundException;
+import cogbog.discord.exception.NullDocumentException;
+import cogbog.discord.service.DocumentFetcher;
+import cogbog.discord.service.ElementScraper;
+import cogbog.discord.service.impl.DefaultElementScraper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

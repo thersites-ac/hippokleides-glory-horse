@@ -1,14 +1,14 @@
 package tests;
 
-import net.picklepark.discord.audio.DiscontinuousAudioArray;
-import net.picklepark.discord.exception.InvalidAudioPacketException;
+import cogbog.discord.audio.DiscontinuousAudioArray;
+import cogbog.discord.exception.InvalidAudioPacketException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
+import static cogbog.discord.constants.AudioConstants.PACKET_SIZE;
 
 @RunWith(JUnit4.class)
 public class DiscontinuousAudioArrayTests {

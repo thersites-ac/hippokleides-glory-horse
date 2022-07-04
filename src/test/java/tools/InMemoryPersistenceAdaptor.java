@@ -1,10 +1,10 @@
 package tools;
 
-import net.picklepark.discord.adaptor.DataPersistenceAdaptor;
-import net.picklepark.discord.model.AuthRecord;
-import net.picklepark.discord.model.WelcomeRecord;
-import net.picklepark.discord.persistence.AuthRecordMappingFactory;
-import net.picklepark.discord.persistence.WelcomeRecordMappingFactory;
+import cogbog.discord.adaptor.DataPersistenceAdaptor;
+import cogbog.discord.model.AuthRecord;
+import cogbog.discord.model.WelcomeRecord;
+import cogbog.discord.persistence.AuthRecordMappingFactory;
+import cogbog.discord.persistence.WelcomeRecordMappingFactory;
 
 import java.util.HashSet;
 import java.util.Map;

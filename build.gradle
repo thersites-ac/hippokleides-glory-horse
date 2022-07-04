@@ -13,7 +13,7 @@ repositories {
 jar {
   manifest {
     attributes (
-      'Main-Class': 'net.picklepark.discord.Bot'
+      'Main-Class': 'cogbog.discord.Bot'
     )
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
   }
@@ -52,4 +52,4 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:3.12.4'
 }
 
-mainClassName = 'net.picklepark.discord.Bot'
+mainClassName = 'cogbog.discord.Bot'

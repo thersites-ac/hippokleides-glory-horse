@@ -1,8 +1,8 @@
 package tools;
 
-import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.model.AuthLevel;
-import net.picklepark.discord.exception.DiscordCommandException;
+import cogbog.discord.adaptor.MessageReceivedActions;
+import cogbog.discord.model.AuthLevel;
+import cogbog.discord.exception.DiscordCommandException;
 
 public class TestCommand extends SpyCommand {
 

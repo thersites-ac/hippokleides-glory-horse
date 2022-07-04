@@ -1,6 +1,6 @@
 package tests;
 
-import net.picklepark.discord.service.impl.AudioPlaybackServiceImpl;
+import cogbog.discord.service.impl.AudioPlaybackServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

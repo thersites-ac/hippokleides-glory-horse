@@ -1,9 +1,9 @@
 package tests;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.picklepark.discord.model.Feat;
-import net.picklepark.discord.model.FeatDetail;
-import net.picklepark.discord.service.impl.FeatRenderer;
+import cogbog.discord.model.Feat;
+import cogbog.discord.model.FeatDetail;
+import cogbog.discord.service.impl.FeatRenderer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

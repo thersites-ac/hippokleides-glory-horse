@@ -1,10 +1,10 @@
 package tests;
 
-import net.picklepark.discord.model.Feat;
-import net.picklepark.discord.model.ScrapeResult;
-import net.picklepark.discord.exception.ScrapedElementValidationException;
-import net.picklepark.discord.service.Transformer;
-import net.picklepark.discord.service.impl.DefaultFeatTransformer;
+import cogbog.discord.model.Feat;
+import cogbog.discord.model.ScrapeResult;
+import cogbog.discord.exception.ScrapedElementValidationException;
+import cogbog.discord.service.Transformer;
+import cogbog.discord.service.impl.DefaultFeatTransformer;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.junit.Assert;

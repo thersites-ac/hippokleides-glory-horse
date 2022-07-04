@@ -1,11 +1,11 @@
 package tests;
 
-import net.picklepark.discord.command.audio.RandomClipCommand;
+import cogbog.discord.command.audio.RandomClipCommand;
 import tools.SpyMessageReceivedActions;
-import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.model.LocalClip;
-import net.picklepark.discord.service.ClipManager;
-import net.picklepark.discord.service.impl.ClipManagerImpl;
+import cogbog.discord.exception.DiscordCommandException;
+import cogbog.discord.model.LocalClip;
+import cogbog.discord.service.ClipManager;
+import cogbog.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

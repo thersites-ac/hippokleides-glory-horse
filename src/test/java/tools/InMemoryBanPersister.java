@@ -1,7 +1,6 @@
 package tools;
 
-import net.picklepark.discord.service.impl.JavaConfigManager;
-import software.amazon.awssdk.services.s3.S3Client;
+import cogbog.discord.service.impl.JavaConfigManager;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package tests;
 
-import net.picklepark.discord.command.audio.NukeQueueCommand;
-import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.NotEnoughQueueCapacityException;
+import cogbog.discord.command.audio.NukeQueueCommand;
+import cogbog.discord.exception.DiscordCommandException;
+import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

@@ -1,6 +1,6 @@
 package tests;
 
-import net.picklepark.discord.command.audio.QueueAudioCommand;
+import cogbog.discord.command.audio.QueueAudioCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

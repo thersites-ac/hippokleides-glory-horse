@@ -1,7 +1,7 @@
 package tests;
 
-import net.picklepark.discord.audio.PacketInterpolator;
-import net.picklepark.discord.audio.TimestampedPacket;
+import cogbog.discord.audio.PacketInterpolator;
+import cogbog.discord.audio.TimestampedPacket;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
-import static net.picklepark.discord.constants.AudioConstants.SILENCE_DATA;
+import static cogbog.discord.constants.AudioConstants.PACKET_SIZE;
+import static cogbog.discord.constants.AudioConstants.SILENCE_DATA;
 
 @RunWith(JUnit4.class)
 public class PacketInterpolatorTests {

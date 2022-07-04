@@ -2,9 +2,9 @@ package tests;
 
 import net.dv8tion.jda.api.audio.UserAudio;
 import net.dv8tion.jda.api.entities.User;
-import net.picklepark.discord.exception.InvalidAudioPacketException;
-import net.picklepark.discord.exception.NotRecordingException;
-import net.picklepark.discord.service.impl.RecordingServiceImpl;
+import cogbog.discord.exception.InvalidAudioPacketException;
+import cogbog.discord.exception.NotRecordingException;
+import cogbog.discord.service.impl.RecordingServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 
-import static net.picklepark.discord.constants.AudioConstants.PACKET_SIZE;
+import static cogbog.discord.constants.AudioConstants.PACKET_SIZE;
 
 @RunWith(JUnit4.class)
 public class LocalRecordingServiceTests {

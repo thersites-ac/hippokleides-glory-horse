@@ -1,14 +1,14 @@
 package tests;
 
-import net.picklepark.discord.exception.AlreadyAdminException;
-import net.picklepark.discord.exception.AuthException;
-import net.picklepark.discord.exception.CannotDemoteSelfException;
-import net.picklepark.discord.service.impl.AuthManagerImpl;
+import cogbog.discord.exception.AlreadyAdminException;
+import cogbog.discord.exception.AuthException;
+import cogbog.discord.exception.CannotDemoteSelfException;
+import cogbog.discord.service.impl.AuthManagerImpl;
 import tools.InMemoryBanPersister;
 import tools.SpyMessageReceivedActions;
-import net.picklepark.discord.model.AuthLevel;
-import net.picklepark.discord.exception.AuthLevelConflictException;
-import net.picklepark.discord.service.AuthConfigService;
+import cogbog.discord.model.AuthLevel;
+import cogbog.discord.exception.AuthLevelConflictException;
+import cogbog.discord.service.AuthConfigService;
 import tools.TestConfigService;
 import org.junit.Before;
 import org.junit.Test;

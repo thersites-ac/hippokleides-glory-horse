@@ -1,8 +1,8 @@
 package tools;
 
-import net.picklepark.discord.service.AuthConfigService;
-import net.picklepark.discord.service.impl.AuthManagerImpl;
-import net.picklepark.discord.service.impl.JavaConfigManager;
+import cogbog.discord.service.AuthConfigService;
+import cogbog.discord.service.impl.AuthManagerImpl;
+import cogbog.discord.service.impl.JavaConfigManager;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.Set;

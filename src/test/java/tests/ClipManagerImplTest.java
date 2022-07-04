@@ -1,9 +1,7 @@
 package tests;
 
-import net.picklepark.discord.command.audio.PlayClipCommand;
-import net.picklepark.discord.model.LocalClip;
-import net.picklepark.discord.service.impl.ClipManagerImpl;
-import org.junit.Assert;
+import cogbog.discord.model.LocalClip;
+import cogbog.discord.service.impl.ClipManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

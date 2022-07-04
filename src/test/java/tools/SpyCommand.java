@@ -1,10 +1,10 @@
 package tools;
 
-import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.model.AuthLevel;
-import net.picklepark.discord.exception.DiscordCommandException;
-import net.picklepark.discord.exception.UnimplementedException;
+import cogbog.discord.adaptor.MessageReceivedActions;
+import cogbog.discord.command.DiscordCommand;
+import cogbog.discord.model.AuthLevel;
+import cogbog.discord.exception.DiscordCommandException;
+import cogbog.discord.exception.UnimplementedException;
 
 public class SpyCommand implements DiscordCommand {
     private boolean executed;

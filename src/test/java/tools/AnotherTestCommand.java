@@ -1,8 +1,8 @@
 package tools;
 
-import net.picklepark.discord.adaptor.MessageReceivedActions;
-import net.picklepark.discord.command.DiscordCommand;
-import net.picklepark.discord.model.AuthLevel;
+import cogbog.discord.adaptor.MessageReceivedActions;
+import cogbog.discord.command.DiscordCommand;
+import cogbog.discord.model.AuthLevel;
 
 public class AnotherTestCommand implements DiscordCommand {
     @Override

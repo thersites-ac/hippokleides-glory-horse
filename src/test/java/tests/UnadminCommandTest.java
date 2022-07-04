@@ -1,8 +1,8 @@
 package tests;
 
-import net.picklepark.discord.command.general.UnadminCommand;
+import cogbog.discord.command.general.UnadminCommand;
 import tools.SpyMessageReceivedActions;
-import net.picklepark.discord.exception.DiscordCommandException;
+import cogbog.discord.exception.DiscordCommandException;
 import tools.TestAuthManager;
 import org.junit.Before;
 import org.junit.Test;

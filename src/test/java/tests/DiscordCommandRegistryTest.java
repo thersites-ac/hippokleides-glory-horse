@@ -1,11 +1,10 @@
 package tests;
 
-import net.picklepark.discord.command.DiscordCommandRegistry;
+import cogbog.discord.command.DiscordCommandRegistry;
 import tools.SpyMessageReceivedActions;
-import net.picklepark.discord.command.general.IdkCommand;
+import cogbog.discord.command.general.IdkCommand;
 import tools.StubDiscordCommandRegistry;
 import tools.TestAuthManager;
-import net.picklepark.discord.service.impl.ClipManagerImpl;
 import tools.TestCommand;
 import org.junit.Before;
 import org.junit.Test;
