@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PersistenceWelcomeManagerImpl implements WelcomeManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceWelcomeManagerImpl.class);
-    // a gross hack, but ConcurrentHashMap won't store nulls
     private static final LocalClip NO_CLIP = LocalClip.builder().build();
 
     private final Map<String, Map<Long, LocalClip>> cache;

@@ -136,19 +136,19 @@ public class Bot extends ListenerAdapter {
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         super.onGuildVoiceJoin(event);
         String user = event.getMember().getUser().getAsTag();
-        String channel = event.getChannelJoined().getGuild().getName();
-        long channelId = event.getChannelJoined().getIdLong();
-        logger.info(String.format("%s joined %s (%s)", user, channel, channelId));
+        String guild = event.getChannelJoined().getGuild().getName();
+        long guildId = event.getChannelJoined().getIdLong();
+        logger.info(String.format("%s joined %s (%s)", user, guild, guildId));
         var voiceChannelIds = jda.getAudioManagers().stream()
                 .map(AudioManager::getConnectedChannel)
                 .filter(Objects::nonNull)
                 .map(ISnowflake::getIdLong)
                 .collect(Collectors.toSet());
-        if (voiceChannelIds.contains(channelId)) {
+        if (voiceChannelIds.contains(guildId)) {
             try {
                 registry.welcome(buildUserJoinedVoiceActions(event));
             } catch (NotEnoughQueueCapacityException ex) {
-                logger.error(String.format("Could not welcome %s to %s", user, channel), ex);
+                logger.error(String.format("Could not welcome %s to %s", user, guild), ex);
             }
         }
     }

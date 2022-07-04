@@ -12,6 +12,7 @@ public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
     public static final String GUILD_ID = "guild_id";
 
     private static final String LEVEL = "level";
+    // fixme: I accidentally made this the table name for all authentication levels
     private static final String TABLE = "hippokleides_bans";
 
     @Override

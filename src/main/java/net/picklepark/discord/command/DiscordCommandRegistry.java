@@ -91,12 +91,16 @@ public class DiscordCommandRegistry {
         long user = actions.user();
         String guildName = actions.guildName();
         String guildId = actions.guildId();
-        LocalClip welcome = welcomeManager.welcome(actions.user(), guildId);
+        LocalClip welcome = welcomeManager.welcome(user, guildId);
         if (welcome != null && actions.isConnected()) {
             actions.play(welcome.getPath());
             logger.info(format("Welcomed %s to %s (%s) with %s", user, guildName, guildId, welcome));
         } else {
-            logger.error(format("Welcome was null in %s for %s", guildName, user));
+            logger.error(format("Welcome %s for %s: %s; connected: %s",
+                    guildName,
+                    user,
+                    welcome,
+                    actions.isConnected()));
         }
     }
 
