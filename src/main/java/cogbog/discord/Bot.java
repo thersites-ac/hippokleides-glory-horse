@@ -35,8 +35,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
 public class Bot extends ListenerAdapter {
@@ -71,11 +73,13 @@ public class Bot extends ListenerAdapter {
             WelcomeCommand.class,
             WriteAudioCommand.class
     );
+
     private static JDA jda;
     private static Injector injector;
 
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
+    private final ExecutorService executorService;
 
     public static void main(String[] args) throws Exception {
         boolean collision =
@@ -98,7 +102,7 @@ public class Bot extends ListenerAdapter {
         var remoteAudio = injector.getInstance(RemoteStorageService.class);
         logger.info("I'm in " + jda.getGuilds().size() + " guilds");
         jda.getGuilds().forEach(g -> {
-            logger.info(String.format("Setting up guild %s (%s)", g.getName(), g.getId()));
+            logger.info(format("Setting up guild %s (%s)", g.getName(), g.getId()));
             remoteAudio.sync(g.getId());
         });
 
@@ -111,7 +115,7 @@ public class Bot extends ListenerAdapter {
     private final DiscordCommandRegistry registry;
 
     @Inject
-    private Bot(DiscordCommandRegistry registry, SqsPollingWorker worker, AudioPlayerManager playerManager) {
+    private Bot(DiscordCommandRegistry registry, SqsPollingWorker worker, AudioPlayerManager playerManager, ExecutorService executorService) {
         this.playerManager = playerManager;
         this.registry = registry;
 
@@ -123,39 +127,46 @@ public class Bot extends ListenerAdapter {
         register(COMMANDS);
 
         worker.start();
+        this.executorService = executorService;
     }
 
+    // fixme: run this in a separate thread
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        MessageReceivedActions actions = buildMessageRecievedActions(event);
-        try {
-            registry.execute(actions, event.getMessage().getContentRaw());
-        } catch (Exception ex) {
-            actions.send("Oh no, I'm dying!");
-            logger.error("Error processing guild message", ex);
-        }
-        super.onGuildMessageReceived(event);
+        executorService.submit(() -> {
+            MessageReceivedActions actions = buildMessageRecievedActions(event);
+            try {
+                registry.execute(actions, event.getMessage().getContentRaw());
+            } catch (Exception ex) {
+                actions.send("Oh no, I'm dying!");
+                logger.error("Error processing guild message", ex);
+            }
+            super.onGuildMessageReceived(event);
+        });
     }
 
+    // fixme: run this in a separate thread
     @Override
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
-        super.onGuildVoiceJoin(event);
-        String user = event.getMember().getUser().getAsTag();
-        String guild = event.getChannelJoined().getGuild().getName();
-        long guildId = event.getChannelJoined().getIdLong();
-        logger.info(String.format("%s joined %s (%s)", user, guild, guildId));
-        var voiceChannelIds = jda.getAudioManagers().stream()
-                .map(AudioManager::getConnectedChannel)
-                .filter(Objects::nonNull)
-                .map(ISnowflake::getIdLong)
-                .collect(Collectors.toSet());
-        if (voiceChannelIds.contains(guildId)) {
-            try {
-                registry.welcome(buildUserJoinedVoiceActions(event));
-            } catch (NotEnoughQueueCapacityException ex) {
-                logger.error(String.format("Could not welcome %s to %s", user, guild), ex);
+        executorService.submit(() -> {
+            super.onGuildVoiceJoin(event);
+            String user = event.getMember().getUser().getAsTag();
+            String guild = event.getChannelJoined().getGuild().getName();
+            long guildId = event.getChannelJoined().getIdLong();
+            logger.info(format("%s joined %s (%s)", user, guild, guildId));
+            var voiceChannelIds = jda.getAudioManagers().stream()
+                    .map(AudioManager::getConnectedChannel)
+                    .filter(Objects::nonNull)
+                    .map(ISnowflake::getIdLong)
+                    .collect(Collectors.toSet());
+            if (voiceChannelIds.contains(guildId)) {
+                try {
+                    registry.welcome(buildUserJoinedVoiceActions(event));
+                } catch (NotEnoughQueueCapacityException ex) {
+                    logger.error(format("Could not welcome %s to %s", user, guild), ex);
+                }
             }
-        }
+        });
     }
 
     private UserJoinedVoiceActions buildUserJoinedVoiceActions(GuildVoiceJoinEvent event) {

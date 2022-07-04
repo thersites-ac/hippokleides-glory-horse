@@ -27,9 +27,12 @@ import static java.lang.String.format;
 
 @Singleton
 public class DiscordCommandRegistry {
+
     public static final String UNAUTHORIZED_MESSAGE = "Lol no";
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordCommandRegistry.class);
+    private static final String COMMAND_DURATION_MESSAGE = "Executed %s in %s milliseconds";
+    private static final String WELCOME_DURATION_MESSAGE = "Welcomed %s to %s in %s milliseconds";
 
     private static final DiscordCommand NOOP = new IdkCommand();
 
@@ -56,9 +59,12 @@ public class DiscordCommandRegistry {
     // fixme - this logic should be in the bot
     public void execute(MessageReceivedActions actions, String message) {
         if (hasPrefix(message)) {
+            long duration = -System.currentTimeMillis();
             String tail = message.substring(1);
             DiscordCommand command = lookupAction(actions.getGuildId(), tail);
             executeAuthorized(command, actions, tail);
+            duration += System.currentTimeMillis();
+            logger.info(format(COMMAND_DURATION_MESSAGE, message, duration));
         }
     }
 
@@ -88,7 +94,8 @@ public class DiscordCommandRegistry {
     }
 
     public void welcome(UserJoinedVoiceActions actions) throws NotEnoughQueueCapacityException {
-        long user = actions.user();
+        long duration = -System.currentTimeMillis();
+        long user = actions.userId();
         String guildName = actions.guildName();
         String guildId = actions.guildId();
         LocalClip welcome = welcomeManager.welcome(user, guildId);
@@ -102,6 +109,8 @@ public class DiscordCommandRegistry {
                     welcome,
                     actions.isConnected()));
         }
+        duration += System.currentTimeMillis();
+        logger.info(format(WELCOME_DURATION_MESSAGE, user, actions.guildName(), duration));
     }
 
     private DiscordCommand lookupAction(String guild, String message) {
@@ -130,6 +139,8 @@ public class DiscordCommandRegistry {
         return handlers.values();
     }
 
+    // fixme: this should be injected, not set manually, unless I intend to let channel owners change the prefix
+    // even then this isn't the right approach
     public void prefix(char prefix) {
         this.prefix = prefix;
     }

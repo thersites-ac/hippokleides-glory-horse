@@ -7,6 +7,7 @@ import cogbog.discord.model.AuthLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// fixme: send an appropriate message and log a warning when the user tries to queue an invalid URI
 public class QueueAudioCommand implements DiscordCommand {
 
     public static final String ARGUMENT = "uri";

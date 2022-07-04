@@ -7,8 +7,6 @@
     * ui is ugly
     * security
   * qa/prod environments
-  * how is scalability? double check that commands don't get processed on the main thread
-  * alerting, custom metrics
   * resilience
 
 # other (post-release maintenance)
@@ -24,6 +22,7 @@
   * make injection names constants in the Names.java file
   * the clip polling worker still seems broken
   * reorganize clip buckets
+  * perf testing, more scaling consideration
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

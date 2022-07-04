@@ -3,7 +3,7 @@ package cogbog.discord.adaptor;
 import cogbog.discord.exception.NotEnoughQueueCapacityException;
 
 public interface UserJoinedVoiceActions {
-    long user();
+    long userId();
     String guildName();
     String guildId();
     boolean isConnected();
