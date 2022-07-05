@@ -12,7 +12,9 @@ public class RamRanchCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) {
-        actions.connect();
+        if (!actions.isConnected()) {
+            actions.connect();
+        }
         try {
             actions.queue(RAM_RANCH_URL);
             actions.send("enjoy :)");

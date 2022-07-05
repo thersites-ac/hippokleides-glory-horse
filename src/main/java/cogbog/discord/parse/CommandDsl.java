@@ -25,7 +25,7 @@ public class CommandDsl {
     }
 
     public Pattern toPattern() {
-        logger.info("dsl: " + dsl + "; regex: " + regex);
+        logger.debug("dsl: " + dsl + "; regex: " + regex);
         return Pattern.compile(regex);
     }
 }

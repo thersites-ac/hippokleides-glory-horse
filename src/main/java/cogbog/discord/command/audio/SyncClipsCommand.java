@@ -20,7 +20,6 @@ public class SyncClipsCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        // fixme: given that I'm syncing at startup, do I need to do this?
         storageService.sync(actions.getGuildId());
         actions.send("Got 'em all");
     }

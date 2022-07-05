@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RandomClipCommand extends JoinVoiceChannel implements DiscordCommand {
+public class RandomClipCommand implements DiscordCommand {
 
     private static final Random RANDOM = new Random();
     private static final Logger logger = LoggerFactory.getLogger(RandomClipCommand.class);
@@ -22,13 +22,15 @@ public class RandomClipCommand extends JoinVoiceChannel implements DiscordComman
     private final ClipManager clipManager;
 
     @Inject
-    public RandomClipCommand(ClipManager clipManager, RemoteStorageService storageService) {
-        super(storageService);
+    public RandomClipCommand(ClipManager clipManager) {
         this.clipManager = clipManager;
     }
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
+        if (!actions.isConnected()) {
+            actions.connect();
+        }
         try {
             String guild = actions.getGuildId();
             String name = lookupRandomName(guild);

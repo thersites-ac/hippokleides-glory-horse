@@ -2,12 +2,16 @@
   * any unsanitized user input risks?
   * sort out bugs related to clip ID/title collision
     * handle invalid clip names (in UI, lambda, and bot)
+    * when I create multiple clips off a single recording, they should all be valid
+    * when I create two clips with the same name, I should get an error the second time around and be able to try again
   * error handling in the Python Lambda
   * trimmer:
     * ui is ugly
     * security
   * qa/prod environments
-  * resilience
+  * initial command sets for launch
+  * create a new discord app
+  * payment detection/feature toggle
 
 # other (post-release maintenance)
   * the various classes that fetch stored config have turned into a mess
@@ -23,6 +27,7 @@
   * the clip polling worker still seems broken
   * reorganize clip buckets
   * perf testing, more scaling consideration
+  * resilience
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

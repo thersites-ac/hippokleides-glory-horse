@@ -10,19 +10,20 @@ import cogbog.discord.service.RemoteStorageService;
 
 import javax.inject.Inject;
 
-public class RecordCommand extends JoinVoiceChannel implements DiscordCommand {
+public class RecordCommand implements DiscordCommand {
 
     private final RecordingService recordingService;
 
     @Inject
     public RecordCommand(RecordingService recordingService, RemoteStorageService storageService) {
-        super(storageService);
         this.recordingService = recordingService;
     }
 
     @Override
     public void execute(MessageReceivedActions actions) {
-        ensureConnected(actions);
+        if (!actions.isConnected()) {
+            actions.connect();
+        }
         String guild = actions.getGuildId();
         recordingService.beginRecording(guild);
         actions.setReceivingHandler(new DemultiplexingHandler(guild, recordingService));

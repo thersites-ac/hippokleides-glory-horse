@@ -2,7 +2,6 @@ package cogbog.discord;
 
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.command.audio.*;
-import cogbog.discord.command.general.*;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -23,8 +22,6 @@ import cogbog.discord.adaptor.impl.JdaUserJoinedVoiceActions;
 import cogbog.discord.command.DiscordCommandRegistry;
 import cogbog.discord.audio.AudioContext;
 import cogbog.discord.audio.GuildPlayer;
-import cogbog.discord.command.pathfinder.FeatCommand;
-import cogbog.discord.command.pathfinder.SpellCommand;
 import cogbog.discord.config.DefaultModule;
 import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import cogbog.discord.service.RemoteStorageService;
@@ -44,35 +41,6 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 public class Bot extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
-    private static final Set<Class<? extends DiscordCommand>> COMMANDS = Set.of(
-            BanCommand.class,
-            ChangeVolumeAudioCommand.class,
-            DeleteClipCommand.class,
-            DisconnectCommand.class,
-            FeatCommand.class,
-            GetVolumeAudioCommand.class,
-            HelpCommand.class,
-            ListClipsCommand.class,
-            LouderAudioCommand.class,
-            MakeAdminCommand.class,
-            NukeQueueCommand.class,
-            PauseAudioCommand.class,
-            QueueAudioCommand.class,
-            RamRanchCommand.class,
-            RandomClipCommand.class,
-            RecordCommand.class,
-            RepeatClipCommand.class,
-            SkipAudioCommand.class,
-            SofterAudioCommand.class,
-            SpellCommand.class,
-            StopRecordingCommand.class,
-            SyncClipsCommand.class,
-            UnadminCommand.class,
-            UnbanCommand.class,
-            UnpauseAudioCommand.class,
-            WelcomeCommand.class,
-            WriteAudioCommand.class
-    );
 
     private static JDA jda;
     private static Injector injector;
@@ -82,15 +50,6 @@ public class Bot extends ListenerAdapter {
     private final ExecutorService executorService;
 
     public static void main(String[] args) throws Exception {
-        boolean collision =
-                COMMANDS.stream().anyMatch(c -> c.equals(QueueAudioCommand.class)) &&
-                COMMANDS.stream().anyMatch(c -> c.equals(PlayClipCommand.class)
-                        || c.equals(RandomClipCommand.class)
-                        || c.equals(RepeatClipCommand.class));
-        if (collision) {
-            logger.warn("Risk of audio queue contention because both clip and other audio playback is allowed");
-        }
-        // fixme: contention will also occur if any user has a welcome set and other audio is playing
         injector = Guice.createInjector(new DefaultModule());
         var bot = injector.getInstance(Bot.class);
         jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
@@ -115,17 +74,23 @@ public class Bot extends ListenerAdapter {
     private final DiscordCommandRegistry registry;
 
     @Inject
-    private Bot(DiscordCommandRegistry registry, SqsPollingWorker worker, AudioPlayerManager playerManager, ExecutorService executorService) {
+    private Bot(DiscordCommandRegistry registry,
+                SqsPollingWorker worker,
+                AudioPlayerManager playerManager,
+                ExecutorService executorService,
+                Set<Class<? extends DiscordCommand>> commands) {
         this.playerManager = playerManager;
         this.registry = registry;
+        registry.prefix('~');
 
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
 
         guildPlayers = new HashMap<>();
 
-        register(COMMANDS);
+        register(commands);
 
+        // fixme: why even bother starting this in the constructor?
         worker.start();
         this.executorService = executorService;
     }
@@ -179,11 +144,19 @@ public class Bot extends ListenerAdapter {
         return new JdaMessageReceivedActions(event, context);
     }
 
-    private void register(Set<Class<? extends DiscordCommand>> commands) {
+    private void register(Collection<Class<? extends DiscordCommand>> commands) {
+        boolean collision =
+                commands.stream().anyMatch(c -> c.equals(QueueAudioCommand.class)) &&
+                        commands.stream().anyMatch(c -> c.equals(PlayClipCommand.class)
+                                || c.equals(RandomClipCommand.class)
+                                || c.equals(RepeatClipCommand.class));
+        // fixme: contention will also occur if any user has a welcome set and other audio is playing
+        if (collision) {
+            logger.warn("Risk of audio queue contention because both clip and other audio playback is allowed");
+        }
         for (Class<? extends DiscordCommand> command: commands) {
             try {
                 registry.register(injector.getInstance(command));
-                registry.prefix('~');
                 logger.info("Registered {}", command.getName());
             } catch (Exception e) {
                 logger.error("Exception at startup", e);

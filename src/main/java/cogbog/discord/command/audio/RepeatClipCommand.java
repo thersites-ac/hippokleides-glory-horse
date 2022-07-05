@@ -29,6 +29,9 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
+        if (!actions.isConnected()) {
+            actions.connect();
+        }
         String repetitionsInput = actions.getArgument(ARGUMENT_NUMBER);
         try {
             int repetitions = Integer.parseInt(repetitionsInput);

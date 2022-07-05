@@ -5,16 +5,14 @@ import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.model.AuthLevel;
 import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import cogbog.discord.exception.UnimplementedException;
-import cogbog.discord.service.RemoteStorageService;
 
-public class PlayClipCommand extends JoinVoiceChannel implements DiscordCommand {
+public class PlayClipCommand implements DiscordCommand {
 
     private static final String TOO_MANY_CLIPS_QUEUED_EXCEPTION = "Stop it, I'm just one bot!";
     private static final String INPUT_STRING = "<clip>";
     private final String path;
 
-    public PlayClipCommand(RemoteStorageService storageService, String path) {
-        super(storageService);
+    public PlayClipCommand(String path) {
         this.path = path;
     }
 
@@ -24,7 +22,9 @@ public class PlayClipCommand extends JoinVoiceChannel implements DiscordCommand 
 
     @Override
     public void execute(MessageReceivedActions actions) {
-        ensureConnected(actions);
+        if (!actions.isConnected()) {
+            actions.connect();
+        }
         try {
             actions.queue(path);
         } catch (NotEnoughQueueCapacityException ex) {
