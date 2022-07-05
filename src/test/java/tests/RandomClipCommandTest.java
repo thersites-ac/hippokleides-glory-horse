@@ -27,7 +27,7 @@ public class RandomClipCommandTest {
     @Before
     public void setup() {
         clipManager = new ClipManagerImpl(null);
-        randomClipCommand = new RandomClipCommand(clipManager, null);
+        randomClipCommand = new RandomClipCommand(clipManager);
         actions = new SpyMessageReceivedActions();
         actions.setGuildName(GUILD);
     }

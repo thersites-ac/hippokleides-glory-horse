@@ -41,7 +41,7 @@ public class ClipManagerImpl implements ClipManager {
         // UPDATE: we're a little closer on this
         logger.info("Putting " + clip.toString());
         localStore.computeIfAbsent(clip.getGuild(), g -> new ConcurrentHashMap<>());
-        localStore.get(clip.getGuild()).put(clip.getTitle(), new PlayClipCommand(storageService, clip.getPath()));
+        localStore.get(clip.getGuild()).put(clip.getTitle(), new PlayClipCommand(clip.getPath()));
     }
 
     @Override
