@@ -56,6 +56,8 @@ public class Bot extends ListenerAdapter {
                 .addEventListeners(bot)
                 .build();
 
+        injector.getInstance(SqsPollingWorker.class).start();
+
         // todo: is there a cleaner way to schedule this after the connection is ready?
         Thread.sleep(3000);
         var remoteAudio = injector.getInstance(RemoteStorageService.class);
@@ -75,7 +77,6 @@ public class Bot extends ListenerAdapter {
 
     @Inject
     private Bot(DiscordCommandRegistry registry,
-                SqsPollingWorker worker,
                 AudioPlayerManager playerManager,
                 ExecutorService executorService,
                 Set<Class<? extends DiscordCommand>> commands) {
@@ -90,12 +91,9 @@ public class Bot extends ListenerAdapter {
 
         register(commands);
 
-        // fixme: why even bother starting this in the constructor?
-        worker.start();
         this.executorService = executorService;
     }
 
-    // fixme: run this in a separate thread
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         executorService.submit(() -> {
@@ -110,7 +108,8 @@ public class Bot extends ListenerAdapter {
         });
     }
 
-    // fixme: run this in a separate thread
+    // fixme: make this a toggleable feature
+    // fixme: different event listeners should probably be different classes
     @Override
     public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent event) {
         executorService.submit(() -> {
@@ -164,7 +163,6 @@ public class Bot extends ListenerAdapter {
             }
         }
     }
-
 
     private GuildPlayer getGuildPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
