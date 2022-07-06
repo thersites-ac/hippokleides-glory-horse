@@ -9,9 +9,11 @@
     * ui is ugly
     * security
   * qa/prod environments
+    * prod bitly token?
   * initial command sets for launch
   * create a new discord app
   * payment detection/feature toggle
+  * help lines are getting out of date
 
 # other (post-release maintenance)
   * the various classes that fetch stored config have turned into a mess

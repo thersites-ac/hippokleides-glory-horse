@@ -68,7 +68,9 @@ public class Bot extends ListenerAdapter {
         });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            jda.shutdown();
+            if (jda != null) {
+                jda.shutdown();
+            }
             logger.warn("Shutting down.");
         }));
     }
