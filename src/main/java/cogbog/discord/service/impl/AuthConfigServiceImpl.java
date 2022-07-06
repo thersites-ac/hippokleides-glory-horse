@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static cogbog.discord.constants.Names.S3_BUCKET_CONFIG;
-import static cogbog.discord.constants.Names.S3_CLIENT_CONFIG;
+import static cogbog.discord.constants.Names.S3_CONFIG_CLIENT;
 
 @Singleton
 public class AuthConfigServiceImpl extends JavaConfigManager<Map<String, Set<Long>>> implements AuthConfigService {
@@ -20,7 +20,7 @@ public class AuthConfigServiceImpl extends JavaConfigManager<Map<String, Set<Lon
 
     @Inject
     public AuthConfigServiceImpl(@Named(S3_BUCKET_CONFIG) String configBucket,
-                                 @Named(S3_CLIENT_CONFIG) S3Client configFetcher) {
+                                 @Named(S3_CONFIG_CLIENT) S3Client configFetcher) {
         super(configBucket, configFetcher, CONFIG_KEY);
     }
 

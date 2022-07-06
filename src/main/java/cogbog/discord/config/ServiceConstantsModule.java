@@ -9,7 +9,7 @@ import java.time.Duration;
 public class ServiceConstantsModule extends AbstractModule {
 
     @Provides
-    @Named("s3.uploads.ttl")
+    @Named("s3.upload.ttl")
     Duration timeToLive() {
         return Duration.ofMinutes(10);
     }

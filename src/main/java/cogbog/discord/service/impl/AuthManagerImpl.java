@@ -29,7 +29,7 @@ public class AuthManagerImpl implements AuthManager {
     private final Map<String, Set<Long>> bans;
     private final JavaConfigManager<Map<String, Set<Long>>> banPersister;
 
-    // fixme: kind of gross how the two parameters are basically identical
+    // fixme: the two parameters are basically identical
     @Inject
     public AuthManagerImpl(AuthConfigService configService,
                            @Named(AUTH_BAN_PERSISTER) JavaConfigManager<Map<String, Set<Long>>> banPersister) {

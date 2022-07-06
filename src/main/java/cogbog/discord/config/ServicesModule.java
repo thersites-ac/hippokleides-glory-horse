@@ -25,9 +25,6 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import java.util.Map;
-import java.util.Set;
-
 public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
@@ -54,7 +51,7 @@ public class ServicesModule extends AbstractModule {
     }
 
     @Provides
-    @Named("s3.client.download")
+    @Named("s3.download.client")
     @Singleton
     S3Client downloadS3Client(AwsCredentialsProvider provider) {
         return S3Client.builder()
@@ -64,21 +61,11 @@ public class ServicesModule extends AbstractModule {
     }
 
     @Provides
-    @Named("s3.client.upload")
+    @Named("s3.upload.client")
     @Singleton
     S3Client uploadS3Client(AwsCredentialsProvider provider) {
         return S3Client.builder()
                 .region(Region.US_EAST_1)
-                .credentialsProvider(provider)
-                .build();
-    }
-
-    @Provides
-    @Singleton
-    @Named(Names.S3_CLIENT_CONFIG)
-    S3Client configS3Client(AwsCredentialsProvider provider) {
-        return S3Client.builder()
-                .region(Region.US_EAST_2)
                 .credentialsProvider(provider)
                 .build();
     }
@@ -96,14 +83,6 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     HttpRequestFactory requestFactory() {
         return new NetHttpTransport().createRequestFactory();
-    }
-
-    @Provides
-    @Named(Names.AUTH_BAN_PERSISTER)
-    @Singleton
-    JavaConfigManager<Map<String, Set<Long>>> banPersister(@Named(Names.S3_BUCKET_CONFIG) String configBucket,
-                                                           @Named(Names.S3_CLIENT_CONFIG) S3Client configClient) {
-        return new JavaConfigManager<Map<String, Set<Long>>>(configBucket, configClient, Names.AUTH_BAN_PERSISTER);
     }
 
     @Provides

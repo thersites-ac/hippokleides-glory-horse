@@ -48,11 +48,11 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final String clipsDirectory;
 
     @Inject
-    public AwsRemoteStorageService(@Named("s3.client.download") S3Client downloadClient,
-                                   @Named("s3.client.upload") S3Client storageClient,
-                                   @Named("s3.bucket.uploads") String uploadsBucket,
-                                   @Named("s3.bucket.trimmed") String clipsBucket,
-                                   @Named("s3.uploads.ttl") Duration timeToLive,
+    public AwsRemoteStorageService(@Named("s3.download.client") S3Client downloadClient,
+                                   @Named("s3.upload.client") S3Client storageClient,
+                                   @Named("s3.upload.bucket") String uploadsBucket,
+                                   @Named("s3.upload.ttl") Duration timeToLive,
+                                   @Named("s3.trimmed.bucket") String clipsBucket,
                                    @Named("clips.directory") String clipsDirectory,
                                    S3Presigner presigner,
                                    ClipManager clipManager) {
