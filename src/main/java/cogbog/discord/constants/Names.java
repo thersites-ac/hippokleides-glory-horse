@@ -7,6 +7,6 @@ public final class Names {
     public static final String KEEP_ALIVE_TIME = "keep.alive.time";
     public static final String MAX_POOL_SIZE = "max.pool.size";
     // don't need these any more
-    public static final String S3_BUCKET_CONFIG = "s3.config.bucket";
+    public static final String S3_BUCKET_CONFIG = "s3.bucket.name.config";
     public static final String S3_CONFIG_CLIENT = "s3.config.client";
 }

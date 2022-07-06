@@ -2,7 +2,6 @@ package cogbog.discord.config;
 
 import cogbog.discord.adaptor.DataPersistenceAdaptor;
 import cogbog.discord.adaptor.impl.DynamoPersistenceAdaptorImpl;
-import cogbog.discord.constants.Names;
 import cogbog.discord.model.WelcomeRecord;
 import cogbog.discord.persistence.AuthRecordMappingFactory;
 import cogbog.discord.persistence.MappingFactory;
@@ -44,37 +43,40 @@ public class ServicesModule extends AbstractModule {
 
     @Provides
     @Singleton
-    SqsClient sqsClient () {
+    SqsClient sqsClient (@Named("sqs.region") String region) {
         return SqsClient.builder()
-                .region(Region.US_EAST_2)
+                .region(Region.of(region))
                 .build();
     }
 
     @Provides
-    @Named("s3.download.client")
+    @Named("s3.client.download")
     @Singleton
-    S3Client downloadS3Client(AwsCredentialsProvider provider) {
+    S3Client downloadS3Client(AwsCredentialsProvider provider,
+                              @Named("s3.client.region.download") String region) {
         return S3Client.builder()
-                .region(Region.US_EAST_2)
+                .region(Region.of(region))
                 .credentialsProvider(provider)
                 .build();
     }
 
     @Provides
-    @Named("s3.upload.client")
+    @Named("s3.client.upload")
     @Singleton
-    S3Client uploadS3Client(AwsCredentialsProvider provider) {
+    S3Client uploadS3Client(AwsCredentialsProvider provider,
+                            @Named("s3.client.region.upload") String region) {
         return S3Client.builder()
-                .region(Region.US_EAST_1)
+                .region(Region.of(region))
                 .credentialsProvider(provider)
                 .build();
     }
 
     @Provides
     @Singleton
-    S3Presigner presigner(AwsCredentialsProvider provider) {
+    S3Presigner presigner(AwsCredentialsProvider provider,
+                          @Named("s3.client.region.upload") String region) {
         return S3Presigner.builder()
-                .region(Region.US_EAST_1)
+                .region(Region.of(region))
                 .credentialsProvider(provider)
                 .build();
     }
@@ -87,9 +89,9 @@ public class ServicesModule extends AbstractModule {
 
     @Provides
     @Singleton
-    DynamoDbClient dynamoDbClient() {
+    DynamoDbClient dynamoDbClient(@Named("dynamodb.region") String region) {
         return DynamoDbClient.builder()
-                .region(Region.US_EAST_2)
+                .region(Region.of(region))
                 .build();
     }
 
