@@ -38,4 +38,9 @@ public class JdaUserJoinedVoiceActions extends AudioActions implements UserJoine
     public void play(String path) throws NotEnoughQueueCapacityException {
         addToQueue(path);
     }
+
+    @Override
+    public String username() {
+        return event.getMember().getUser().getAsTag();
+    }
 }

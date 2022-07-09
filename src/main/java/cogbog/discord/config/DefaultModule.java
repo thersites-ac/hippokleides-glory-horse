@@ -26,8 +26,12 @@ import static cogbog.discord.constants.Names.*;
 public class DefaultModule extends AbstractModule {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultModule.class);
-    private static final String COMMANDS_PROPERTIES_FILE = "qa/commands.properties";
-    private static final String CONSTANTS_PROPERTIES_FILE = "qa/constants.properties";
+    private static final String ENV = System.getProperty("env");
+    private static final String COMMANDS_PROPERTIES_FILE = ENV + "/commands.properties";
+    private static final String CONSTANTS_PROPERTIES_FILE = ENV + "/constants.properties";
+    static {
+        logger.info("env: " + ENV);
+    }
 
     @Override
     protected void configure() {
@@ -42,7 +46,10 @@ public class DefaultModule extends AbstractModule {
         var result = new Properties();
         try {
             var stream = getClass().getResourceAsStream(CONSTANTS_PROPERTIES_FILE);
-            result.load(stream);
+            if (stream == null)
+                badPropertiesFile(CONSTANTS_PROPERTIES_FILE);
+            else
+                result.load(stream);
         } catch (IOException e) {
             logger.error("Could not load properties from file", e);
             System.exit(1);
@@ -60,7 +67,7 @@ public class DefaultModule extends AbstractModule {
                 maxPoolSize,
                 keepAliveTime,
                 TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(100, true),
+                new ArrayBlockingQueue<>(100, true),
                 new ThreadPoolExecutor.AbortPolicy());
     }
 
@@ -69,7 +76,10 @@ public class DefaultModule extends AbstractModule {
     Set<Class<? extends DiscordCommand>> commands() {
         try {
             var properties = new Properties();
-            properties.load(getClass().getResourceAsStream(COMMANDS_PROPERTIES_FILE));
+            var stream = getClass().getResourceAsStream(COMMANDS_PROPERTIES_FILE);
+            if (stream == null)
+                badPropertiesFile(COMMANDS_PROPERTIES_FILE);
+            properties.load(stream);
             List<Throwable> exceptions = new ArrayList<>();
             Set<Class<? extends DiscordCommand>> result = properties.entrySet().stream()
                     .map(e -> {
@@ -97,5 +107,10 @@ public class DefaultModule extends AbstractModule {
             System.exit(1);
         }
         return Collections.emptySet();
+    }
+
+    private void badPropertiesFile(String filename) {
+        logger.error("No properties located at " + filename);
+        System.exit(1);
     }
 }

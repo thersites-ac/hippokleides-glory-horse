@@ -23,7 +23,6 @@ import cogbog.discord.command.DiscordCommandRegistry;
 import cogbog.discord.audio.AudioContext;
 import cogbog.discord.audio.GuildPlayer;
 import cogbog.discord.config.DefaultModule;
-import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import cogbog.discord.service.RemoteStorageService;
 import cogbog.discord.worker.SqsPollingWorker;
 import org.jetbrains.annotations.NotNull;
@@ -94,6 +93,8 @@ public class Bot extends ListenerAdapter {
         register(commands);
 
         this.executorService = executorService;
+
+        logVersion();
     }
 
     @Override
@@ -128,7 +129,7 @@ public class Bot extends ListenerAdapter {
             if (voiceChannelIds.contains(guildId)) {
                 try {
                     registry.welcome(buildUserJoinedVoiceActions(event));
-                } catch (NotEnoughQueueCapacityException ex) {
+                } catch (Exception ex) {
                     logger.error(format("Could not welcome %s to %s", user, guild), ex);
                 }
             }
@@ -170,5 +171,16 @@ public class Bot extends ListenerAdapter {
         long guildId = Long.parseLong(guild.getId());
         guildPlayers.computeIfAbsent(guildId, id -> new GuildPlayer(playerManager));
         return guildPlayers.get(guildId);
+    }
+
+    private void logVersion() {
+        var stream = getClass().getResourceAsStream("version.txt");
+        if (stream != null) {
+            Scanner scanner = new Scanner(stream);
+            var next = scanner.next();
+            logger.info("Version: " + next);
+        } else {
+            logger.error("Version unknown: no version.txt found");
+        }
     }
 }

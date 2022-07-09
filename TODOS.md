@@ -9,16 +9,12 @@
     * ui is ugly
     * security
   * qa/prod environments
-    * prod bitly token?
-  * initial command sets for launch
-  * create a new discord app
+    * new (distinct from nonprod) secret values
   * payment detection/feature toggle
   * help lines are getting out of date
 
 # other (post-release maintenance)
-  * the various classes that fetch stored config have turned into a mess
   * combine repos
-  * rename
   * modularize (yes, going back to that pattern)
   * add CORS headers to API Gateway error responses
   * inform channel members after the clip has been loaded (feature/chatty-polling)
@@ -30,6 +26,10 @@
   * reorganize clip buckets
   * perf testing, more scaling consideration
   * resilience
+  * the S3 notifications should happen after the new clip is tagged, not after the clip is created
+  * process to move artifacts to validated/artifacts
+  * track (and log) running bot version
+  * automate promotion of good artifacts
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

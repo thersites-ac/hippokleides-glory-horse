@@ -8,4 +8,5 @@ public interface UserJoinedVoiceActions {
     String guildId();
     boolean isConnected();
     void play(String path) throws NotEnoughQueueCapacityException;
+    String username();
 }

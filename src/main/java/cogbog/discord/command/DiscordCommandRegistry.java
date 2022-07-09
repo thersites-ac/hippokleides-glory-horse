@@ -95,19 +95,14 @@ public class DiscordCommandRegistry {
 
     public void welcome(UserJoinedVoiceActions actions) throws NotEnoughQueueCapacityException {
         long duration = -System.currentTimeMillis();
-        long user = actions.userId();
+        long userId = actions.userId();
+        String user = actions.username();
         String guildName = actions.guildName();
         String guildId = actions.guildId();
-        LocalClip welcome = welcomeManager.welcome(user, guildId);
+        LocalClip welcome = welcomeManager.welcome(userId, guildId);
         if (welcome != null && actions.isConnected()) {
             actions.play(welcome.getPath());
-            logger.info(format("Welcomed %s to %s (%s) with %s", user, guildName, guildId, welcome));
-        } else {
-            logger.error(format("Welcome %s for %s: %s; connected: %s",
-                    guildName,
-                    user,
-                    welcome,
-                    actions.isConnected()));
+            logger.info(format("Welcomed %s (%s) to %s (%s) with %s", user, userId, guildName, guildId, welcome));
         }
         duration += System.currentTimeMillis();
         logger.info(format(WELCOME_DURATION_MESSAGE, user, actions.guildName(), duration));
