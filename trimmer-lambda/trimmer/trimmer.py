@@ -14,7 +14,7 @@ class Trimmer:
         print('frames per ms', self._frames_per_ms)
 
     def init_output_file(self, filename, title):
-        self._output_name = title + '.wav'
+        self._output_name = '/tmp/' + title + '.wav'
         self._output = wave.open(self._output_name, 'wb')
         self._output.setnchannels(self._channels)
         self._output.setsampwidth(self._samplewidth)
