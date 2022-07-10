@@ -14,9 +14,8 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+        # - ARTIFACT_VERSION=`cat src/main/resources/cogbog/discord/version.txt`
+        # - aws s3api put-object-tagging --key artifacts/build/libs/hippokleides-glory-horse-uber.jar --bucket hippokleides-cicd --tagging "{\"TagSet\": [{\"Key\": \"version\", \"Value\": \"$ARTIFACT_VERSION\"}]}"
 artifacts:
   files:
     - build/libs/hippokleides-glory-horse-uber.jar
-      #    - appspec.yml
-      #    - scripts/go.sh
-      #    - scripts/preinstall.sh

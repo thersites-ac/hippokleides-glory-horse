@@ -10,6 +10,7 @@
     * security
   * qa/prod environments
     * new (distinct from nonprod) secret values
+    * python lambda needs to upload to prod
   * payment detection/feature toggle
   * help lines are getting out of date
 
@@ -30,6 +31,8 @@
   * process to move artifacts to validated/artifacts
   * track (and log) running bot version
   * automate promotion of good artifacts
+  * tag builds with version
+  * combine secrets in secretsmanager (to save $0.80/mo...)
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
