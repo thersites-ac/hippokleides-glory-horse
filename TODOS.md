@@ -1,17 +1,15 @@
 # important (blockers to release):
   * any unsanitized user input risks?
   * sort out bugs related to clip ID/title collision
-    * NEXT IN LINE: deploy and validate lambda changes
     * handle invalid clip names (in UI, lambda, and bot)
-    * when I create multiple clips off a single recording, they should all be valid (validate in UI)
-    * when I create two clips with the same name, I should get an error the second time around and be able to try again (validate in UI)
   * error handling in the Python Lambda
   * trimmer:
     * ui is ugly
-    * security
+    * security review
   * qa/prod environments
     * new (distinct from nonprod) secret values
-    * python lambda needs to upload to prod
+    * python lambda needs to upload to prod, or I need to combine buckets
+    * prod e2e validations
   * payment detection/feature toggle
   * help lines are getting out of date
 
@@ -35,6 +33,7 @@
   * tag builds with version
   * combine secrets in secretsmanager (to save $0.80/mo...)
   * once clip title and key are the same, remove the tag
+  * is the lambda endpoint worth it? why not just run a server off of Hippo?
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
