@@ -4,6 +4,8 @@ import cogbog.discord.model.AuthLevel;
 import cogbog.discord.exception.DataMappingException;
 import cogbog.discord.model.AuthRecord;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Map;
 
 public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
@@ -13,7 +15,12 @@ public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
 
     private static final String LEVEL = "level";
     // fixme: I accidentally made this the table name for all authentication levels
-    private static final String TABLE = "hippokleides_bans";
+    private final String table;
+
+    @Inject
+    public AuthRecordMappingFactory(String table) {
+        this.table = table;
+    }
 
     @Override
     public Map<String, String> toMap(AuthRecord object) {
@@ -46,6 +53,6 @@ public class AuthRecordMappingFactory implements MappingFactory<AuthRecord> {
 
     @Override
     public String getTable() {
-        return TABLE;
+        return table;
     }
 }

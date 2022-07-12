@@ -105,8 +105,8 @@ public class ServicesModule extends AbstractModule {
 
     @Provides
     @Singleton
-    MappingFactory<AuthRecord> authRecordMappingFactory() {
-        return new AuthRecordMappingFactory();
+    MappingFactory<AuthRecord> authRecordMappingFactory(@Named("mapping.factory.table.auth") String table) {
+        return new AuthRecordMappingFactory(table);
     }
 
     @Provides
@@ -119,7 +119,7 @@ public class ServicesModule extends AbstractModule {
 
     @Provides
     @Singleton
-    MappingFactory<WelcomeRecord> welcomeRecordMappingFactory() {
-        return new WelcomeRecordMappingFactory();
+    MappingFactory<WelcomeRecord> welcomeRecordMappingFactory(@Named("mapping.factory.table.welcome") String table) {
+        return new WelcomeRecordMappingFactory(table);
     }
 }

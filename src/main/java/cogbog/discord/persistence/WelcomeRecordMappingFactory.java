@@ -4,6 +4,7 @@ import cogbog.discord.exception.DataMappingException;
 import cogbog.discord.model.LocalClip;
 import cogbog.discord.model.WelcomeRecord;
 
+import javax.inject.Named;
 import java.util.Map;
 
 public class WelcomeRecordMappingFactory implements MappingFactory<WelcomeRecord> {
@@ -14,7 +15,11 @@ public class WelcomeRecordMappingFactory implements MappingFactory<WelcomeRecord
     public static final String CLIP_PATH = "clip_path";
     public static final String CLIP_TITLE = "clip_title";
 
-    private static final String TABLE = "hippokleides_welcomes";
+    private final String table;
+
+    public WelcomeRecordMappingFactory(String table) {
+        this.table = table;
+    }
 
     @Override
     public Map<String, String> toMap(WelcomeRecord object) {
@@ -56,7 +61,7 @@ public class WelcomeRecordMappingFactory implements MappingFactory<WelcomeRecord
 
     @Override
     public String getTable() {
-        return TABLE;
+        return table;
     }
 
     private String getValidMapEntry(Map<String, String> map, String field) throws DataMappingException {

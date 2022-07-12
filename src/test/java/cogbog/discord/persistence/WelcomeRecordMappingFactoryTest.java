@@ -45,7 +45,7 @@ public class WelcomeRecordMappingFactoryTest {
 
     @Before
     public void setup() {
-        factory = new WelcomeRecordMappingFactory();
+        factory = new WelcomeRecordMappingFactory("bar");
     }
 
     @Test

@@ -12,6 +12,8 @@
     * prod e2e validations
   * payment detection/feature toggle
   * help lines are getting out of date
+  * begin testing on others
+  * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
 
 # other (post-release maintenance)
   * combine repos
@@ -34,6 +36,7 @@
   * combine secrets in secretsmanager (to save $0.80/mo...)
   * once clip title and key are the same, remove the tag
   * is the lambda endpoint worth it? why not just run a server off of Hippo?
+  * Discord OAuth?
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

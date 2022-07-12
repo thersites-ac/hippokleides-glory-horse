@@ -34,7 +34,7 @@ public class AuthRecordMappingFactoryTest {
 
     @Before
     public void setup() {
-        factory = new AuthRecordMappingFactory();
+        factory = new AuthRecordMappingFactory("foo");
     }
 
     @Test
