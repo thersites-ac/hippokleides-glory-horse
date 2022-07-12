@@ -48,30 +48,34 @@ public class Bot extends ListenerAdapter {
     private final AudioPlayerManager playerManager;
     private final ExecutorService executorService;
 
-    public static void main(String[] args) throws Exception {
-        injector = Guice.createInjector(new DefaultModule());
-        var bot = injector.getInstance(Bot.class);
-        jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
-                .addEventListeners(bot)
-                .build();
+    public static void main(String[] args) {
+        try {
+            injector = Guice.createInjector(new DefaultModule());
+            var bot = injector.getInstance(Bot.class);
+            jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
+                    .addEventListeners(bot)
+                    .build();
 
-        injector.getInstance(SqsPollingWorker.class).start();
+            injector.getInstance(SqsPollingWorker.class).start();
 
-        // todo: is there a cleaner way to schedule this after the connection is ready?
-        Thread.sleep(3000);
-        var remoteAudio = injector.getInstance(RemoteStorageService.class);
-        logger.info("I'm in " + jda.getGuilds().size() + " guilds");
-        jda.getGuilds().forEach(g -> {
-            logger.info(format("Setting up guild %s (%s)", g.getName(), g.getId()));
-            remoteAudio.sync(g.getId());
-        });
+            // todo: is there a cleaner way to schedule this after the connection is ready?
+            Thread.sleep(3000);
+            var remoteAudio = injector.getInstance(RemoteStorageService.class);
+            logger.info("I'm in " + jda.getGuilds().size() + " guilds");
+            jda.getGuilds().forEach(g -> {
+                logger.info(format("Setting up guild %s (%s)", g.getName(), g.getId()));
+                remoteAudio.sync(g.getId());
+            });
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (jda != null) {
-                jda.shutdown();
-            }
-            logger.warn("Shutting down.");
-        }));
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (jda != null) {
+                    jda.shutdown();
+                }
+                logger.warn("Shutting down.");
+            }));
+        } catch (Exception ex) {
+            logger.error("Exception at startup", ex);
+        }
     }
 
     private final DiscordCommandRegistry registry;
