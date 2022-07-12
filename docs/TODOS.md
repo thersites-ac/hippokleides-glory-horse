@@ -1,25 +1,11 @@
-# important (blockers to release):
-  * any unsanitized user input risks?
-  * sort out bugs related to clip ID/title collision
-    * handle invalid clip names (in UI, lambda, and bot)
-  * error handling in the Python Lambda
-    * 403s from S3
-    * 404s from S3
-  * trimmer:
-    * ui is ugly
-    * security review
-    * not showing 5xx errors?
-  * qa/prod environments
-    * new (distinct from nonprod) secret values
-    * python lambda needs prod envs, or combine buckets
-    * prod e2e validations
-      * current state: failing in the trimmer UI
+# blockers to beta:
+  * turn off non-playback commands in standard hippo
+
+# blockers to full release
   * payment detection/feature toggle
   * help lines are getting out of date
-  * begin testing on others
-  * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
 
-# other (post-release maintenance)
+# other
   * combine repos
   * modularize (yes, going back to that pattern)
   * add CORS headers to API Gateway error responses
@@ -41,6 +27,17 @@
   * once clip title and key are the same, remove the tag
   * is the lambda endpoint worth it? why not just run a server off of Hippo?
   * Discord OAuth?
+  * distinct prod bitly access key?
+  * security review for UI/lambda
+    * any unsanitized user input risks?
+  * handle invalid clip names (in UI, lambda, and bot)
+  * error handling in the Python Lambda
+    * 403s from S3
+    * 404s from S3
+  * trimmer:
+    * ui is ugly
+    * not showing 5xx errors?
+  * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
@@ -54,3 +51,4 @@
   * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
   * opt-in recording: has `AuthLevel.USER`, but requires people in the voice chat to respond to a bot message to be recorded
   * multichannel welcome over regular clip playback
+  * join command: get link to join hippo to another channel
