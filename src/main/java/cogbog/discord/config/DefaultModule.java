@@ -59,9 +59,9 @@ public class DefaultModule extends AbstractModule {
 
     @Provides
     @Singleton
-    ExecutorService executorService(@Named(CORE_POOL_SIZE) int corePoolSize,
-                                    @Named(MAX_POOL_SIZE) int maxPoolSize,
-                                    @Named(KEEP_ALIVE_TIME) int keepAliveTime) {
+    ExecutorService executorService(@Named("core.pool.size") int corePoolSize,
+                                    @Named("max.pool.size") int maxPoolSize,
+                                    @Named("keep.alive.time") int keepAliveTime) {
         return new ThreadPoolExecutor(
                 corePoolSize,
                 maxPoolSize,

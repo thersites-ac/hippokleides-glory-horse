@@ -10,17 +10,14 @@ import java.io.*;
 import java.util.Map;
 import java.util.Set;
 
-import static cogbog.discord.constants.Names.S3_BUCKET_CONFIG;
-import static cogbog.discord.constants.Names.S3_CONFIG_CLIENT;
-
 @Singleton
 public class AuthConfigServiceImpl extends JavaConfigManager<Map<String, Set<Long>>> implements AuthConfigService {
 
     private static final String CONFIG_KEY = "discord-bot-auth-config";
 
     @Inject
-    public AuthConfigServiceImpl(@Named(S3_BUCKET_CONFIG) String configBucket,
-                                 @Named(S3_CONFIG_CLIENT) S3Client configFetcher) {
+    public AuthConfigServiceImpl(@Named("s3.bucket.config") String configBucket,
+                                 @Named("s3.config.client") S3Client configFetcher) {
         super(configBucket, configFetcher, CONFIG_KEY);
     }
 

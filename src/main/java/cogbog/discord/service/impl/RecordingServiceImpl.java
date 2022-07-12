@@ -1,7 +1,6 @@
 package cogbog.discord.service.impl;
 
 import cogbog.discord.audio.DiscontinuousAudioArray;
-import cogbog.discord.constants.Names;
 import cogbog.discord.exception.InvalidAudioPacketException;
 import cogbog.discord.exception.NotRecordingException;
 import net.dv8tion.jda.api.audio.UserAudio;
@@ -28,9 +27,10 @@ public class RecordingServiceImpl implements RecordingService {
     private final Logger logger = LoggerFactory.getLogger(RecordingServiceImpl.class);
 
     @Inject
-    public RecordingServiceImpl(@Named(Names.CLIP_DURATION) int clipDuration) {
+    public RecordingServiceImpl(@Named("recordings.clip.duration") int clipDuration) {
         this.clipDuration = clipDuration;
         recordings = new ConcurrentHashMap<>();
+        logger.info(format("Clips will be stored for %d ms", clipDuration));
     }
 
     @Override

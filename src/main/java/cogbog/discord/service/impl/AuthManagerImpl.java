@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static cogbog.discord.constants.Names.AUTH_BAN_PERSISTER;
-
 @Singleton
 public class AuthManagerImpl implements AuthManager {
     private static final Logger logger = LoggerFactory.getLogger(AuthManagerImpl.class);
@@ -32,7 +30,7 @@ public class AuthManagerImpl implements AuthManager {
     // fixme: the two parameters are basically identical
     @Inject
     public AuthManagerImpl(AuthConfigService configService,
-                           @Named(AUTH_BAN_PERSISTER) JavaConfigManager<Map<String, Set<Long>>> banPersister) {
+                           @Named("auth.ban.persister") JavaConfigManager<Map<String, Set<Long>>> banPersister) {
         this.banPersister = banPersister;
         this.configService = configService;
 
