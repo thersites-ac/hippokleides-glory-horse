@@ -21,8 +21,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static cogbog.discord.constants.Names.*;
-
 public class DefaultModule extends AbstractModule {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultModule.class);
