@@ -39,28 +39,22 @@ public class CommandRegistryTests {
     }
 
     @Test
-    public void canSetPrefix() {
-        givenRegistry();
-        givenSetPrefix();
-    }
-
-    @Test
     public void usesUserInputAnnotation() {
-        givenRegistryWithPrefixAndCommand(testCommand);
+        givenRegistryWithCommand(testCommand);
         whenReceiveMessage("test");
         thenExecutedCommand(testCommand);
     }
 
     @Test
     public void usesSuccessMessage() {
-        givenRegistryWithPrefixAndCommand(testCommand);
+        givenRegistryWithCommand(testCommand);
         whenReceiveMessage("test");
         thenSuccessMessageWasSent();
     }
 
     @Test
     public void succeedsSilentlyIfNoSuccessAnnotationPresent() {
-        givenRegistryWithPrefixAndCommand(silentCommand);
+        givenRegistryWithCommand(silentCommand);
         whenReceiveMessage("silent");
         thenNoMessageWasSent();
     }
@@ -81,13 +75,11 @@ public class CommandRegistryTests {
 
     private void givenRegisterMultiple() {
         givenRegistry();
-        givenSetPrefix();
         registry.register(testCommand, anotherTestCommand);
     }
 
-    private void givenRegistryWithPrefixAndCommand(DiscordCommand command) {
+    private void givenRegistryWithCommand(DiscordCommand command) {
         givenRegistry();
-        givenSetPrefix();
         registry.register(command);
     }
 
@@ -97,10 +89,6 @@ public class CommandRegistryTests {
 
     private void givenRegisterCommand() {
         registry.register(testCommand);
-    }
-
-    private void givenSetPrefix() {
-        registry.prefix('~');
     }
 
     private void whenListCommands() {

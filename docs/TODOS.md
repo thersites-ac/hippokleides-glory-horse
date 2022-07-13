@@ -1,5 +1,5 @@
 # blockers to beta:
-  * turn off non-playback commands in standard hippo
+  * prod needs to come up on the same schedule as qa
 
 # blockers to full release
   * payment detection/feature toggle
@@ -38,13 +38,12 @@
     * ui is ugly
     * not showing 5xx errors?
   * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
+  * get off of LavaPlayer
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
   * track speaker of clips in order to create `~impersonate` command
   * feature request intake endpoint
-  * image search by keyword (from deviantart, wikihow, google images, etc.)
-  * random youtube playback (search and play back audio from first result)
   * more tags for randomized selections
   * share clips between channels
   * record only individual users, or allow users to opt out of recording

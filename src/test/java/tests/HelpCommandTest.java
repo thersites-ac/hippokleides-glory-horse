@@ -30,7 +30,6 @@ public class HelpCommandTest {
         actions = new SpyMessageReceivedActions();
         actions.setGuildName("guild");
         helpCommand = new HelpCommand(registry);
-        registry.prefix('~');
     }
 
     @Test

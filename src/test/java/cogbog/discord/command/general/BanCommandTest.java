@@ -26,7 +26,6 @@ public class BanCommandTest {
     public void setup() {
         var authManager = new InMemoryAuthManager();
         registry = new StubDiscordCommandRegistry(authManager);
-        registry.prefix('~');
         registry.register(new TestCommand(), new BanCommand(authManager));
     }
 

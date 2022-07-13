@@ -87,7 +87,6 @@ public class Bot extends ListenerAdapter {
                 Set<Class<? extends DiscordCommand>> commands) {
         this.playerManager = playerManager;
         this.registry = registry;
-        registry.prefix('~');
 
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);

@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -38,27 +38,31 @@ public class DiscordCommandRegistry {
 
     private final ClipManager commandManager;
     private final WelcomeManager welcomeManager;
-    private char prefix;
+    private final String prefix;
     private final Map<Pattern, DiscordCommand> handlers;
     private final AuthManager authManager;
 
     @Inject
-    public DiscordCommandRegistry(ClipManager clipManager, AuthManager authManager, WelcomeManager welcomeManager) {
+    public DiscordCommandRegistry(ClipManager clipManager,
+                                  AuthManager authManager,
+                                  WelcomeManager welcomeManager,
+                                  @Named("command.prefix") String prefix) {
         handlers = new ConcurrentHashMap<>();
         this.commandManager = clipManager;
         this.authManager = authManager;
         this.welcomeManager = welcomeManager;
+        this.prefix = prefix;
     }
 
-    private Optional<DiscordCommand> getDynamic(String guild, String title) {
+    private DiscordCommand getDynamic(String guild, String title) {
         logger.info("Looking up command for " + guild + " and " + title);
         DiscordCommand command = commandManager.lookup(guild, title);
-        return Optional.ofNullable(command);
+        return command == null? NOOP: command;
     }
 
     // fixme - this logic should be in the bot
     public void execute(MessageReceivedActions actions, String message) {
-        if (hasPrefix(message)) {
+        if (message.startsWith(prefix)) {
             long duration = -System.currentTimeMillis();
             String tail = message.substring(1);
             DiscordCommand command = lookupAction(actions.getGuildId(), tail);
@@ -114,8 +118,7 @@ public class DiscordCommandRegistry {
                 .filter(p -> p.matcher(message).matches())
                 .findFirst()
                 .map(handlers::get)
-                .orElse(getDynamic(guild, message).orElse(NOOP));
-
+                .orElse(getDynamic(guild, message));
     }
 
     public void register(DiscordCommand command) {
@@ -132,15 +135,5 @@ public class DiscordCommandRegistry {
 
     public Collection<DiscordCommand> getCommands() {
         return handlers.values();
-    }
-
-    // fixme: this should be injected, not set manually, unless I intend to let channel owners change the prefix
-    // even then this isn't the right approach
-    public void prefix(char prefix) {
-        this.prefix = prefix;
-    }
-
-    private boolean hasPrefix(String message) {
-        return message.length() > 0 && message.charAt(0) == prefix;
     }
 }

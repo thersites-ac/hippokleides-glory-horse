@@ -15,17 +15,16 @@ import static org.junit.Assert.*;
 
 // fixme: combine this with CommandRegistryTests
 @RunWith(JUnit4.class)
-public class DiscordCommandRegistryTest {
+public class DiscordCommandRegistryAuthorizationTest {
 
     private DiscordCommandRegistry registry;
     private SpyMessageReceivedActions actions;
-    private TestAuthManager authService;
+    private TestAuthManager authManager;
 
     @Before
     public void setup() {
-        authService = new TestAuthManager();
-        registry = new StubDiscordCommandRegistry(authService);
-        registry.prefix('~');
+        authManager = new TestAuthManager();
+        registry = new StubDiscordCommandRegistry(authManager);
         registry.register(new TestCommand());
         actions = new SpyMessageReceivedActions();
         actions.setGuildName("guild");
@@ -51,11 +50,11 @@ public class DiscordCommandRegistryTest {
     }
 
     private void givenUnauthorizedCommand() {
-        authService.setAuthDecision(false);
+        authManager.setAuthDecision(false);
     }
 
     private void givenAuthorizedCommand() {
-        authService.setAuthDecision(true);
+        authManager.setAuthDecision(true);
     }
 
     private void whenRegisterNoop() {

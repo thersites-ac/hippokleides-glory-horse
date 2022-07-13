@@ -7,7 +7,7 @@ import cogbog.discord.service.impl.ClipManagerImpl;
 public class StubDiscordCommandRegistry extends DiscordCommandRegistry {
 
     public StubDiscordCommandRegistry(AuthManager authManager) {
-        super(new ClipManagerImpl(null), authManager, null);
+        super(new ClipManagerImpl(null), authManager, null, "~");
     }
 
     public static StubDiscordCommandRegistry withRubberstampAuthManager() {
