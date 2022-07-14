@@ -16,7 +16,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import cogbog.discord.model.AuthRecord;
 import cogbog.discord.persistence.WelcomeRecordMappingFactory;
-import com.sedmelluq.discord.lavaplayer.tools.io.MessageInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;

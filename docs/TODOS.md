@@ -4,7 +4,8 @@
   * trimmer:
     * ui is ugly
   * polling:
-    * inform channel members after the clip has been loaded (feature/chatty-polling)
+    * send download messages to the right text channel
+    * send error messages if possible
 
 # other
   * combine repos

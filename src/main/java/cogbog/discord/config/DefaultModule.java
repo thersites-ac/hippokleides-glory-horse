@@ -46,21 +46,6 @@ public class DefaultModule extends AbstractModule {
         install(new ServicesModule());
     }
 
-    private Properties loadProperties() {
-        var result = new Properties();
-        try {
-            var stream = getClass().getResourceAsStream(CONSTANTS_PROPERTIES_FILE);
-            if (stream == null)
-                badPropertiesFile(CONSTANTS_PROPERTIES_FILE);
-            else
-                result.load(stream);
-        } catch (IOException e) {
-            logger.error("Could not load properties from file", e);
-            System.exit(1);
-        }
-        return result;
-    }
-
     @Provides
     @Singleton
     ExecutorService executorService(@Named("core.pool.size") int corePoolSize,
@@ -119,6 +104,21 @@ public class DefaultModule extends AbstractModule {
         return JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
                 .addEventListeners(bot)
                 .build();
+    }
+
+    private Properties loadProperties() {
+        var result = new Properties();
+        try {
+            var stream = getClass().getResourceAsStream(CONSTANTS_PROPERTIES_FILE);
+            if (stream == null)
+                badPropertiesFile(CONSTANTS_PROPERTIES_FILE);
+            else
+                result.load(stream);
+        } catch (IOException e) {
+            logger.error("Could not load properties from file", e);
+            System.exit(1);
+        }
+        return result;
     }
 
     private void badPropertiesFile(String filename) {

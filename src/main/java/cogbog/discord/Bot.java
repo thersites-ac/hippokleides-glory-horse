@@ -9,7 +9,6 @@ import com.google.inject.Singleton;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -52,7 +51,6 @@ public class Bot extends ListenerAdapter {
     public static void main(String[] args) {
         try {
             injector = Guice.createInjector(new DefaultModule());
-            var bot = injector.getInstance(Bot.class);
             jda = injector.getInstance(JDA.class);
 
             var worker = injector.getInstance(SqsPollingWorker.class);
