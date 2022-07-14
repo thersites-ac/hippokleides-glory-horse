@@ -21,7 +21,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 
-@Singleton
 public class SqsPollingWorker extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(SqsPollingWorker.class);
@@ -31,20 +30,19 @@ public class SqsPollingWorker extends Thread {
     private final ReceiveMessageRequest request;
 
     private final RemoteStorageService remoteStorageService;
-    private final ClipManager commandManager;
+    private final ClipManager clipManager;
 
     private final String url;
 
-    @Inject
     public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
-                            ClipManager commandManager,
+                            ClipManager clipManager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.duration") int duration) {
         super("NewClipNotifications");
         this.client = client;
         this.remoteStorageService = remoteStorageService;
-        this.commandManager = commandManager;
+        this.clipManager = clipManager;
         this.url = url;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
@@ -97,7 +95,7 @@ public class SqsPollingWorker extends Thread {
         String objectKey = event.getS3().getObject().getKey();
         try {
             LocalClip clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
-            commandManager.put(clip);
+            clipManager.put(clip);
         } catch (Exception e) {
             logger.error("While downloading clip", e);
             // fixme: ideally we'd notify of failure, too

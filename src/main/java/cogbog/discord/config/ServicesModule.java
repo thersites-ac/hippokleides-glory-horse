@@ -7,12 +7,15 @@ import cogbog.discord.persistence.AuthRecordMappingFactory;
 import cogbog.discord.persistence.MappingFactory;
 import cogbog.discord.service.*;
 import cogbog.discord.service.impl.*;
+import cogbog.discord.worker.SqsPollingWorker;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import cogbog.discord.model.AuthRecord;
 import cogbog.discord.persistence.WelcomeRecordMappingFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -25,6 +28,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class ServicesModule extends AbstractModule {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServicesModule.class);
+
     @Override
     protected void configure() {
         install(new ServiceConstantsModule());
@@ -121,5 +127,20 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     MappingFactory<WelcomeRecord> welcomeRecordMappingFactory(@Named("mapping.factory.table.welcome") String table) {
         return new WelcomeRecordMappingFactory(table);
+    }
+
+    @Provides
+    @Singleton
+    SqsPollingWorker pollingWorker(RemoteStorageService remoteStorageService,
+                                   SqsClient client,
+                                   ClipManager clipManager,
+                                   @Named("sqs.url") String url,
+                                   @Named("sqs.poll.duration") int duration,
+                                   @Named("clips.polling.enabled") boolean enabled) {
+        logger.info("Polling enabled: " + enabled);
+        if (enabled)
+            return new SqsPollingWorker(remoteStorageService, client, clipManager, url, duration);
+        else
+            return null;
     }
 }

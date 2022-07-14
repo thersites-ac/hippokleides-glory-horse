@@ -4,7 +4,6 @@
   * trimmer:
     * ui is ugly
   * polling:
-    *  still seems broken
     * inform channel members after the clip has been loaded (feature/chatty-polling)
 
 # other
@@ -35,6 +34,7 @@
   * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
   * get off of LavaPlayer
   * tracking users, channels, metrics for Hippo
+  * enable/disable features based on registered commands
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

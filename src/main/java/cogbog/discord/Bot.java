@@ -56,7 +56,9 @@ public class Bot extends ListenerAdapter {
                     .addEventListeners(bot)
                     .build();
 
-            injector.getInstance(SqsPollingWorker.class).start();
+            var worker = injector.getInstance(SqsPollingWorker.class);
+            if (worker != null)
+                worker.start();
 
             // todo: is there a cleaner way to schedule this after the connection is ready?
             Thread.sleep(3000);
