@@ -34,22 +34,21 @@ public class SqsPollingWorker extends Thread {
     private final ClipManager commandManager;
 
     private final String url;
-    private final long interval;
 
     @Inject
     public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
                             ClipManager commandManager,
                             @Named("sqs.url") String url,
-                            @Named("sqs.poll.interval") long interval) {
+                            @Named("sqs.poll.duration") int duration) {
+        super("NewClipNotifications");
         this.client = client;
         this.remoteStorageService = remoteStorageService;
         this.commandManager = commandManager;
         this.url = url;
-        this.interval = interval;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
-                .waitTimeSeconds(20)
+                .waitTimeSeconds(duration)
                 .build();
     }
 
@@ -60,11 +59,6 @@ public class SqsPollingWorker extends Thread {
             ReceiveMessageResponse response = client.receiveMessage(request);
             List<Message> messages = response.messages();
             processAll(messages);
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                logger.warn("Interrupted while waiting between polls", e);
-            }
         }
     }
 
