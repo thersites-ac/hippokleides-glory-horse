@@ -5,6 +5,7 @@ import cogbog.discord.command.audio.*;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
@@ -35,8 +36,8 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
+@Singleton
 public class Bot extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
@@ -52,9 +53,7 @@ public class Bot extends ListenerAdapter {
         try {
             injector = Guice.createInjector(new DefaultModule());
             var bot = injector.getInstance(Bot.class);
-            jda = JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
-                    .addEventListeners(bot)
-                    .build();
+            jda = injector.getInstance(JDA.class);
 
             var worker = injector.getInstance(SqsPollingWorker.class);
             if (worker != null)

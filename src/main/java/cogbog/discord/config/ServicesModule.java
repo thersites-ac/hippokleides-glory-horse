@@ -1,7 +1,9 @@
 package cogbog.discord.config;
 
 import cogbog.discord.adaptor.DataPersistenceAdaptor;
+import cogbog.discord.adaptor.Messager;
 import cogbog.discord.adaptor.impl.DynamoPersistenceAdaptorImpl;
+import cogbog.discord.adaptor.impl.MessagerImpl;
 import cogbog.discord.model.WelcomeRecord;
 import cogbog.discord.persistence.AuthRecordMappingFactory;
 import cogbog.discord.persistence.MappingFactory;
@@ -14,6 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import cogbog.discord.model.AuthRecord;
 import cogbog.discord.persistence.WelcomeRecordMappingFactory;
+import com.sedmelluq.discord.lavaplayer.tools.io.MessageInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -39,6 +42,7 @@ public class ServicesModule extends AbstractModule {
         bind(ClipManager.class).to(ClipManagerImpl.class);
         bind(UrlShortener.class).to(BitlyUrlShortener.class);
         bind(WelcomeManager.class).to(PersistenceWelcomeManagerImpl.class);
+        bind(Messager.class).to(MessagerImpl.class);
     }
 
     @Provides
@@ -134,12 +138,13 @@ public class ServicesModule extends AbstractModule {
     SqsPollingWorker pollingWorker(RemoteStorageService remoteStorageService,
                                    SqsClient client,
                                    ClipManager clipManager,
+                                   Messager messager,
                                    @Named("sqs.url") String url,
                                    @Named("sqs.poll.duration") int duration,
                                    @Named("clips.polling.enabled") boolean enabled) {
         logger.info("Polling enabled: " + enabled);
         if (enabled)
-            return new SqsPollingWorker(remoteStorageService, client, clipManager, url, duration);
+            return new SqsPollingWorker(remoteStorageService, client, clipManager, messager, url, duration);
         else
             return null;
     }

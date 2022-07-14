@@ -1,5 +1,6 @@
 package cogbog.discord.worker;
 
+import cogbog.discord.adaptor.Messager;
 import cogbog.discord.model.CanonicalKey;
 import cogbog.discord.model.LocalClip;
 import cogbog.discord.service.ClipManager;
@@ -16,9 +17,7 @@ import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.List;
 
 public class SqsPollingWorker extends Thread {
@@ -31,12 +30,14 @@ public class SqsPollingWorker extends Thread {
 
     private final RemoteStorageService remoteStorageService;
     private final ClipManager clipManager;
+    private final Messager messager;
 
     private final String url;
 
     public SqsPollingWorker(RemoteStorageService remoteStorageService,
                             SqsClient client,
                             ClipManager clipManager,
+                            Messager messager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.duration") int duration) {
         super("NewClipNotifications");
@@ -44,6 +45,7 @@ public class SqsPollingWorker extends Thread {
         this.remoteStorageService = remoteStorageService;
         this.clipManager = clipManager;
         this.url = url;
+        this.messager = messager;
         request = ReceiveMessageRequest.builder()
                 .queueUrl(url)
                 .waitTimeSeconds(duration)
@@ -93,12 +95,18 @@ public class SqsPollingWorker extends Thread {
         // in future, perhaps should confirm that the bucket name matches the expected bucket
 //        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
+        LocalClip clip = null;
         try {
-            LocalClip clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
+            clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
             clipManager.put(clip);
+            // fixme: this isn't quite enough data to pick out the correct text channel
+            messager.send(clip.getGuild(), "I know how to " + clip.getTitle());
         } catch (Exception e) {
             logger.error("While downloading clip", e);
-            // fixme: ideally we'd notify of failure, too
+            if (clip != null) {
+                messager.send(clip.getGuild(),
+                        String.format("I had an issue downloading %s; try using ~sync.", clip.getTitle()));
+            }
         }
     }
 

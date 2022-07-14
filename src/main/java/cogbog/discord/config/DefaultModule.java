@@ -1,5 +1,6 @@
 package cogbog.discord.config;
 
+import cogbog.discord.Bot;
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.service.AuthManager;
 import cogbog.discord.service.impl.PersistenceAuthManagerImpl;
@@ -9,10 +10,13 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -20,6 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
 public class DefaultModule extends AbstractModule {
 
@@ -105,6 +111,14 @@ public class DefaultModule extends AbstractModule {
             System.exit(1);
         }
         return Collections.emptySet();
+    }
+
+    @Provides
+    @Singleton
+    JDA jda(Bot bot) throws LoginException {
+        return JDABuilder.create(System.getProperty("token"), GUILD_MESSAGES, GUILD_VOICE_STATES, GUILD_MEMBERS)
+                .addEventListeners(bot)
+                .build();
     }
 
     private void badPropertiesFile(String filename) {

@@ -35,6 +35,7 @@
   * get off of LavaPlayer
   * tracking users, channels, metrics for Hippo
   * enable/disable features based on registered commands
+  * boot is getting uglier by the day
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
