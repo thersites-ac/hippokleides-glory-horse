@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.UUID;
 
 public class WriteAudioCommand implements DiscordCommand {
 
@@ -54,12 +55,12 @@ public class WriteAudioCommand implements DiscordCommand {
             long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
             byte[] data = recordingService.getUser(guild, user);
-            ClipMetadata clipMetadata = ClipMetadata.builder()
+            ClipMetadata metadata = ClipMetadata.builder()
                     .originatingTextChannel(actions.getOriginatingTextChannelId())
                     .creator(actions.getAuthorId())
                     .recordedUser(actions.lookupUserId(username))
                     .build();
-            Coordinates coordinates = writeAudioData(data, guild, username);
+            Coordinates coordinates = writeAudioData(data, guild, metadata);
             sendCropLink(actions, coordinates);
         } catch (NotRecordingException e) {
             actions.send("I'm not very turned on right now :(");
@@ -111,25 +112,25 @@ public class WriteAudioCommand implements DiscordCommand {
         }
     }
 
-    private Coordinates writeAudioData(byte[] data, String guild, String username) throws DiscordCommandException {
+    private Coordinates writeAudioData(byte[] data, String guild, ClipMetadata metadata) throws DiscordCommandException {
         try (AudioInputStream audioInputStream = new AudioInputStream(
                 new ByteArrayInputStream(data),
                 AudioReceiveHandler.OUTPUT_FORMAT,
                 data.length)) {
-            String baseName = makeName(username);
+            String baseName = makeName();
             String directory = "recordings/" + guild;
             String filename = directory + "/" + baseName;
             new File(directory).mkdirs();
             File output = new File(filename);
             AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, output);
-            return remoteStorageService.store(guild, output);
+            return remoteStorageService.store(guild, output, metadata);
         } catch (IOException e) {
             throw new DiscordCommandException(e);
         }
     }
 
-    private String makeName(String username) {
-        return String.format(FORMAT, new Date().toString(), username)
+    private String makeName() {
+        return String.format(FORMAT, UUID.randomUUID(), new Date().toString())
                 .replace(':', '-')
                 .replace(' ', '_');
     }

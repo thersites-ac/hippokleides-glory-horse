@@ -2,15 +2,15 @@ package cogbog.discord.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Value;
 
 import java.io.Serializable;
 
-@Data
+@Value
 @Builder
 public class LocalClip implements Serializable {
-
-    private static final long serialVersionUid = 1L;
-    private final String path;
-    private final String title;
-    private final String guild;
+    String path;
+    String title;
+    String guild;
+    ClipMetadata metadata;
 }

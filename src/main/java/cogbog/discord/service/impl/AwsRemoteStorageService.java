@@ -3,6 +3,7 @@ package cogbog.discord.service.impl;
 import cogbog.discord.exception.MalformedKeyException;
 import cogbog.discord.exception.ResourceNotFoundException;
 import cogbog.discord.model.CanonicalKey;
+import cogbog.discord.model.ClipMetadata;
 import cogbog.discord.model.LocalClip;
 import cogbog.discord.service.ClipManager;
 import cogbog.discord.exception.NoSuchClipException;
@@ -36,6 +37,11 @@ public class AwsRemoteStorageService implements RemoteStorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(AwsRemoteStorageService.class);
 
+    private static final String CREATOR = "creator";
+    private static final String ORIGINATING_TEXT_CHANNEL = "originating-text-channel";
+    private static final String RECORDED_USER = "recorded-user";
+    private static final String TITLE = "title";
+
     private final S3Client trimmedClipsClient;
     private final S3Presigner presigner;
     private final S3Client untrimmedClipsClient;
@@ -68,8 +74,8 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     @Override
-    public Coordinates store(String guild, File file) {
-        String canonicalKey = upload(guild, file);
+    public Coordinates store(String guild, File file, ClipMetadata metadata) {
+        String canonicalKey = upload(guild, file, metadata);
         URL url = presignedUrlFor(canonicalKey);
         return Coordinates.builder()
                 .key(file.getName())
@@ -99,8 +105,8 @@ public class AwsRemoteStorageService implements RemoteStorageService {
 
         logger.info("Downloading {}", title);
         String path = localPathOf(canonicalKey);
-        new File(path).getParentFile().mkdirs();
-        logger.info("Made dirs: " + path);
+        if (new File(path).getParentFile().mkdirs())
+            logger.info("Made dirs for " + path);
         InputStream inputStream = trimmedClipsClient.getObject(request);
         Files.copy(inputStream, Path.of(path));
         inputStream.close();
@@ -118,7 +124,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     private Optional<String> readTitle(CanonicalKey canonicalKey) {
-        logger.info("Checking to download {}/{}", clipsBucket, canonicalKey);
+        logger.info("Getting tags for {}/{}", clipsBucket, canonicalKey);
         GetObjectTaggingRequest taggingRequest = GetObjectTaggingRequest.builder()
                 .bucket(clipsBucket)
                 .key(canonicalKey.toString())
@@ -126,7 +132,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         GetObjectTaggingResponse taggingResponse = trimmedClipsClient.getObjectTagging(taggingRequest);
 
         return taggingResponse.tagSet().stream()
-                .filter(t -> t.key().equals("title"))
+                .filter(t -> t.key().equals(TITLE))
                 .findFirst()
                 .map(Tag::value);
     }
@@ -204,7 +210,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
 
     }
 
-    private String upload(String guild, File file) {
+    private String upload(String guild, File file, ClipMetadata metadata) {
         String canonicalKey = CanonicalKey.builder()
                 .guild(guild)
                 .key(file.getName())
@@ -212,6 +218,11 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(uploadsBucket)
                 .key(canonicalKey)
+                .tagging(Tagging.builder()
+                        .tagSet(Tag.builder().key(CREATOR).value(metadata.getCreator() + "").build(),
+                                Tag.builder().key(RECORDED_USER).value(metadata.getRecordedUser() + "").build(),
+                                Tag.builder().key(ORIGINATING_TEXT_CHANNEL).value(metadata.getOriginatingTextChannel() + "").build())
+                        .build())
                 .storageClass(StorageClass.STANDARD)
                 .build();
         untrimmedClipsClient.putObject(request, Path.of(file.toURI()));
