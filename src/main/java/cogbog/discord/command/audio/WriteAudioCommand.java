@@ -5,6 +5,7 @@ import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.constants.HelpMessages;
 import cogbog.discord.exception.*;
 import cogbog.discord.model.AuthLevel;
+import cogbog.discord.model.ClipMetadata;
 import cogbog.discord.service.RecordingService;
 import cogbog.discord.service.RemoteStorageService;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
@@ -53,6 +54,11 @@ public class WriteAudioCommand implements DiscordCommand {
             long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
             byte[] data = recordingService.getUser(guild, user);
+            ClipMetadata clipMetadata = ClipMetadata.builder()
+                    .originatingTextChannel(actions.getOriginatingTextChannelId())
+                    .creator(actions.getAuthorId())
+                    .recordedUser(actions.lookupUserId(username))
+                    .build();
             Coordinates coordinates = writeAudioData(data, guild, username);
             sendCropLink(actions, coordinates);
         } catch (NotRecordingException e) {

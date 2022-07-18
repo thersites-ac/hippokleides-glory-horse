@@ -32,4 +32,5 @@ public interface MessageReceivedActions {
     String getGuildId();
     String getGuildName();
     int getAudioQueueSize();
+    long getOriginatingTextChannelId();
 }

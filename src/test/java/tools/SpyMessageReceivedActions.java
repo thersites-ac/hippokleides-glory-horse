@@ -130,6 +130,11 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
         return queuedAudio.size();
     }
 
+    @Override
+    public long getOriginatingTextChannelId() {
+        return 0L;
+    }
+
     public List<String> getSentMessage() {
         return sentMessages;
     }

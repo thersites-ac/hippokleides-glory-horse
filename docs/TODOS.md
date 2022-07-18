@@ -9,6 +9,7 @@
   * polling:
     * send download messages to the right text channel
     * send error messages if possible
+  * rename prod: hippokleides-soundboard or something
 
 # other
   * combine repos

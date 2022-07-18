@@ -184,4 +184,8 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
         return audioContext.guildPlayer.scheduler.size();
     }
 
+    @Override
+    public long getOriginatingTextChannelId() {
+        return event.getChannel().getIdLong();
+    }
 }
