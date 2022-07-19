@@ -27,19 +27,18 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
 @Singleton
 public class AwsRemoteStorageService implements RemoteStorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(AwsRemoteStorageService.class);
 
-    private static final String CREATOR = "creator";
-    private static final String ORIGINATING_TEXT_CHANNEL = "originating-text-channel";
-    private static final String RECORDED_USER = "recorded-user";
     private static final String TITLE = "title";
 
     private final S3Client trimmedClipsClient;
@@ -52,6 +51,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final Map<String, Map<String, CanonicalKey>> remoteKeys;
     private final Duration timeToLive;
     private final String clipsDirectory;
+    private final ExecutorService executorService;
 
     @Inject
     public AwsRemoteStorageService(@Named("s3.client.download") S3Client downloadClient,
@@ -60,6 +60,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                                    @Named("s3.bucket.name.trimmed") String clipsBucket,
                                    @Named("s3.signature.ttl") Duration timeToLive,
                                    @Named("clips.directory") String clipsDirectory,
+                                   ExecutorService executorService,
                                    S3Presigner presigner,
                                    ClipManager clipManager) {
         this.uploadsBucket = uploadsBucket;
@@ -70,6 +71,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         this.clipManager = clipManager;
         this.timeToLive = timeToLive;
         this.clipsDirectory = clipsDirectory;
+        this.executorService = executorService;
         remoteKeys = new ConcurrentHashMap<>();
     }
 
@@ -85,36 +87,47 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     }
 
     @Override
-    public LocalClip download(CanonicalKey key) throws ResourceNotFoundException, IOException {
-        Optional<String> maybeTitle = readTitle(key);
-        if (maybeTitle.isPresent())
-            return downloadAs(key, maybeTitle.get());
-        else
-            throw new ResourceNotFoundException(key.toString(), "s3://" + clipsBucket + "/" + key.toString());
+    public LocalClip download(CanonicalKey key) throws ResourceNotFoundException {
+        var futureTags = executorService.submit(() -> collectTags(key));
+        var successfulDownload = executorService.submit(() -> downloadClip(key));
+        try {
+            var tags = futureTags.get();
+            String title = tags.get(TITLE);
+            // fixme: temporary solution; probably should add some content here
+            if (title == null)
+                title = key.getKey().split(".")[0];
+            putRemoteKey(key, title);
+            if (successfulDownload.get()) {
+                return LocalClip.builder()
+                        .guild(key.getGuild())
+                        .path(localPathOf(key))
+                        .title(title)
+                        .metadata(ClipMetadata.fromMap(tags))
+                        .build();
+            } else {
+                throw new ResourceNotFoundException(key.toString(), clipsBucket);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new ResourceNotFoundException(key.toString(), e);
+        }
     }
 
-    private LocalClip downloadAs(CanonicalKey canonicalKey, String title) throws IOException {
-        String guild = canonicalKey.getGuild();
-
-        putRemoteKey(canonicalKey, title);
-
+    private boolean downloadClip(CanonicalKey canonicalKey) {
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(clipsBucket)
                 .key(canonicalKey.toString())
                 .build();
-
-        logger.info("Downloading {}", title);
+        logger.info("Downloading {}", canonicalKey.toString());
         String path = localPathOf(canonicalKey);
         if (new File(path).getParentFile().mkdirs())
             logger.info("Made dirs for " + path);
-        InputStream inputStream = trimmedClipsClient.getObject(request);
-        Files.copy(inputStream, Path.of(path));
-        inputStream.close();
-        return LocalClip.builder()
-                .guild(guild)
-                .path(path)
-                .title(title)
-                .build();
+        try (InputStream inputStream = trimmedClipsClient.getObject(request)) {
+            Files.copy(inputStream, Path.of(path));
+            return true;
+        } catch (IOException e) {
+            logger.error("While downloading " + canonicalKey.toString(), e);
+            return false;
+        }
     }
 
     private void putRemoteKey(CanonicalKey canonicalKey, String title) {
@@ -123,7 +136,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         remoteKeys.get(guild).put(title, canonicalKey);
     }
 
-    private Optional<String> readTitle(CanonicalKey canonicalKey) {
+    private Map<String, String> collectTags(CanonicalKey canonicalKey) {
         logger.info("Getting tags for {}/{}", clipsBucket, canonicalKey);
         GetObjectTaggingRequest taggingRequest = GetObjectTaggingRequest.builder()
                 .bucket(clipsBucket)
@@ -131,10 +144,9 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                 .build();
         GetObjectTaggingResponse taggingResponse = trimmedClipsClient.getObjectTagging(taggingRequest);
 
-        return taggingResponse.tagSet().stream()
-                .filter(t -> t.key().equals(TITLE))
-                .findFirst()
-                .map(Tag::value);
+        Map<String, String> result = new HashMap<>();
+        taggingResponse.tagSet().forEach(tag -> result.put(tag.key(), tag.value()));
+        return result;
     }
 
     @Override
@@ -196,14 +208,15 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         String guild = key.getGuild();
         logger.info("{} already exists; looking up tagged title", key);
         String path = localPathOf(key);
-        Optional<String> maybeTitle = readTitle(key);
-        if (maybeTitle.isPresent()) {
-            String title = maybeTitle.get();
+        var tags = collectTags(key);
+        String title = tags.get(TITLE);
+        if (title != null) {
             putRemoteKey(key, title);
             return LocalClip.builder()
                     .path(path)
                     .guild(guild)
                     .title(title)
+                    .metadata(ClipMetadata.fromMap(tags))
                     .build();
         }
         throw new ResourceNotFoundException(key.toString(), "s3://" + clipsBucket + "/" + key);
@@ -218,11 +231,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(uploadsBucket)
                 .key(canonicalKey)
-                .tagging(Tagging.builder()
-                        .tagSet(Tag.builder().key(CREATOR).value(metadata.getCreator() + "").build(),
-                                Tag.builder().key(RECORDED_USER).value(metadata.getRecordedUser() + "").build(),
-                                Tag.builder().key(ORIGINATING_TEXT_CHANNEL).value(metadata.getOriginatingTextChannel() + "").build())
-                        .build())
+                .tagging(metadata.toTagging())
                 .storageClass(StorageClass.STANDARD)
                 .build();
         untrimmedClipsClient.putObject(request, Path.of(file.toURI()));
