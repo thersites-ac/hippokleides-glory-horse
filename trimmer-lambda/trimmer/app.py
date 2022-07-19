@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 from trimmer import Trimmer
+from urllib.parse import urlencode
 
 class NonUniqueKeyError(Exception):
     pass
@@ -55,13 +56,18 @@ def lambda_handler(event, context):
         }
 
 def trim_and_upload(key, prefix, start, end, title):
+    client = boto3.client('s3')
     s3 = boto3.resource('s3')
     recordings = s3.Bucket('discord-recordings')
     output = s3.Bucket('discord-output')
     
     dest = '/tmp/' + key
 
-    recordings.download_file(prefix + '/' + key, dest)
+    full_key = prefix + '/' + key
+    recordings.download_file(full_key, dest)
+    tagging_response = client.get_object_tagging(Key = full_key, Bucket = 'discord-recordings')
+    tags = transform(tagging_response)
+    tags['title'] = title
 
     skip_ms = int(start * 1000)
     copy_ms = int((end - start) * 1000)
@@ -77,7 +83,14 @@ def trim_and_upload(key, prefix, start, end, title):
     if len(s3_collision) != 0:
         raise NonUniqueKeyError(trimmed_key)
 
-    output.upload_file(result, trimmed_key, ExtraArgs = { 'Tagging': 'title=' + title })
+    output.upload_file(result, trimmed_key, ExtraArgs = { 'Tagging': urlencode(tags) })
 
     print('successfully uploaded as', trimmed_key, 'with title', title)
     return trimmed_key
+
+def transform(tagging_response):
+    tags = tagging_response.get('TagSet')
+    result = {}
+    for pair in tags:
+        result[pair['Key']] = pair['Value']
+    return result
