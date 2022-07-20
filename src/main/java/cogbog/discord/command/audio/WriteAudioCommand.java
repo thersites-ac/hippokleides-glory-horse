@@ -2,7 +2,6 @@ package cogbog.discord.command.audio;
 
 import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.command.DiscordCommand;
-import cogbog.discord.constants.HelpMessages;
 import cogbog.discord.exception.*;
 import cogbog.discord.model.AuthLevel;
 import cogbog.discord.model.ClipMetadata;
@@ -89,7 +88,7 @@ public class WriteAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return HelpMessages.WRITE_AUDIO;
+        return "Clip a user from the voice channel. Make sure to run ~record first";
     }
 
     @Override

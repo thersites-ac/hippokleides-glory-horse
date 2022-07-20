@@ -69,7 +69,7 @@ public class FeatCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Look up a feat from legacy.aonprd.com.";
+        return "Look up a feat from legacy.aonprd.com";
     }
 
     @Override

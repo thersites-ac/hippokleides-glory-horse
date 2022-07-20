@@ -61,7 +61,7 @@ public class RandomClipCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Play a random clip from the recordings I've taken.";
+        return "Play a random clip from the recordings I've taken";
     }
 
     @Override

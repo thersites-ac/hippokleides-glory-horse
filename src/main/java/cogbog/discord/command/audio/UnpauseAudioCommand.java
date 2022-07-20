@@ -23,7 +23,7 @@ public class UnpauseAudioCommand implements DiscordCommand {
 
   @Override
   public String helpMessage() {
-    return "Unpause the current track.";
+    return "Unpause the current track";
   }
 
   @Override

@@ -72,7 +72,7 @@ public class RepeatClipCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Repeats a clip as many times as you want";
+        return "Repeat a clip as many times as you want";
     }
 
     @Override

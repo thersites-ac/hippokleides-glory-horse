@@ -3,7 +3,6 @@ package cogbog.discord.command.audio;
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.model.AuthLevel;
 import cogbog.discord.adaptor.MessageReceivedActions;
-import cogbog.discord.constants.HelpMessages;
 import cogbog.discord.exception.DiscordCommandException;
 import cogbog.discord.service.RemoteStorageService;
 
@@ -36,7 +35,7 @@ public class SyncClipsCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return HelpMessages.SYNC;
+        return "Download the latest clips. Use this if you think I'm missing any, but I'm generally pretty good at staying up to date";
     }
 
     @Override

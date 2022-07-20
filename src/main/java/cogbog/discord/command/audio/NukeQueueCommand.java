@@ -27,7 +27,7 @@ public class NukeQueueCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Removes all queued audio";
+        return "Remove all queued audio";
     }
 
     @Override

@@ -24,7 +24,7 @@ public class GetVolumeAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Get the current volume.";
+        return "Get the current volume";
     }
 
     @Override

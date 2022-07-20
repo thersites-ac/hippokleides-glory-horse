@@ -44,7 +44,7 @@ public class HelpCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "See this message again.";
+        return "See this message again";
     }
 
     @Override

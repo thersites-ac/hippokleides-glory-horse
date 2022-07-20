@@ -25,7 +25,7 @@ public class SofterAudioCommand implements DiscordCommand {
 
   @Override
   public String helpMessage() {
-    return "Turn the volume down.";
+    return "Turn the volume down";
   }
 
   @Override

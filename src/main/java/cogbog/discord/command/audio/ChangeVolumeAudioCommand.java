@@ -43,7 +43,7 @@ public class ChangeVolumeAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Set the volume.";
+        return "Set the volume";
     }
 
     @Override

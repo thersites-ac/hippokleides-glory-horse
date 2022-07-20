@@ -24,7 +24,7 @@ public class SkipAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Skip a track.";
+        return "Skip a track";
     }
 
     @Override

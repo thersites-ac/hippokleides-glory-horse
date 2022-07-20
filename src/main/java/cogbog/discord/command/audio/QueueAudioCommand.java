@@ -41,7 +41,7 @@ public class QueueAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Add a track to the playlist.";
+        return "Add a track to the playlist";
     }
 
     @Override

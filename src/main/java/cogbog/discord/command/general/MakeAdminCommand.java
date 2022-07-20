@@ -3,7 +3,6 @@ package cogbog.discord.command.general;
 import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.model.AuthLevel;
-import cogbog.discord.constants.HelpMessages;
 import cogbog.discord.constants.Messages;
 import cogbog.discord.exception.AlreadyAdminException;
 import cogbog.discord.exception.DiscordCommandException;
@@ -63,7 +62,7 @@ public class MakeAdminCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return HelpMessages.ADMIN;
+        return "Allow a user to execute admin actions (these include most of the audio ones)";
     }
 
     @Override

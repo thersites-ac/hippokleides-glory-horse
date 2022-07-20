@@ -2,7 +2,6 @@ package cogbog.discord.command.audio;
 
 import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.command.DiscordCommand;
-import cogbog.discord.constants.HelpMessages;
 import cogbog.discord.handler.receive.DemultiplexingHandler;
 import cogbog.discord.model.AuthLevel;
 import cogbog.discord.service.RecordingService;
@@ -42,7 +41,7 @@ public class RecordCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return HelpMessages.RECORD;
+        return "Begin recording the voice channel so you can clip it";
     }
 
     @Override

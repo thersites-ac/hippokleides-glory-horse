@@ -62,7 +62,7 @@ public class SpellCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Look up a spell from legacy.aonprd.com.";
+        return "Look up a spell from legacy.aonprd.com";
     }
 
     @Override

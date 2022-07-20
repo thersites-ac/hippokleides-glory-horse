@@ -24,7 +24,7 @@ public class PauseAudioCommand implements DiscordCommand {
 
     @Override
     public String helpMessage() {
-        return "Pause the current track.";
+        return "Pause the current track";
     }
 
     @Override
