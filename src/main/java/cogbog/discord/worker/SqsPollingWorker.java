@@ -40,7 +40,7 @@ public class SqsPollingWorker extends Thread {
                             Messager messager,
                             @Named("sqs.url") String url,
                             @Named("sqs.poll.duration") int duration) {
-        super("NewClipNotifications");
+        super("sqs-polling-worker");
         this.client = client;
         this.remoteStorageService = remoteStorageService;
         this.clipManager = clipManager;

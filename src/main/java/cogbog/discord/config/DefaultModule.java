@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +20,7 @@ import javax.inject.Named;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
@@ -51,12 +49,21 @@ public class DefaultModule extends AbstractModule {
     ExecutorService executorService(@Named("core.pool.size") int corePoolSize,
                                     @Named("max.pool.size") int maxPoolSize,
                                     @Named("keep.alive.time") int keepAliveTime) {
+        var threadFactory = new ThreadFactory() {
+            int id = 0;
+            @Override
+            public Thread newThread(@NotNull Runnable runnable) {
+                id++;
+                return new Thread(runnable, "bot-event-handler-" + id);
+            }
+        };
         return new ThreadPoolExecutor(
                 corePoolSize,
                 maxPoolSize,
                 keepAliveTime,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(100, true),
+                threadFactory,
                 new ThreadPoolExecutor.AbortPolicy());
     }
 
