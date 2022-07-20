@@ -99,14 +99,15 @@ public class SqsPollingWorker extends Thread {
         try {
             clip = remoteStorageService.download(CanonicalKey.fromString(objectKey));
             clipManager.put(clip);
-            // fixme: this isn't quite enough data to pick out the correct text channel
-            messager.send(clip.getGuild(), "I know how to " + clip.getTitle());
+            if (clip.getMetadata() != null && clip.getMetadata().getOriginatingTextChannel() > 0) {
+                messager.send(
+                        clip.getGuild(),
+                        clip.getMetadata().getOriginatingTextChannel() + "",
+                        "I know how to " + clip.getTitle()
+                );
+            }
         } catch (Exception e) {
             logger.error("While downloading clip", e);
-            if (clip != null) {
-                messager.send(clip.getGuild(),
-                        String.format("I had an issue downloading %s; try using ~sync.", clip.getTitle()));
-            }
         }
     }
 

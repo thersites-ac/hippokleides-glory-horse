@@ -41,6 +41,8 @@
   * tracking users, channels, metrics for Hippo
   * enable/disable features based on registered commands
   * boot is getting uglier by the day
+  * joins correct voice channel
+  * text voice channels break it
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
