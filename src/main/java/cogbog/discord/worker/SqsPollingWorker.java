@@ -92,8 +92,6 @@ public class SqsPollingWorker extends Thread {
     }
 
     private void process(S3Event event) {
-        // in future, perhaps should confirm that the bucket name matches the expected bucket
-//        String bucketName = event.getS3().getBucket().getName();
         String objectKey = event.getS3().getObject().getKey();
         LocalClip clip = null;
         try {

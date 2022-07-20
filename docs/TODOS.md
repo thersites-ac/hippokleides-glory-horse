@@ -1,14 +1,10 @@
 # blockers to full release
-  * payment detection/feature toggle
-  * help lines are getting out of date
   * trimmer:
     * ui is ugly
     * make the url better
     * https
     * obfuscated query params
-  * polling:
-    * send download messages to the right text channel
-    * send error messages if possible
+  * payment detection/feature toggle
   * rename prod: hippokleides-soundboard or something
 
 # other
