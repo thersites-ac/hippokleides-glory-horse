@@ -6,6 +6,7 @@
     * obfuscated query params
   * payment detection/feature toggle
   * rename prod: hippokleides-soundboard or something
+  * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
 
 # other
   * combine repos
@@ -39,6 +40,7 @@
   * boot is getting uglier by the day
   * joins correct voice channel
   * text voice channels break it
+  * cross region replication for clips; the storage fees are trivial
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

@@ -1,0 +1,35 @@
+S3 standard storage: $0.023 / GB / mo
+Putatively, 5 clips can take up 2.2 MB
+This implies 2327 clips / GB
+Estimated clip storage cost: 1/10000 cents per clip
+
+
+Putative average untrimmed recording size: 3.715 MB
+Data transfer into S3: 0
+Data transfer out of S3: $0.09 / GB
+It takes 276 clip transfers to use up 1 GB bandwidth
+One clip transfer costs 3.3/1000 cents
+
+Assume every untrimmed recording is accessed exactly once...
+Cost (in cents) of clip creation = 3.3/10000 * unique clips created
+
+In addition, the 3.715 MB of recording costs 1 month of storage = (3.715 / 1024) * 0.023 = 0.0084 cents
+
+
+
+Suppose a server creates 50 clips. The creation cost is 50*3.3/10000 cents = $0.0163
+
+The temporary cost to store the 50 original recordings is 50 * 0.0084 cents = 0.42 cents
+
+So the total creation cost is about 0.02 cents
+
+The monthly storage cost is 50/10000 cents
+
+
+
+In general, the costs for N clips is
+One-time creation: N * (33/100_000 + 84/1_000_000) cents
+Monthly storage: N / 10_000 cents
+
+In general one-time creation should be about 4 times the monthly storage cost for N clips.
+Even with 100_000 clips, the costs are trivial - 40 cents to create, and 10 cents to maintain per month.

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -37,14 +38,17 @@ public class WriteAudioCommand implements DiscordCommand {
     private final RecordingService recordingService;
     private final RemoteStorageService remoteStorageService;
     private final UrlShortener urlShortener;
+    private final String commandPrefix;
 
     @Inject
     public WriteAudioCommand(RecordingService recordingService,
                              RemoteStorageService remoteStorageService,
-                             UrlShortener urlShortener) {
+                             UrlShortener urlShortener,
+                             @Named("command.prefix") String commandPrefix) {
         this.recordingService = recordingService;
         this.remoteStorageService = remoteStorageService;
         this.urlShortener = urlShortener;
+        this.commandPrefix = commandPrefix;
     }
 
     @Override
@@ -102,6 +106,7 @@ public class WriteAudioCommand implements DiscordCommand {
                     .addParameter("uri", coordinates.getUrl().toString())
                     .addParameter("key", coordinates.getKey())
                     .addParameter("prefix", coordinates.getPrefix())
+                    .addParameter("guild_prefix", commandPrefix)
                     .build();
             String bitlyLink = urlShortener.shorten(cropLink.toString());
             actions.send("OK, now go to " + bitlyLink+ " to trim it.");
