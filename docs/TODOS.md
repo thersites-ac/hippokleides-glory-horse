@@ -1,12 +1,15 @@
 # blockers to full release
   * trimmer:
     * ui is ugly
+      * transplant waveform display to soundboard trimmer
+      * deploy Python waveform image generator as a Lambda
     * make the url better
     * https
     * obfuscated query params
   * payment detection/feature toggle
   * rename prod: hippokleides-soundboard or something
   * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
+  * hypothetical users / design thinking
 
 # other
   * combine repos
@@ -41,6 +44,8 @@
   * joins correct voice channel
   * text voice channels break it
   * cross region replication for clips; the storage fees are trivial
+  * lookup user by @ mention
+    * literal string appears to have syntax <@385291954516393984> which the DSL does not recognize as a valid variable
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion

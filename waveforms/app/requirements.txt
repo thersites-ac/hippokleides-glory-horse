@@ -1,0 +1,4 @@
+matplotlib
+wave
+numpy
+boto3
