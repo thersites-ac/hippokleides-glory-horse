@@ -7,28 +7,26 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 10
 
 Resources:
   WaveformsFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: app/
       Handler: app.lambda_handler
       Runtime: python3.9
+      Role: arn:aws:iam::166605477498:role/service-role/access-s3
+      MemorySize: 512 # somewhat memory intensive operations
       Architectures:
         - x86_64
-      Events:
-        HelloWorld:
-          Type: S3
-          Properties:
-              Bucket: s3://discord-recordings
-              Events: s3:ObjectCreated:Put
+      EventInvokeConfiguration:
+        MaximumRetryAttempts: 0 # default was 2
+      Environment:
+        Variables:
+          MPLCONFIGDIR: /tmp # otherwise matplotlib complains it can't open a writable config directory
 
 Outputs:
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  WaveformsFunction:
+    Description: "Waveforms Lambda Function ARN"
+    Value: !GetAtt WaveformsFunction.Arn

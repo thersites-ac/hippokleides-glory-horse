@@ -46,6 +46,9 @@
   * cross region replication for clips; the storage fees are trivial
   * lookup user by @ mention
     * literal string appears to have syntax <@385291954516393984> which the DSL does not recognize as a valid variable
+  * IAM permissions are degenerating to "do whatever" for Lambda functions; review these
+  * it's gross that stuff is spread across us-east-1 and us-east-2
+  * handle warnings in waveform generator lambda
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
