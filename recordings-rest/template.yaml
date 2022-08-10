@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  recordings
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  GetRecordingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get-recording/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        GetRecording:
+          Type: Api
+          Properties:
+            Path: /recordings/{key+}
+            Method: get
+        Preflight:
+          Type: Api
+          Properties:
+            Path: /recordings/{key+}
+            Method: options
+
+Outputs:
+  GetRecordingApi:
+    Description: "API Gateway endpoint URL for Prod stage for GetRecording function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/recordings/{key+}"
