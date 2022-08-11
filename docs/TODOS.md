@@ -1,13 +1,11 @@
 # blockers to full release
   * trimmer:
     * ui is ugly
-      * transplant waveform display to soundboard trimmer
-      * deploy Python waveform image generator as a Lambda
-    * make the url better
+    * the url shouldn't say "pickle park"
     * https
-    * obfuscated query params
+    * need to write all the correct data to dynamo for get-recordings to fetch
   * payment detection/feature toggle
-  * rename prod: hippokleides-soundboard or something
+  * rename prod: SoundboardMixerPro or something
   * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
   * hypothetical users / design thinking
 
@@ -17,21 +15,21 @@
   * add CORS headers to API Gateway error responses
   * functional testing (set up another bot for this)
   * better work/todo tracking
-  * is the trimmer lambda worth it? why not make that an endpoint on the same VM as hippo?
+    * script to grep for TODOs and FIXMEs
   * reorganize clip buckets
   * perf testing, more scaling consideration
   * resilience
-  * the S3 notifications should happen after the new clip is tagged, not after the clip is created
+  * the S3 notifications that Hippo receives should happen after the new clip is tagged, not after the clip is created
   * automate promotion of good artifacts
   * tag builds with version
   * combine secrets in secretsmanager (to save $0.80/mo...)
   * once clip title and key are the same, remove the tag
-  * Discord OAuth?
-  * distinct prod bitly access key?
+  * Discord OAuth for user login?
+  * distinct prod bitly account?
   * security review for UI/lambda
     * any unsanitized user input risks?
   * handle invalid clip names (in UI, lambda, and bot)
-  * error handling in the Python Lambda
+  * error handling in POST /trim
     * 403s from S3
     * 404s from S3
   * trimmer:
@@ -49,16 +47,19 @@
   * IAM permissions are degenerating to "do whatever" for Lambda functions; review these
   * it's gross that stuff is spread across us-east-1 and us-east-2
   * handle warnings in waveform generator lambda
-  * post-clip creation is still broken - Hippo sensd "I know how to x" but doesn't load the clip
+  * post-clip creation is still broken - Hippo sends "I know how to x" but doesn't load the clip
+  * automated dynamo deletion for hippokleides_recordings table
+    * also, convert table to an in-memory cache
+  * consider alternative backend architectures
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
-  * track speaker of clips in order to create `~impersonate` command
+  * track speaker of clips
+    * ~impersonate command
   * feature request intake endpoint
-  * more tags for randomized selections
+  * optional tags for randomized selections
   * share clips between channels
   * record only individual users, or allow users to opt out of recording
-  * it would be nice if `ClipManager::sync` were atomic, to roll back the deletion in the case of a download error
   * opt-in recording: has `AuthLevel.USER`, but requires people in the voice chat to respond to a bot message to be recorded
   * multichannel welcome over regular clip playback
   * join command: get link to join hippo to another channel
