@@ -30,8 +30,11 @@ def get(event):
         return {
             'statusCode': 200,
             'body': json.dumps({
-                'recording_uri': body['recording_uri']['S'],
-                'waveform_uri': body['waveform_uri']['S']
+                'recordingId': body['recording_id']['S'],
+                'recordingUri': body['recording_uri']['S'],
+                'waveformUri': body['waveform_uri']['S'],
+                'prefix': body['prefix']['S'],
+                'key': body['key']['S']
             }),
             'headers': HEADERS
         }

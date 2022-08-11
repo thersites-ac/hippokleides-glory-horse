@@ -49,6 +49,7 @@
   * IAM permissions are degenerating to "do whatever" for Lambda functions; review these
   * it's gross that stuff is spread across us-east-1 and us-east-2
   * handle warnings in waveform generator lambda
+  * post-clip creation is still broken - Hippo sensd "I know how to x" but doesn't load the clip
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
