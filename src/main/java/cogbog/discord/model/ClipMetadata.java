@@ -16,12 +16,14 @@ public class ClipMetadata {
     public static final String CREATOR = "creator";
     public static final String ORIGINATING_TEXT_CHANNEL = "originating-text-channel";
     public static final String RECORDED_USER = "recorded-user";
+    public static final String RECORDING_ID = "recording-id";
 
     private static final Logger logger = LoggerFactory.getLogger(ClipMetadata.class);
 
     long originatingTextChannel;
     long recordedUser;
     long creator;
+    String recordingId;
 
     public static ClipMetadata fromMap(Map<String, String> tags) {
         long creator = parseLong(tags, CREATOR);
@@ -31,6 +33,7 @@ public class ClipMetadata {
                 .creator(creator)
                 .originatingTextChannel(originatingTextChannel)
                 .recordedUser(recordedUser)
+                .recordingId(tags.get(RECORDING_ID))
                 .build();
     }
 
@@ -48,7 +51,8 @@ public class ClipMetadata {
         return Tagging.builder()
                 .tagSet(Tag.builder().key(CREATOR).value(creator + "").build(),
                         Tag.builder().key(RECORDED_USER).value(getRecordedUser() + "").build(),
-                        Tag.builder().key(ORIGINATING_TEXT_CHANNEL).value(originatingTextChannel + "").build())
+                        Tag.builder().key(ORIGINATING_TEXT_CHANNEL).value(originatingTextChannel + "").build(),
+                        Tag.builder().key(RECORDING_ID).value(recordingId).build())
                 .build();
     }
 }

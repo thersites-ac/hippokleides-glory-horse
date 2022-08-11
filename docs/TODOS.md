@@ -3,7 +3,11 @@
     * ui is ugly
     * the url shouldn't say "pickle park"
     * https
-    * need to write all the correct data to dynamo for get-recordings to fetch
+  * trimmer waveforms:
+    * waveforms lambda writes output to Dynamo
+    * validate/deploy UI changes that fetch data via recording_id query param
+    * validate/deploy UI changes that load the waveform
+    * remove dead query params
   * payment detection/feature toggle
   * rename prod: SoundboardMixerPro or something
   * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification

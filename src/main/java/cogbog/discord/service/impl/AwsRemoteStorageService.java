@@ -1,5 +1,6 @@
 package cogbog.discord.service.impl;
 
+import cogbog.discord.adaptor.DataPersistenceAdaptor;
 import cogbog.discord.exception.MalformedKeyException;
 import cogbog.discord.exception.ResourceNotFoundException;
 import cogbog.discord.model.CanonicalKey;
@@ -8,7 +9,7 @@ import cogbog.discord.model.LocalClip;
 import cogbog.discord.service.ClipManager;
 import cogbog.discord.exception.NoSuchClipException;
 import cogbog.discord.service.RemoteStorageService;
-import cogbog.discord.model.Coordinates;
+import cogbog.discord.model.Recording;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -27,9 +28,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -52,6 +52,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     private final Duration timeToLive;
     private final String clipsDirectory;
     private final ExecutorService executorService;
+    private final DataPersistenceAdaptor<Recording> recordingDataPersistenceAdaptor;
 
     @Inject
     public AwsRemoteStorageService(@Named("s3.client.download") S3Client downloadClient,
@@ -60,6 +61,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
                                    @Named("s3.bucket.name.trimmed") String clipsBucket,
                                    @Named("s3.signature.ttl") Duration timeToLive,
                                    @Named("clips.directory") String clipsDirectory,
+                                   DataPersistenceAdaptor<Recording> recordingDataPersistenceAdaptor,
                                    ExecutorService executorService,
                                    S3Presigner presigner,
                                    ClipManager clipManager) {
@@ -72,19 +74,22 @@ public class AwsRemoteStorageService implements RemoteStorageService {
         this.timeToLive = timeToLive;
         this.clipsDirectory = clipsDirectory;
         this.executorService = executorService;
+        this.recordingDataPersistenceAdaptor = recordingDataPersistenceAdaptor;
         remoteKeys = new ConcurrentHashMap<>();
     }
 
     @Override
-    public Coordinates store(String guild, File file, ClipMetadata metadata) {
+    public Recording store(String guild, File file, ClipMetadata metadata) {
         String canonicalKey = upload(guild, file, metadata);
         URL url = presignedUrlFor(canonicalKey);
-        // TODO: add an ID
-        return Coordinates.builder()
+        var recording = Recording.builder()
                 .key(file.getName())
                 .prefix(guild)
-                .url(url)
+                .recordingUri(url)
+                .recordingId(metadata.getRecordingId())
                 .build();
+        recordingDataPersistenceAdaptor.write(recording);
+        return recording;
     }
 
     @Override

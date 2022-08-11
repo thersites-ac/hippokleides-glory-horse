@@ -4,7 +4,7 @@ import cogbog.discord.exception.NoSuchClipException;
 import cogbog.discord.exception.ResourceNotFoundException;
 import cogbog.discord.model.CanonicalKey;
 import cogbog.discord.model.ClipMetadata;
-import cogbog.discord.model.Coordinates;
+import cogbog.discord.model.Recording;
 import cogbog.discord.model.LocalClip;
 import cogbog.discord.service.RemoteStorageService;
 
@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class SpyStorageService implements RemoteStorageService {
 
-    private final Map<CanonicalKey, Coordinates> clips = new HashMap<>();
+    private final Map<CanonicalKey, Recording> clips = new HashMap<>();
 
     private final String id;
 
@@ -27,16 +27,16 @@ public class SpyStorageService implements RemoteStorageService {
     }
 
     @Override
-    public Coordinates store(String guild, File file, ClipMetadata metadata) throws MalformedURLException {
+    public Recording store(String guild, File file, ClipMetadata metadata) throws MalformedURLException {
         var key = CanonicalKey.builder()
                 .guild(guild)
                 .key(file.getName())
                 .build();
         var url = new URL("http://cogbog.com/" + key.getGuild() + "/" + key.getKey());
-        var value = Coordinates.builder()
+        var value = Recording.builder()
                 .key(key.getKey())
                 .prefix(key.getGuild())
-                .url(url)
+                .recordingUri(url)
                 .recordingId(id)
                 .build();
         clips.put(key, value);

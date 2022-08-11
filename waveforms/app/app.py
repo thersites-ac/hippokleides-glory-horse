@@ -1,6 +1,7 @@
 import boto3
 import waveform
 
+# TODO: fetch the recording ID for the object and write to Dynamo
 def lambda_handler(event, context):
     recordings = boto3.resource('s3').Bucket('discord-recordings')
     

@@ -4,9 +4,11 @@ import cogbog.discord.adaptor.DataPersistenceAdaptor;
 import cogbog.discord.adaptor.Messager;
 import cogbog.discord.adaptor.impl.DynamoPersistenceAdaptorImpl;
 import cogbog.discord.adaptor.impl.MessagerImpl;
+import cogbog.discord.model.Recording;
 import cogbog.discord.model.WelcomeRecord;
 import cogbog.discord.persistence.AuthRecordMappingFactory;
 import cogbog.discord.persistence.MappingFactory;
+import cogbog.discord.persistence.RecordingMappingFactory;
 import cogbog.discord.service.*;
 import cogbog.discord.service.impl.*;
 import cogbog.discord.worker.SqsPollingWorker;
@@ -104,9 +106,7 @@ public class ServicesModule extends AbstractModule {
                 .build();
     }
 
-    @Provides
-    @Singleton
-    DataPersistenceAdaptor<AuthRecord> dynamoAuthRecordPersistenceAdaptor(
+    @Provides @Singleton DataPersistenceAdaptor<AuthRecord> dynamoAuthRecordPersistenceAdaptor(
             DynamoDbClient client,
             MappingFactory<AuthRecord> factory) {
         return new DynamoPersistenceAdaptorImpl<>(client, factory);
@@ -118,9 +118,7 @@ public class ServicesModule extends AbstractModule {
         return new AuthRecordMappingFactory(table);
     }
 
-    @Provides
-    @Singleton
-    DataPersistenceAdaptor<WelcomeRecord> welcomeRecordDataPersistenceAdaptor(
+    @Provides @Singleton DataPersistenceAdaptor<WelcomeRecord> welcomeRecordDataPersistenceAdaptor(
             DynamoDbClient client,
             MappingFactory<WelcomeRecord> factory) {
         return new DynamoPersistenceAdaptorImpl<>(client, factory);
@@ -130,6 +128,17 @@ public class ServicesModule extends AbstractModule {
     @Singleton
     MappingFactory<WelcomeRecord> welcomeRecordMappingFactory(@Named("mapping.factory.table.welcome") String table) {
         return new WelcomeRecordMappingFactory(table);
+    }
+
+    @Provides @Singleton DataPersistenceAdaptor<Recording> recordingDataPersistenceAdaptor(
+            DynamoDbClient client,
+            MappingFactory<Recording> factory) {
+        return new DynamoPersistenceAdaptorImpl<>(client, factory);
+    }
+
+    @Provides @Singleton
+    MappingFactory<Recording> recordingMappingFactory(@Named("mapping.factory.table.recording") String table) {
+        return new RecordingMappingFactory(table);
     }
 
     @Provides

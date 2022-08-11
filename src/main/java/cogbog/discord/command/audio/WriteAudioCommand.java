@@ -5,10 +5,10 @@ import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.exception.*;
 import cogbog.discord.model.AuthLevel;
 import cogbog.discord.model.ClipMetadata;
+import cogbog.discord.model.Recording;
 import cogbog.discord.service.RecordingService;
 import cogbog.discord.service.RemoteStorageService;
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
-import cogbog.discord.model.Coordinates;
 import cogbog.discord.service.UrlShortener;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -24,14 +24,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+
+import static java.lang.String.format;
 
 public class WriteAudioCommand implements DiscordCommand {
 
     public static final String USERNAME = "username";
 
     private static final String FORMAT = "%s-%s.wav";
+    private static final String RECORDING_ID_FORMAT = "%s-%s";
     private static final String BASE_URL = "http://pickle-park.s3-website.us-east-2.amazonaws.com";
 
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
@@ -60,13 +64,15 @@ public class WriteAudioCommand implements DiscordCommand {
             long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
             byte[] data = recordingService.getUser(guild, user);
+            var recordingId = format(RECORDING_ID_FORMAT, UUID.randomUUID(), Instant.now().toString());
             ClipMetadata metadata = ClipMetadata.builder()
                     .originatingTextChannel(actions.getOriginatingTextChannelId())
                     .creator(actions.getAuthorId())
                     .recordedUser(actions.lookupUserId(username))
+                    .recordingId(recordingId)
                     .build();
-            Coordinates coordinates = writeAudioData(data, guild, metadata);
-            sendCropLink(actions, coordinates);
+            var recording = writeAudioData(data, guild, metadata);
+            sendCropLink(actions, recording);
         } catch (NotRecordingException e) {
             actions.send("I'm not very turned on right now :(");
         } catch (NoSuchUserException e) {
@@ -102,15 +108,16 @@ public class WriteAudioCommand implements DiscordCommand {
         return INPUT_STRING;
     }
 
-    private void sendCropLink(MessageReceivedActions actions, Coordinates coordinates) throws IOException {
+    private void sendCropLink(MessageReceivedActions actions, Recording recording) throws IOException {
         try {
             URI cropLink = new URIBuilder(BASE_URL)
-                    .addParameter("uri", coordinates.getUrl().toString())
-                    .addParameter("key", coordinates.getKey())
-                    .addParameter("prefix", coordinates.getPrefix())
-                    .addParameter("recording_id", coordinates.getRecordingId())
+                    .addParameter("uri", recording.getRecordingUri().toString())
+                    .addParameter("key", recording.getKey())
+                    .addParameter("prefix", recording.getPrefix())
+                    .addParameter("recording_id", recording.getRecordingId())
                     .addParameter("guild_prefix", commandPrefix)
                     .build();
+            // TODO: bitly is no longer necessary
             String bitlyLink = urlShortener.shorten(cropLink.toString());
             actions.send("OK, now go to " + bitlyLink+ " to trim it.");
         } catch (URISyntaxException e) {
@@ -119,7 +126,7 @@ public class WriteAudioCommand implements DiscordCommand {
         }
     }
 
-    private Coordinates writeAudioData(byte[] data, String guild, ClipMetadata metadata) throws DiscordCommandException {
+    private Recording writeAudioData(byte[] data, String guild, ClipMetadata metadata) throws DiscordCommandException {
         try (AudioInputStream audioInputStream = new AudioInputStream(
                 new ByteArrayInputStream(data),
                 AudioReceiveHandler.OUTPUT_FORMAT,
