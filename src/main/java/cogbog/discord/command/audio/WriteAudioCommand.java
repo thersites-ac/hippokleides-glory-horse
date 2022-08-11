@@ -29,6 +29,8 @@ import java.util.UUID;
 
 public class WriteAudioCommand implements DiscordCommand {
 
+    public static final String USERNAME = "username";
+
     private static final String FORMAT = "%s-%s.wav";
     private static final String BASE_URL = "http://pickle-park.s3-website.us-east-2.amazonaws.com";
 
@@ -53,7 +55,7 @@ public class WriteAudioCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        String username = actions.getArgument("username");
+        String username = actions.getArgument(USERNAME);
         try {
             long user = actions.lookupUserId(username);
             String guild = actions.getGuildId();
@@ -106,6 +108,7 @@ public class WriteAudioCommand implements DiscordCommand {
                     .addParameter("uri", coordinates.getUrl().toString())
                     .addParameter("key", coordinates.getKey())
                     .addParameter("prefix", coordinates.getPrefix())
+                    .addParameter("recording_id", coordinates.getRecordingId())
                     .addParameter("guild_prefix", commandPrefix)
                     .build();
             String bitlyLink = urlShortener.shorten(cropLink.toString());

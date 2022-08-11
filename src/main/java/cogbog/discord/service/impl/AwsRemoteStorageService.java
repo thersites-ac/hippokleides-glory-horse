@@ -79,6 +79,7 @@ public class AwsRemoteStorageService implements RemoteStorageService {
     public Coordinates store(String guild, File file, ClipMetadata metadata) {
         String canonicalKey = upload(guild, file, metadata);
         URL url = presignedUrlFor(canonicalKey);
+        // TODO: add an ID
         return Coordinates.builder()
                 .key(file.getName())
                 .prefix(guild)
