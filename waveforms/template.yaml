@@ -20,7 +20,7 @@ Resources:
       MemorySize: 512 # somewhat memory intensive operations
       Architectures:
         - x86_64
-      EventInvokeConfiguration:
+      EventInvokeConfig:
         MaximumRetryAttempts: 0 # default was 2
       Environment:
         Variables:
