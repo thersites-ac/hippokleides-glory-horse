@@ -4,7 +4,6 @@
     * the url shouldn't say "pickle park"
     * https
   * trimmer waveforms:
-    * waveforms lambda writes output to Dynamo
     * validate/deploy UI changes that fetch data via recording_id query param
     * validate/deploy UI changes that load the waveform
     * remove dead query params
@@ -55,6 +54,7 @@
   * automated dynamo deletion for hippokleides_recordings table
     * also, convert table to an in-memory cache
   * consider alternative backend architectures
+  * should dynamo records for recordings really contain presigned URLs? (this seems better when I recall it's meant to be a short-lived cache)
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
