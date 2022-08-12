@@ -16,7 +16,7 @@ public class ClipMetadata {
     public static final String CREATOR = "creator";
     public static final String ORIGINATING_TEXT_CHANNEL = "originating-text-channel";
     public static final String RECORDED_USER = "recorded-user";
-    public static final String RECORDING_ID = "recording-id";
+    public static final String RECORDING_ID = "recording_id";
 
     private static final Logger logger = LoggerFactory.getLogger(ClipMetadata.class);
 
