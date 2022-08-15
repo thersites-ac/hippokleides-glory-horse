@@ -4,9 +4,8 @@
     * the url shouldn't say "pickle park"
     * https
   * trimmer waveforms:
-    * validate/deploy UI changes that fetch data via recording_id query param
-    * validate/deploy UI changes that load the waveform
     * remove dead query params (this will be 0.3.0)
+    * ensure waveform is ready before sending user to the trimmer
   * payment detection/feature toggle
   * rename prod: SoundboardMixerPro or something
   * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification

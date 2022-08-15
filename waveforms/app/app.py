@@ -23,7 +23,7 @@ def lambda_handler(event, context):
         signed_waveform_url = s3.generate_presigned_url(
                 'get_object', 
                 Params = signature_params, 
-                ExpiresIn = 300)
+                ExpiresIn = 600)
         print('generated signed URL for waveform', signed_waveform_url)
         tagging_response = s3.get_object_tagging(Key = key, Bucket = 'discord-recordings')
         tags = transform(tagging_response)

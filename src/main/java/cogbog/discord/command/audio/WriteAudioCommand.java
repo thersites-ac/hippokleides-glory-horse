@@ -111,9 +111,6 @@ public class WriteAudioCommand implements DiscordCommand {
     private void sendCropLink(MessageReceivedActions actions, Recording recording) throws IOException {
         try {
             URI cropLink = new URIBuilder(BASE_URL)
-                    .addParameter("uri", recording.getRecordingUri().toString())
-                    .addParameter("key", recording.getKey())
-                    .addParameter("prefix", recording.getPrefix())
                     .addParameter("recording_id", recording.getRecordingId())
                     .addParameter("guild_prefix", commandPrefix)
                     .build();
