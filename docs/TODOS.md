@@ -4,12 +4,12 @@
     * the url shouldn't say "pickle park"
     * https
   * trimmer waveforms:
-    * remove dead query params (this will be 0.3.0)
     * ensure waveform is ready before sending user to the trimmer
   * payment detection/feature toggle
-  * rename prod: SoundboardMixerPro or something
   * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
   * hypothetical users / design thinking
+  * offer to other servers I'm in
+  * make a sign-up site
 
 # other
   * combine repos
