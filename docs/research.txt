@@ -1,0 +1,159 @@
+RESEARCH QUESTIONS
+
+(situations, motivations, knowledge, decision-making, behaviors)
+
+1. What does a typical voice chat use look like for users?
+    * how long
+    * with whom
+    * doing what
+2. Why do users choose voice (or video) chat instead of text?
+3. Do users have prior experience making or using soundboards?
+4. Who has trimmed an audio recording before?
+5. How do users select bots for their server?
+6. What would make you choose not to add a bot?
+7. Where do you find the "instructions" for your server's bots?
+8. How did you find out that the bot you chose existed in the first place?
+9. What kinds of bots do you know exist or do you seek out?
+10. What do you want your bots to add to your server?
+11. When does a server "need" a bot?
+
+Chosen:
+
+# 1, 3, 7, 8, 10
+1. What does a typical voice chat use look like for users?
+    * how long
+    * with whom
+    * doing what
+3. Do users have prior experience making or using soundboards?
+7. Where do you find the "instructions" for your server's bots?
+8. How did you find out that the bot you chose existed in the first place?
+10. What do you want your bots to add to your server?
+
+
+
+
+INTERVIEWEES
+
+general demographic: discord users who use voice/video feature
+* people who already have used bots vs those who never do
+* server members vs owners/content creators
+* small vs medium vs large servers
+* younger (student) vs older (employed) users
+* people who use discord in background vs. foreground
+
+interview options:
+* friends/network
+* message members of servers I'm in
+* message owners of major servers
+
+types of people to interview:
+1. young, frequent bot user     (seek in network -- college student)
+    Eli student?
+2. older, no bot experience     (network -- Adam, SlothServe people)
+    Adam
+3. small server user            (network -- many options)
+    Pat?
+4. medium server runner         (network -- Hetch gaming)
+    Hetch (through Marc)?
+5. influencer/content creator   (cold emails/DMs)
+7. big server user              (network -- TDP? or join some other ones)
+    D&D friend?
+8. gamer                        (seek in network)
+    Kyle?
+9. video chatter                (seek in network)
+    Reid?
+
+
+
+QUESTIONS (shoot for 5+/research objective)
+
+1.
+* Can you describe a typical voice/video session?
+* What do you use voice chat for? 
+* Who do you voice chat with most often?
+What makes you feel comfortable in a voice chat?
+What are the pros/cons of voice chat on mobile vs. desktop?
+
+3.
+When did you first learn what a soundboard is?
+* Who uses soundboards?
+What media do you like to hear soundboards in?
+How does it feel (or would it feel) to use a soundboard?
+* What kinds of clips belong in a soundboard?
+* How should a soundboard's controls feel?
+
+7.
+How do you learn to use bots?
+How do you learn to use mobile apps?
+How do you learn to use web apps?
+What apps that you use are most similar to bots?
+* How do you feel about typing commands to an interpreter?
+What should a bot's help command do?
+* Tell me about the easiest-to-use bot you've encountered.
+
+8.
+How did you find out about bots? 
+How do you find out about new Discord features?
+* Tell me about a time you decided to install a browser extension.
+Tell me about a server you belong to that also has another community portal (e.g. webpage, associated youtube/twitch account, reddit).
+* How do you discover new mobile apps to install?
+
+10.
+* Tell me about any bots you use. What do you like about them? If you don't use any, why?
+What would you like a bot to add to a server you're in?
+* Which servers need a bot?
+Can you explain why you've joined the servers you belong to?
+What servers are you most active in?
+
+
+
+NB: Distinct lack of questions about emotions!!!
+    ("Tell me about a voice chat that you didn't want to end.")
+INTERVIEW GUIDE
+
+- Set the stage: make connection, make interviewee comfortable
+    How do you spend your free time?
+    What do you use Discord for?
+    What do you use voice chat for? 
+    Who do you voice chat with most often?
+
+- Capture stories
+    Can you describe a typical voice/video session?
+    Tell me about any bots you use.
+    Where have you encountered soundboards?
+
+- Follow-up questions
+    What do you like about the bots you use? 
+    If you don't use any bots, why?
+    Tell me about the easiest-to-use bot you've encountered.
+    Which servers need a bot?
+
+    What kinds of clips belong in a soundboard?
+    How should a soundboard's controls feel?
+
+    How did you decide to add a bot to a server? OR
+    How do you discover new mobile apps to install? OR
+    Tell me about a time you decided to install a browser extension.
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+
+
+
+INTERVIEWING NOTES
+* Prepare by setting expectations:
+    - Why I'm there
+    - How long it takes
+    - No right answers
+* Allow awkward silence
+* Curious
+
+
+Subjects:
+Adam
+Reid?
+Pat?
+Kyle?
+Eli student?
+Hetch (through Marc)?
+D&D friend?

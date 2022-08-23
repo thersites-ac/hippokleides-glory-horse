@@ -1,17 +1,34 @@
 # blockers to full release
+  * UX
+    * Discoverability:
+      - auto-join/record (or offer to) when a voice channel becomes non-empty
+      - auto-leave/stop recording when a voice channel becomes empty
+    * handle invalid clip names (in UI, lambda, and bot)
+    * Never autoscale to 0 instances
+    * lookup user by @ mention
+    * slash commands
+    * get verified
+    * faster clip UI loading
+  * Created clip polling bugs/bad UX
+    * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
+    * post-clip creation is still broken - Hippo sends "I know how to x" but doesn't load the clip
+  * Presence
+    * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
+    * social media profiles
+  * Analytics/strategy
+    * tracking users, channels, metrics for Hippo
+    * literal string appears to have syntax <@385291954516393984> which the DSL does not recognize as a valid variable
+  * Virality:
+    * share link feature
+
+# other
+  * payment detection/feature toggle
+  * trimmer waveforms:
+    * ensure waveform is ready before sending user to the trimmer
   * trimmer:
     * ui is ugly
     * the url shouldn't say "pickle park"
     * https
-  * trimmer waveforms:
-    * ensure waveform is ready before sending user to the trimmer
-  * payment detection/feature toggle
-  * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
-  * hypothetical users / design thinking
-  * offer to other servers I'm in
-  * make a sign-up site
-
-# other
   * combine repos
   * modularize (yes, going back to that pattern)
   * add CORS headers to API Gateway error responses
@@ -30,26 +47,20 @@
   * distinct prod bitly account?
   * security review for UI/lambda
     * any unsanitized user input risks?
-  * handle invalid clip names (in UI, lambda, and bot)
   * error handling in POST /trim
     * 403s from S3
     * 404s from S3
   * trimmer:
     * not showing 5xx errors?
-  * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
   * get off of LavaPlayer
-  * tracking users, channels, metrics for Hippo
   * enable/disable features based on registered commands
   * boot is getting uglier by the day
   * joins correct voice channel
   * text voice channels break it
   * cross region replication for clips; the storage fees are trivial
-  * lookup user by @ mention
-    * literal string appears to have syntax <@385291954516393984> which the DSL does not recognize as a valid variable
   * IAM permissions are degenerating to "do whatever" for Lambda functions; review these
   * it's gross that stuff is spread across us-east-1 and us-east-2
   * handle warnings in waveform generator lambda
-  * post-clip creation is still broken - Hippo sends "I know how to x" but doesn't load the clip
   * automated dynamo deletion for hippokleides_recordings table
     * also, convert table to an in-memory cache
   * consider alternative backend architectures

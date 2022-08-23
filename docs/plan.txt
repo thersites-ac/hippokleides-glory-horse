@@ -1,0 +1,8 @@
+Number of users: 11
+
+# Steps to 20 users (need to join another channel)
+1. Engineering focus - see TODOs
+2. Interviews
+3. Web presence/blog
+
+See: https://medium.com/@shocknotgonnaknowmyname/the-secrets-of-discord-server-bot-growth-863bb229ee82
