@@ -25,22 +25,23 @@ public class UnadminCommand implements DiscordCommand {
 
     @Override
     public void execute(MessageReceivedActions actions) throws DiscordCommandException {
-        String username = actions.getArgument("user");
+        String user = actions.getArgument("user");
         try {
-            long user = actions.lookupUserId(username);
-            authManager.demote(user, actions);
-            actions.send("You're fired, " + username);
+            long userId = actions.lookupUserId(user);
+            var tag = actions.lookupUserTag(user);
+            authManager.demote(userId, actions);
+            actions.send("You're fired, " + tag);
         } catch (UserIdentificationException e) {
-            actions.send("I don't know who " + username + " is.");
-            logger.warn("Ambiguous user for input " + username, e);
+            actions.send("I don't know who that is.");
+            logger.warn("Ambiguous user for input " + user, e);
         } catch (AuthLevelConflictException e) {
-            actions.send(username + " is already beneath my notice.");
-            logger.warn("Attempted to demote non-admin user: " + username, e);
+            actions.send("Already beneath my notice.");
+            logger.warn("Attempted to demote non-admin user: " + user, e);
         } catch (CannotDemoteSelfException e) {
-            actions.send("You can't step down from your responsibilities, " + username);
-            logger.warn("Attempted to demote self: " + username, e);
+            actions.send("You can't step down from your responsibilities!");
+            logger.warn("Attempted to demote self: " + user, e);
         } catch (IOException e) {
-            logger.error("While removing admin privileges for " + username, e);
+            logger.error("While removing admin privileges for " + user, e);
             actions.send(Messages.CANNOT_PERSIST_AUTH_STATE);
         } catch (AuthException e) {
             throw new DiscordCommandException(e);

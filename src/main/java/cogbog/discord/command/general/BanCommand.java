@@ -30,9 +30,10 @@ public class BanCommand implements DiscordCommand {
         String user = actions.getArgument(USER);
         try {
             long userId = actions.lookupUserId(user);
+            String tag = actions.lookupUserTag(user);
             String guildId = actions.getGuildId();
             authManager.ban(guildId, userId);
-            actions.send("You done goofed, " + actions.getArgument("user"));
+            actions.send("You done goofed, " + tag);
         } catch (UserIdentificationException e) {
             actions.send(format(UNCLEAR_USER_MESSAGE, user));
         } catch (IOException e) {

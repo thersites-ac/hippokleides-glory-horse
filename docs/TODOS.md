@@ -5,7 +5,6 @@
       - auto-leave/stop recording when a voice channel becomes empty
     * handle invalid clip names (in UI, lambda, and bot)
     * Never autoscale to 0 instances
-    * lookup user by @ mention
     * slash commands
     * get verified
     * faster clip UI loading
@@ -17,7 +16,6 @@
     * social media profiles
   * Analytics/strategy
     * tracking users, channels, metrics for Hippo
-    * literal string appears to have syntax <@385291954516393984> which the DSL does not recognize as a valid variable
   * Virality:
     * share link feature
 
