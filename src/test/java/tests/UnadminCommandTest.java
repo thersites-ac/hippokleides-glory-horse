@@ -36,14 +36,14 @@ public class UnadminCommandTest {
     public void notifiesOfUnidentifiableUser() throws DiscordCommandException {
         givenNonmember("foo");
         whenDemote("foo");
-        thenSendsMessage("I don't know who foo is.");
+        thenSendsMessage("I don't know who that is.");
     }
 
     @Test
     public void notifiesWhenUserIsNonadmin() throws DiscordCommandException {
         givenNonAdmin("foo");
         whenDemote("foo");
-        thenSendsMessage("foo is already beneath my notice.");
+        thenSendsMessage("Already beneath my notice.");
     }
 
     private void givenNonAdmin(String username) {
