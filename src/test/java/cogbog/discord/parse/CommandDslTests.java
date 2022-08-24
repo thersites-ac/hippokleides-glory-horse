@@ -100,6 +100,20 @@ public class CommandDslTests {
         thenVariableIs("bar", "bar");
     }
 
+    @Test
+    public void matchesAtUserMessage() {
+        givenSyntax("foo <bar>");
+        thenMatches("foo <@1234>");
+        thenVariableIs("bar", "1234");
+    }
+
+    @Test
+    public void matchesSeveralWhitespaces() {
+        givenSyntax("foo <bar>");
+        thenMatches("foo a doge lives here");
+        thenVariableIs("bar", "a doge lives here");
+    }
+
     private void givenSyntax(String dsl) {
         pattern = new CommandDsl(dsl).toPattern();
     }

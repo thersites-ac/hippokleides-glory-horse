@@ -96,6 +96,7 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
         Set<Member> members = new HashSet<>(event.getGuild().getMembersByName(user, true));
         members.addAll(event.getGuild().getMembersByNickname(user, true));
         members.addAll(event.getGuild().getMembersByEffectiveName(user, true));
+        members.add(event.getGuild().getMemberById(user));
 
         if (members.isEmpty())
             throw new NoSuchUserException(user);
