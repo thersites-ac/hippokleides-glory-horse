@@ -1,19 +1,16 @@
 package cogbog.discord.parse;
 
+import cogbog.discord.exception.InvalidCommandDslException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class CommandDslTests {
 
-    private Pattern pattern;
-    private Matcher matcher;
+    private CommandDsl dsl;
 
     @Test
     public void emptyStringMatchesEmptyString() {
@@ -114,20 +111,24 @@ public class CommandDslTests {
         thenVariableIs("bar", "a doge lives here");
     }
 
+    @Test(expected = InvalidCommandDslException.class)
+    public void doubleExclamationPointForbidden() {
+        givenSyntax("!!");
+    }
+
     private void givenSyntax(String dsl) {
-        pattern = new CommandDsl(dsl).toPattern();
+        this.dsl = new CommandDsl(dsl);
     }
 
     private void thenMatches(String message) {
-        matcher = pattern.matcher(message);
-        assertTrue(matcher.matches());
+        assertTrue(dsl.match(message));
     }
 
     private void thenDoesNotMatch(String message) {
-        assertFalse(pattern.matcher(message).matches());
+        assertFalse(dsl.match(message));
     }
 
     private void thenVariableIs(String variable, String value) {
-        assertEquals(value, matcher.group(variable));
+        assertEquals(value, dsl.get(variable));
     }
 }

@@ -39,7 +39,7 @@ public class DiscordCommandRegistry {
     private final ClipManager commandManager;
     private final WelcomeManager welcomeManager;
     private final String prefix;
-    private final Map<Pattern, DiscordCommand> handlers;
+    private final Map<CommandDsl, DiscordCommand> handlers;
     private final AuthManager authManager;
 
     @Inject
@@ -115,7 +115,7 @@ public class DiscordCommandRegistry {
     private DiscordCommand lookupAction(String guild, String message) {
         logger.info("looking up {}", message);
         return handlers.keySet().stream()
-                .filter(p -> p.matcher(message).matches())
+                .filter(dsl -> dsl.match(message))
                 .findFirst()
                 .map(handlers::get)
                 .orElse(getDynamic(guild, message));
@@ -125,7 +125,7 @@ public class DiscordCommandRegistry {
         if (command instanceof IdkCommand)
             throw new UnimplementedException();
         else
-            handlers.put(new CommandDsl(command.userInput()).toPattern(), command);
+            handlers.put(new CommandDsl(command.userInput()), command);
     }
 
     public void register(DiscordCommand... commands) {

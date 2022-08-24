@@ -19,7 +19,7 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
 
     private final GuildMessageReceivedEvent event;
 
-    private Matcher matcher;
+    private CommandDsl dsl;
 
     public JdaMessageReceivedActions(GuildMessageReceivedEvent event,
                                      AudioContext audioContext) {
@@ -108,7 +108,7 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
 
     @Override
     public String getArgument(String arg) {
-        return matcher.group(arg);
+        return dsl.get(arg);
     }
 
     @Override
@@ -151,8 +151,8 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
 
     @Override
     public void initMatches(String dsl, String message) {
-        matcher = new CommandDsl(dsl).toPattern().matcher(message);
-        if (!matcher.matches())
+        this.dsl = new CommandDsl(dsl);
+        if (!this.dsl.match(message))
             throw new RuntimeException("DSL " + dsl + " does not match" + message);
     }
 
