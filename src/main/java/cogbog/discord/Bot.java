@@ -10,11 +10,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.managers.AudioManager;
 import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.adaptor.UserJoinedVoiceActions;
 import cogbog.discord.adaptor.impl.JdaMessageReceivedActions;
@@ -25,6 +25,7 @@ import cogbog.discord.audio.GuildPlayer;
 import cogbog.discord.config.DefaultModule;
 import cogbog.discord.service.RemoteStorageService;
 import cogbog.discord.worker.SqsPollingWorker;
+import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -102,7 +102,7 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         executorService.submit(() -> {
-            MessageReceivedActions actions = buildMessageRecievedActions(event);
+            MessageReceivedActions actions = buildMessageReceivedActions(event);
             try {
                 registry.execute(actions, event.getMessage().getContentRaw());
             } catch (Exception ex) {
@@ -120,19 +120,42 @@ public class Bot extends ListenerAdapter {
         executorService.submit(() -> {
             super.onGuildVoiceJoin(event);
             String user = event.getMember().getUser().getAsTag();
-            String guild = event.getChannelJoined().getGuild().getName();
-            long guildId = event.getChannelJoined().getIdLong();
-            logger.info(format("%s joined %s (%s)", user, guild, guildId));
-            var voiceChannelIds = jda.getAudioManagers().stream()
-                    .map(AudioManager::getConnectedChannel)
-                    .filter(Objects::nonNull)
-                    .map(ISnowflake::getIdLong)
-                    .collect(Collectors.toSet());
-            if (voiceChannelIds.contains(guildId)) {
+            var eventChannel = event.getChannelJoined();
+            var guild = event.getGuild();
+            String guildName = eventChannel.getGuild().getName();
+            logger.info(format("%s joined voice: %s (%s) / %s (%s)",
+                    user,
+                    guildName, guild.getId(),
+                    eventChannel.getName(), eventChannel.getId()));
+
+            var audioManager = event.getGuild().getAudioManager();
+            if (!audioManager.isConnected() && eventChannel.getMembers().size() == 1) {
+                audioManager.openAudioConnection(eventChannel);
+                logger.info(format("Joining %s (%s)", eventChannel.getName(), eventChannel.getId()));
+            } else if (eventOccurredInConnectedChannel(audioManager, eventChannel)) {
                 try {
                     registry.welcome(buildUserJoinedVoiceActions(event));
                 } catch (Exception ex) {
-                    logger.error(format("Could not welcome %s to %s", user, guild), ex);
+                    logger.error(format("Could not welcome %s to %s", user, guildName), ex);
+                }
+            }
+        });
+    }
+
+    // fixme: whatever toggle controls autojoin should affect this too
+    @Override
+    public void onGuildVoiceLeave(@Nonnull GuildVoiceLeaveEvent event) {
+        executorService.submit(() -> {
+            super.onGuildVoiceLeave(event);
+            var audioManager = event.getGuild().getAudioManager();
+            var eventChannel = event.getChannelLeft();
+            if (eventOccurredInConnectedChannel(audioManager, eventChannel)) {
+                var onlyBotsRemain = eventChannel.getMembers().stream()
+                        .map(member -> member.getUser().isBot())
+                        .reduce(true, (p, q) -> p && q);
+                if (onlyBotsRemain) {
+                    audioManager.closeAudioConnection();
+                    logger.info(format("Leaving %s (%s)", eventChannel.getName(), eventChannel.getId()));
                 }
             }
         });
@@ -143,7 +166,7 @@ public class Bot extends ListenerAdapter {
         return new JdaUserJoinedVoiceActions(context, event);
     }
 
-    private MessageReceivedActions buildMessageRecievedActions(GuildMessageReceivedEvent event) {
+    private MessageReceivedActions buildMessageReceivedActions(GuildMessageReceivedEvent event) {
         AudioContext context = new AudioContext(event.getGuild(), getGuildPlayer(event.getGuild()), playerManager);
         return new JdaMessageReceivedActions(event, context);
     }
@@ -184,5 +207,10 @@ public class Bot extends ListenerAdapter {
         } else {
             logger.error("Version unknown: no version.txt found");
         }
+    }
+
+    private boolean eventOccurredInConnectedChannel(AudioManager audioManager, VoiceChannel channel) {
+        var connectedChannel = audioManager.getConnectedChannel();
+        return connectedChannel != null && connectedChannel.getId().equals(channel.getId());
     }
 }

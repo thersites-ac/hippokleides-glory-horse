@@ -1,23 +1,19 @@
 # blockers to full release
   * UX
-    * Discoverability:
-      - auto-join/record (or offer to) when a voice channel becomes non-empty
-      - auto-leave/stop recording when a voice channel becomes empty
     * handle invalid clip names (in UI, lambda, and bot)
     * Never autoscale to 0 instances
     * slash commands
     * get verified
     * faster clip UI loading
-  * Created clip polling bugs/bad UX
+    * share link feature
+  * New clip polling bugs
     * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
-    * post-clip creation is still broken - Hippo sends "I know how to x" but doesn't load the clip
+    * multiple Hippo instances compete to consume SQS messages
   * Presence
     * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
     * social media profiles
   * Analytics/strategy
     * tracking users, channels, metrics for Hippo
-  * Virality:
-    * share link feature
 
 # other
   * payment detection/feature toggle
@@ -75,3 +71,4 @@
   * opt-in recording: has `AuthLevel.USER`, but requires people in the voice chat to respond to a bot message to be recorded
   * multichannel welcome over regular clip playback
   * join command: get link to join hippo to another channel
+  * autojoin settings
