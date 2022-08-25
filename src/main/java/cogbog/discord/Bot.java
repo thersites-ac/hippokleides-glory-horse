@@ -2,6 +2,7 @@ package cogbog.discord;
 
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.command.audio.*;
+import cogbog.discord.service.RecordingService;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -47,6 +48,7 @@ public class Bot extends ListenerAdapter {
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
     private final ExecutorService executorService;
+    private final RecordingService recordingService;
 
     public static void main(String[] args) {
         try {
@@ -83,9 +85,11 @@ public class Bot extends ListenerAdapter {
     private Bot(DiscordCommandRegistry registry,
                 AudioPlayerManager playerManager,
                 ExecutorService executorService,
+                RecordingService recordingService,
                 Set<Class<? extends DiscordCommand>> commands) {
         this.playerManager = playerManager;
         this.registry = registry;
+        this.recordingService = recordingService;
 
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
@@ -122,15 +126,17 @@ public class Bot extends ListenerAdapter {
             String user = event.getMember().getUser().getAsTag();
             var eventChannel = event.getChannelJoined();
             var guild = event.getGuild();
-            String guildName = eventChannel.getGuild().getName();
+            String guildName = guild.getName();
+            String guildId = guild.getId();
             logger.info(format("%s joined voice: %s (%s) / %s (%s)",
                     user,
-                    guildName, guild.getId(),
+                    guildName, guildId,
                     eventChannel.getName(), eventChannel.getId()));
 
             var audioManager = event.getGuild().getAudioManager();
             if (!audioManager.isConnected() && eventChannel.getMembers().size() == 1) {
                 audioManager.openAudioConnection(eventChannel);
+                recordingService.beginRecording(guildId);
                 logger.info(format("Joining %s (%s)", eventChannel.getName(), eventChannel.getId()));
             } else if (eventOccurredInConnectedChannel(audioManager, eventChannel)) {
                 try {
@@ -155,6 +161,7 @@ public class Bot extends ListenerAdapter {
                         .reduce(true, (p, q) -> p && q);
                 if (onlyBotsRemain) {
                     audioManager.closeAudioConnection();
+                    recordingService.stopRecording(event.getGuild().getId());
                     logger.info(format("Leaving %s (%s)", eventChannel.getName(), eventChannel.getId()));
                 }
             }
