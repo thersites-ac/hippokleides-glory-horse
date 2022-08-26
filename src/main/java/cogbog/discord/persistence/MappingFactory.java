@@ -7,6 +7,5 @@ import java.util.Map;
 public interface MappingFactory<T> {
     Map<String, String> toMap(T object);
     T fromMap(Map<String, String> map) throws DataMappingException;
-    // fixme: this violates SRP
     String getTable();
 }
