@@ -8,10 +8,12 @@ import cogbog.discord.model.AuthLevel;
 import javax.inject.Inject;
 import java.util.Collection;
 
+import static java.lang.String.format;
+
 public class HelpCommand implements DiscordCommand {
 
-    private static final String HINT = "Also, when I find a feat or spell, click the citation at top (e.g. Core Rulebook, " +
-            "Advanced Player's Guide, etc.) to go to the site.";
+    private static final String ADDENDUM =
+            format("Also, you can visit %s to add me to your server.", ShareCommand.SHARE_URL);
 
     private DiscordCommandRegistry registry;
 
@@ -29,7 +31,7 @@ public class HelpCommand implements DiscordCommand {
                 .reduce((s, t) -> s + "\n\t" + t)
                 .ifPresentOrElse(body -> actions.send("I know these commands:\n\t" + body),
                         () -> actions.send("I don't know anything :("));
-        actions.send(HINT);
+        actions.send(ADDENDUM);
     }
 
     @Override

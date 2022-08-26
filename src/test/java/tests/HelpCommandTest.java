@@ -3,6 +3,7 @@ package tests;
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.command.DiscordCommandRegistry;
 import cogbog.discord.command.general.HelpCommand;
+import cogbog.discord.command.general.ShareCommand;
 import tools.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,20 @@ public class HelpCommandTest {
         thenSentAllRegisteredHelpMessages();
     }
 
+    @Test
+    public void alsoAddsShareMessage() {
+        givenRegistryContainsTestCommands();
+        whenRunHelp();
+        thenAlsoSentShareMessage();
+    }
+
+    private void thenAlsoSentShareMessage() {
+        assertTrue(actions.getSentMessage().size() >= 2);
+        var message = actions.getSentMessage().get(1);
+        assertTrue(message.contains("add me to your server"));
+        assertTrue(message.contains(ShareCommand.SHARE_URL));
+    }
+
     private void givenRegistryContainsTestCommands() {
         registry.register(helpCommand);
         registry.register(testCommand);
@@ -58,5 +73,4 @@ public class HelpCommandTest {
         assertTrue(helpMessage.contains("halp"));
         assertTrue(helpMessage.contains("plz help"));
     }
-
 }

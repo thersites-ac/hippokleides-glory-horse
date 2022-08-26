@@ -1,5 +1,5 @@
-Add hippo-clippy-horse to a server:
+Prod bot:
 https://discord.com/api/oauth2/authorize?client_id=996373324072493056&permissions=3165184&scope=bot
 
-Add hippo-glory-horse:
+QA bot:
 https://discord.com/api/oauth2/authorize?client_id=741105142493085706&permissions=3165184&scope=bot

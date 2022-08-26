@@ -17,12 +17,14 @@ public class CanonicalKey {
 
     public static CanonicalKey fromString(String s) throws MalformedKeyException {
         var results = s.split("/");
-        if (results.length != 2)
+        if (results.length != 2) {
             throw new MalformedKeyException(s);
-        else
+        } else {
+            var title = results[1].replace('+', ' ');
             return CanonicalKey.builder()
                     .guild(results[0])
-                    .key(results[1])
+                    .key(title)
                     .build();
+        }
     }
 }

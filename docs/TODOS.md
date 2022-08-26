@@ -5,9 +5,7 @@
     * slash commands
     * get verified
     * faster clip UI loading
-    * share link feature
   * New clip polling bugs
-    * SQS polling thread cannot handle clips with spaces in the name: they get replaced with + signs in the S3 notification
     * multiple Hippo instances compete to consume SQS messages
   * Presence
     * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
