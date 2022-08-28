@@ -3,10 +3,8 @@ package cogbog.discord;
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.command.audio.*;
 import cogbog.discord.service.RecordingService;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import com.google.inject.*;
+import com.google.inject.name.Names;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
@@ -55,9 +53,13 @@ public class Bot extends ListenerAdapter {
             injector = Guice.createInjector(new DefaultModule());
             jda = injector.getInstance(JDA.class);
 
-            var worker = injector.getInstance(SqsPollingWorker.class);
-            if (worker != null)
+            if (injector.getInstance(Key.get(Boolean.class, Names.named("sqs.poll.enabled")) )) {
+                logger.info("SQS polling is enabled");
+                var worker = injector.getInstance(SqsPollingWorker.class);
                 worker.start();
+            } else {
+                logger.info("SQS polling is disabled");
+            }
 
             // todo: is there a cleaner way to schedule this after the connection is ready?
             Thread.sleep(3000);

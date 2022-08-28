@@ -12,7 +12,7 @@ public class CommandDsl {
 
     private static final String WHITESPACE = "\\s+";
     private static final String VARIABLE_DECLARATION = "<(\\w+)>";
-    // fixme: this is a little too permissive--it'll accept "<@joe" or "bob dole>"--but that's a regex limitation
+    // fixme: this is a little too permissive--it'll accept "<@jow" or "jow>"--but that's a regex limitation
     // todo: type variables, so I can apply a different pattern when trying to match a User vs. a generic clip title
     private static final String VARIABLE_SEMANTICS = "(\\<\\@)?(?<$1>(\\\\w|\\\\w.*\\\\w|\\\\d+))\\>?";
 
