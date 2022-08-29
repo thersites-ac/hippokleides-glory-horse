@@ -56,6 +56,7 @@ types of people to interview:
 4. medium server runner         (network -- Hetch gaming)
     Hetch (through Marc)?
 5. influencer/content creator   (cold emails/DMs)
+    Erica
 7. big server user              (network -- TDP? or join some other ones)
     D&D friend?
 8. gamer                        (seek in network)
@@ -138,6 +139,36 @@ INTERVIEW GUIDE
 - Finish on high note
     If you could capture any audio you hear at will, where would you replay it?
 
+V2
+- General intro
+    How would you describe yourself in a sentence?
+    How do you spend your free time?
+    
+- Discord Voice Chat
+    What do you use Discord for?
+    What do you use voice chat for? 
+    Can you describe a typical voice/video session?
+
+- Bots
+    Tell me about any bots you use.
+    What do you like about the bots you use? 
+    If you don't use any bots, why?
+    Tell me about the easiest-to-use bot you've encountered.
+    Which servers need a bot?
+
+- Soundboards
+    Where have you encountered soundboards?
+    What kinds of clips belong in a soundboard?
+    How should a soundboard's controls feel?
+
+- Etc.
+    How did you decide to add a bot to a server? OR
+    How do you discover new mobile apps to install? OR
+    Tell me about a time you decided to install a browser extension.
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+
 
 
 INTERVIEWING NOTES
@@ -150,10 +181,13 @@ INTERVIEWING NOTES
 
 
 Subjects:
-Adam
 Reid?
 Pat?
 Kyle?
 Eli student?
 Hetch (through Marc)?
 D&D friend?
+Erica
+
+Done:
+Adam

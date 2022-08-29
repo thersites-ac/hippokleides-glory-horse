@@ -5,10 +5,7 @@
     * slash commands
     * get verified
     * faster clip UI loading
-  * New clip polling bugs
-    * multiple Hippo instances compete to consume SQS messages
   * Presence
-    * add some description, tags to the Hippo's profile(s): https://discord.com/developers/applications/996373324072493056/information
     * social media profiles
   * Analytics/strategy
     * tracking users, channels, metrics for Hippo

@@ -2,6 +2,7 @@ package cogbog.discord;
 
 import cogbog.discord.command.DiscordCommand;
 import cogbog.discord.command.audio.*;
+import cogbog.discord.handler.receive.DemultiplexingHandler;
 import cogbog.discord.service.RecordingService;
 import com.google.inject.*;
 import com.google.inject.name.Names;
@@ -139,6 +140,7 @@ public class Bot extends ListenerAdapter {
             if (!audioManager.isConnected() && eventChannel.getMembers().size() == 1) {
                 audioManager.openAudioConnection(eventChannel);
                 recordingService.beginRecording(guildId);
+                audioManager.setReceivingHandler(new DemultiplexingHandler(guildId, recordingService));
                 logger.info(format("Joining %s (%s)", eventChannel.getName(), eventChannel.getId()));
             } else if (eventOccurredInConnectedChannel(audioManager, eventChannel)) {
                 try {
