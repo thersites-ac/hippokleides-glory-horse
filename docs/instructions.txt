@@ -1,3 +1,0 @@
-To launch a (testing) prod instance:
-    1. Use the standard launch template
-    2. Change tag "env" to have value "prod"

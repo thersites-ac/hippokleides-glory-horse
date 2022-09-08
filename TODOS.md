@@ -1,4 +1,8 @@
-# blockers to full release
+# address ASAP
+  * self-documenting
+  * interviews
+
+# other
   * UX
     * handle invalid clip names (in UI, lambda, and bot)
     * Never autoscale to 0 instances
@@ -9,8 +13,6 @@
     * social media profiles
   * Analytics/strategy
     * tracking users, channels, metrics for Hippo
-
-# other
   * payment detection/feature toggle
   * trimmer waveforms:
     * ensure waveform is ready before sending user to the trimmer

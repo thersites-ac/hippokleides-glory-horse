@@ -1,0 +1,13 @@
+Number of users: 11
+
+# Steps to 20 users (need to join another channel)
+1. Engineering focus - clear/self-documenting
+2. Interviews
+    - current goal: identify archetypical users
+3. Solicit people to add Hippo
+    - SOMEONE is going to have to do this; it probably won't just be an interviewee (unless Eli's students can test-drive)
+    - need a landing page to show people
+4. Web presence/blog
+
+
+See: https://medium.com/@shocknotgonnaknowmyname/the-secrets-of-discord-server-bot-growth-863bb229ee82

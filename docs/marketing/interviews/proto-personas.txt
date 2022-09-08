@@ -1,0 +1,28 @@
+behaviors 
+- "hang out" with friends (mostly IRL) via Discord voice chat
+- social gaming on Discord 
+    - everyone also uses Discord for a non-video-game activity
+- some subculture participation via discord (chess, art, FF)
+- low server participation in big public servers; possibly not even in any; intense private (friend-group) server participation
+- tendency to announce impromptu voice chat events a few minutes early
+
+needs 
+- organization help (calendar events, matchmaking)
+
+challenges
+
+
+
+patterns
+- VC with IRL friends
+- avoids or lurks in big public servers; active in more intimate servers
+- need for game logistics support
+- not interested in bots for the sake of bots
+
+spectra
+- internet as a social tool: essential, supportive, limited
+- social media platforms used: many <-> none
+- friends: virtual <-> IRL
+- video games: hardcore, engaged, no time
+- hang-out sessions: "casual" <-> purposeful
+- ages: 25-37

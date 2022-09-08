@@ -1,0 +1,5 @@
+Display:
+    * CTA: add bot
+    * verbal explanation
+    * some kind of demo/bot in action
+    * sharing
