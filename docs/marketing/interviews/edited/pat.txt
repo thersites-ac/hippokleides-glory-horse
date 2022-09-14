@@ -1,0 +1,62 @@
+- General intro
+    How would you describe yourself in a sentence? 
+        - n/a
+    How do you spend your free time?
+B       - video games, photography, hiking, cooking, baking
+    
+- Discord Voice Chat
+    What do you use Discord for?
+B       - voice chat
+B           - games
+B               - tabletop rpgs
+B               - streaming for friends
+B           - fantasy sports drafts: hang out with other people doing it at the same time
+                - this is a scheduled event with friends
+    What do you use voice chat for? see above
+    Can you describe a typical voice/video session?
+B       - invite sent out to ~20 people?
+B       - 30' pre-draft people show up and hang in VC
+B       - clock starts at a fixed time
+B       - switching between on- and off-topic convo
+B       - extended chat about draftable players
+B       - duration: 90' for simpler, longer (3-4h) for more complex drafts
+
+- Bots
+    Tell me about any bots you use.
+        - Hippo only
+        - AIM chatbots? minimal use
+    What do you like about the bots you use? 
+    If you don't use any bots, why?
+C       - lack of knowledge/exposure
+C       - no public server presence
+C       - no use case to make or link one
+    Tell me about the easiest-to-use bot you've encountered.
+        - n/a
+    Which servers need a bot?
+N       - fantasy sports leagues: scraping
+
+- Soundboards
+    Where have you encountered soundboards?
+B       - collection of joke clips (quotes)
+B       - radio DJs (sound effects)
+    What kinds of clips belong in a soundboard?
+N       - quotes, sound effects
+N       - phonemes for linguists/speech therapists
+    How should a soundboard's controls feel?
+        - n/a
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+N       - bird sounds: e.g. some apps replay bird noises (ambient noise)
+            - sleep aid
+N           - background sound while working (alternative to music)
+        - nature sounds
+        - white noise machine
+
+
+INTERPRETATION:
+Pat is a Discord-as-extended-phone-call user, but he doesn't consider himself representative of the
+population. He does not find large public channels worth the effort to engage in. This also limits
+his exposure to other features he might enjoy, such as bot services. He finds certain sounds
+inherently rewarding, not for the verbal content, but for its acoustic properties. He was the only
+person to articulate the potential of a bot as a phonetic reference.

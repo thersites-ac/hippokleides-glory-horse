@@ -1,0 +1,68 @@
+- General intro
+    How would you describe yourself in a sentence?
+        - Depressed, disoriented, but trying.
+    How do you spend your free time?
+B       - time with wife, friends, cats
+B       - movies, music, weed
+    
+- Discord Voice Chat
+    What do you use Discord for?
+B       - coordinate group watching movies
+B       - group video games (MP, streaming to an audience)
+    What do you use voice chat for? 
+        - see above
+B       - text mostly for setting up voice chats
+    Can you describe a typical voice/video session?
+        - group movie: everyone has film separately; countdown and watch in parallel
+    Tell me about server participation:
+        - SlothServe
+B       - otherwise, DM
+B   Tell me about Slack usage:
+B       - college friends
+B       - channels per subject (covid, dating, work, shitposts, politics)
+
+- Bots
+    Tell me about any bots you use.
+        - Slack bot: 
+            - random cat images
+            - canned responses to keywords in user messages
+            - made and run by one member of his slack group
+    What do you like about the bots you use? 
+N       - incongruous responses after members forget bots are in channels: incidental comedy
+    If you don't use any bots, why?
+    Tell me about the easiest-to-use bot you've encountered.
+N       - bots don't require controls; just normal chat and it jumps in
+C       - potentially inappropriate responses for some conversations
+    Which servers need a bot?
+N       - drug use server: bot that sends cautions for drug interactions
+N           - moderation replacement/enhancement
+N       - alternatively, pet safety ("concern: this plant is poisonous to cats")
+N           - contain institutional knowledge
+
+- Soundboards
+    Where have you encountered soundboards?
+        - radio show
+        - comedy podcast
+        - games that sign particular bonuses/effects with sound effects ("ULTRAKILL")
+    What kinds of clips belong in a soundboard?
+        - memorable quotes from a content creator
+    How should a soundboard's controls feel?
+N       - flowchart: splits based on use context, source material
+N           - alternatively with filters and search
+        - most people would use a large sampler with buttons or digital immitation
+C       - never need more than 100 clips
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+N       - would capture musical or arresting sounds
+N       - areas with interesting acoustics
+N       - interesting audio ambiance
+            - ex.: walking around Hopkins campus and hearing a football player hit a tire with a sledgehammer
+N       - use these in compositions
+
+
+INTERPRETATION:
+Reid interestingly seems to separate his text chat and voice chat: Slack for text, Discord for
+voice. These both serve essentially the same purpose, namely keeping up with old IRL friends. He is
+aware of the rewarding potential of sound clips, but currently does not take advantage of them, and
+might have trouble getting started.

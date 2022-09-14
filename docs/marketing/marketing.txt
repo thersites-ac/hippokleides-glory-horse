@@ -1,7 +1,6 @@
 * what is the actual ideavirus?
     - audio memes?
     - custom soundboard?
-    - Discord social bot?
 * get onto a "best Discord bots" list
     - is there a niche for Discord bots review blog?
 * brand with a "most"/"best"
@@ -11,3 +10,4 @@
 * who is the initial hive?
     - solicit them to try the bot initially
     - make it extra appealing to them
+    - people who mainly use Discord to connect with friends in small, private servers (still too broad)

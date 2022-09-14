@@ -1,0 +1,75 @@
+
+- General intro
+    How would you describe yourself in a sentence?
+        - writer, gamer, engineer
+        - better at engineering than elevator pitches
+    How do you spend your free time?
+B       - used to be very active on Kongregate (as a social gaming platform)
+            - met parter on K text chat
+B       - 80% playing games (video games)
+B       - into lore/warhammer 40k
+            - youtube content
+            - books
+
+- Discord Voice Chat
+    What do you use Discord for?
+B       - following 3-4 Twitch streamers, interact in their communities
+B           - Discord is primary/only form of Twitch streamer community (no other social media)
+            - < 100 person communities
+B           - posting personal photos, memes
+B           - text chat almost exclusively
+B           - some movie night things (e.g. via Amazon watch party)
+B       - playing games with friends
+            - some are streamers
+        - prefers smaller Discord servers
+    What do you use voice chat for? 
+B       - D&D
+B       - gaming, aforementioned movies
+B       - essentially a group call
+    Can you describe that?
+B       - either 1-on-1
+B       - either one person screen sharing while playing or everyone shooting the shit over a game
+
+- Bots
+    Tell me about any bots you use.
+        - Discord: 
+            - name color change
+            - moderation bots
+            - greeters
+            - fan art server: bot to push art to a gallery
+    What do you like about the bots you use? 
+N       - simple commands: fan art bot is activated by an emoji
+N           - doesn't want Discord interaction to be a major attention sink
+    If you don't use any bots, why?
+    Tell me about the easiest-to-use bot you've encountered.
+B/N     - color bot: `;<hexcode>`
+    Which bots are essential to a community?
+N       - pronoun bot: react with an emoji to get pronoun labels for a server
+N       - bots that limit channel availability to prevent information overload
+
+- Soundboards
+    Where have you encountered soundboards?
+B       - had a Futurama soundboard
+            - page with 50 buttons that activate sound clips
+N           - trolling friends
+N           - phone app (plays through speakers)
+    What kinds of clips belong in a soundboard?
+N       - memes (clips from popular content: youtubes, TV)
+N       - clips from Twitch streamers
+    How should a soundboard's controls feel?
+N       - buttons on a phone app were nice
+N           - finding the right clip among 50 was hard
+N           - quick access is important
+N           - searching by clip content
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+N       - quoting popular media: play clips rather than verbally quote
+
+
+INTERPRETATION:
+Zak is a verbal person and one of the most gaming-social-media tuned in I've interviewed. His
+preference for searching clips by name, and his opinion of ;<hexcode> as a "simple" command, reflect
+his preference for text interactions. He values this in part because it is asynchronous; he doesn't
+want his communication medium to compete for attention with his main priorities, which are gaming
+and enjoying the company of his friends online.

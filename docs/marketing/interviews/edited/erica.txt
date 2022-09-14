@@ -1,0 +1,87 @@
+- General intro
+    How would you describe yourself in a sentence?
+        - chatty, sociable, accepting, helping (games, crafts)
+    How do you spend your free time?
+B       - 3-4 days/wk streaming (twitch), etsy crochet/earrings
+N       - learn bass? (goal)
+
+- Discord Voice Chat
+    What do you use Discord for?
+B       - connection with people, streamers
+B       - in 30 servers, active in 5
+        - IRL and virtual friends
+B       - active in IRL friends servers, Final Fantasy, and streaming buddies
+C       - inactive in other interest-related servers
+    What do you use voice chat for? 
+B       - every other day
+B       - multiplayer games
+B       - streaming games (more intimate, with friends)
+B       - d&d
+    Can you describe a typical voice/video session?
+B       - one person gathers a group for a MP game
+        - people join voice
+B       - possibly one person streaming if others don't want to join or can't
+B       - others might kibbitz
+
+- Bots
+    Tell me about any bots you use.
+        - a music bot in one of her IRL ones
+N       - go-live announcement bots
+N       - welcome bots (sending rules)
+N       - scheduling bots for FF events
+    What do you like about the bots you use? 
+C       - welcome - signing up for roles, unlocking channels
+            - integrated with FF gameplay
+    Tell me about the easiest-to-use bot you've encountered.
+N       - short command list (5 commands for music bot)
+            - least commands possible
+            - one command with several params is better than many commands
+    Which servers need a bot?
+C       - FF servers for organization - help to limit information overflow
+
+- Soundboards
+    Where have you encountered soundboards?
+B       - uses one on her stream
+B       - Streamdeck
+            - exists physically; she uses digitally
+N           - programs keys on keyboard to sounds
+N           - can play to twitch
+B           - 5-6 is the right number for Erica
+                - these are rewards for people to choose from
+N               - a lot to scroll
+                - maybe changes with scale?
+B       - 2-3 regulars, the rest get rotated every few months
+    What kinds of clips belong in a soundboard?
+N       - memes
+        - vine refs
+        - Windows error noises
+        - reactions (laugh, clap)
+    How should a soundboard's controls feel?
+N       - not too much
+N       - mobile UI unideal--dont always want to use phone
+N       - easy change
+
+- Etc.
+    How did you decide to add a bot to a server? OR
+    How do you discover new mobile apps to install? OR
+    Tell me about a time you decided to install a browser extension.
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+N       - perfect timing: someone says something, then a well-timed game event punctuates
+            -e.g. "well that went well," followed by in-game explosion
+
+
+- other notes: 
+N   download clips from hippo
+
+
+INTERPRETATION:
+Erica is a Twitch streamer and finds being highly visible on social platforms rewarding. She uses
+Discord both to keep up with friends (mostly IRL--the usual pattern), and also to participate in the
+online societies she belongs to. She is comfortable using tools to help her manage the complexity of
+her online presence; she finds this normal, if not natural. In spite of her above-average comfort
+with all things digital, she finds the largeness of some Discord communities off-putting. She still
+needs her tools to be quick, simple, and intuitive to use, both for her benefit while streaming and
+for the sake of her viewers, who also use them. She is also willing to do some legwork herself (e.g.
+by downloading clips created through Hippo) to enhance her online presence.

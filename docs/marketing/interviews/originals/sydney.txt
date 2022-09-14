@@ -5,7 +5,7 @@
         - Reading (scifi/fantasy)
         - Drawing
         - D&D
- 
+
 - Discord Voice Chat
     What do you use Discord for?
         - D&D
@@ -20,7 +20,7 @@
     Can you describe a typical voice/video session?
         - RPGs: dispersed college friends
             - join chat, join Roll 20, start playing
-            - 7-12
+            - time frame: 7-12pm
 
 - Bots
     Tell me about any bots you use.
