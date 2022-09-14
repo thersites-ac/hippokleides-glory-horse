@@ -1,7 +1,122 @@
+/* document */
+
+/* gold
+:root {
+  --color-primary: #990000;
+  --color-secondary: #FF5B00;
+  --color-text: #D4D925;
+  --color-accent: #FFEE63;
+}
+*/
+
+/* electric raspberry
+:root {
+  --color-primary: #332FD0;
+  --color-secondary: #9254C8;
+  --color-text: #E15FED;
+  --color-accent: #6EDCD9;
+}
+*/
+
+/* neon 
+:root {
+  --color-text: #72FFFF;
+  --color-accent: #72FFFF;
+  --color-primary: #0096FF;
+  --color-secondary: #5800FF;
+
+  also involved: #00D7FF
+}
+*/
+
+/* default
 :root {
   --color-primary: #25316D;
   --color-secondary: #5F6F94;
   --color-text: #97D2EC;
   --color-accent: #FEF5AC;
+}
+*/
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Silkscreen', cursive;
+  font-size: 16pt;
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-primary);
+  margin: 0;
+  height: 100%;
+}
+
+/* sections */
+
+main {
+  height: calc(100% - 8rem);
+}
+
+nav, footer {
+  background: var(--color-secondary);
+  width: 100%;
+  min-height: 4rem;
+}
+
+p.brand {
+  font-family: 'Monoton', cursive;
+  font-size: 2rem;
+  width: 45%;
+  text-align: left;
+  color: var(--color-accent);
+  margin: 1% 2%;
+}
+
+.nav-links {
+  display: inline-block;
+  padding: 0;
+  list-style: none;
+  text-align: right;
+  width: 48%;
+  margin: 0;
+}
+
+.nav-item, .divider {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+.divider {
+  border-radius: 50%;
+  height: 5px;
+  width: 5px;
+  background-color: var(--color-accent);
+}
+
+footer p {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+
+/* text and links */
+
+p, h1 {
+  color: var(--color-text);
+}
+
+a {
+ color: var(--color-accent);
+ text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-text);
 }
 

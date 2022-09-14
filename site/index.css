@@ -1,70 +1,6 @@
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-family: 'Silkscreen', cursive;
-  font-size: 16pt;
-  height: 100%;
-}
-
-body {
-  background-color: var(--color-primary);
-  margin: 0;
-  height: 100%;
-}
-
-p.brand {
-  font-family: 'Monoton', cursive;
-  font-size: 2rem;
-  width: 45%;
-  text-align: left;
-  color: var(--color-accent);
-  margin: 1% 2%;
-}
-
-nav, footer {
-  background: var(--color-secondary);
-  width: 100%;
-}
-
-.nav-links {
-  display: inline-block;
-  padding: 0;
-  list-style: none;
-  text-align: right;
-  width: 48%;
-  margin: 0;
-}
-
-.nav-item, .divider {
-  display: inline-block;
-  vertical-align: middle;
-  font-size: 1.2rem;
-}
-
-a {
- color: var(--color-accent);
- text-decoration: none;
-}
-
-a:hover {
-  color: var(--color-text);
-}
-
-.divider {
-  border-radius: 50%;
-  height: 5px;
-  width: 5px;
-  background-color: var(--color-accent);
-}
-
-.content {
-  height: 85%;
-}
-
 .waveform {
   position: relative;
+  display: none;
 }
 
 .waveform-data {
@@ -75,15 +11,11 @@ a:hover {
 .waveform-selection {
   width: 13%;
   height: 100%;
-  background-color: rgba(151, 210, 236, 0.2);
+  background-color: rgba(151, 210, 236, 0.2); /* --color-secondary with 20% alpha */
   position: absolute;
   top: 0;
   left: 72%;
   z-index: 100;
-}
-
-p, h1 {
-  color: var(--color-text);
 }
 
 .description {
@@ -97,9 +29,4 @@ p, h1 {
 
 .description h2 {
   font-size: 1.8rem;
-}
-
-footer p {
-  text-align: center;
-  padding: 1.5%;
 }
