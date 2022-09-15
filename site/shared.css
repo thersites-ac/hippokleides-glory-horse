@@ -29,14 +29,13 @@
 }
 */
 
-/* default
+/* default */
 :root {
   --color-primary: #25316D;
   --color-secondary: #5F6F94;
   --color-text: #97D2EC;
   --color-accent: #FEF5AC;
 }
-*/
 
 
 
@@ -51,6 +50,7 @@ html {
 }
 
 body {
+  color: var(--color-text);
   background-color: var(--color-primary);
   margin: 0;
   height: 100%;
@@ -59,7 +59,7 @@ body {
 /* sections */
 
 main {
-  height: calc(100% - 8rem);
+  min-height: calc(100% - 8rem);
 }
 
 nav, footer {
@@ -99,24 +99,57 @@ p.brand {
   background-color: var(--color-accent);
 }
 
+footer {
+  margin-top: 2rem;
+}
+
 footer p {
   text-align: center;
   padding: 1.5rem;
+  margin: 0;
 }
 
 
 /* text and links */
 
-p, h1 {
-  color: var(--color-text);
-}
-
 a {
- color: var(--color-accent);
- text-decoration: none;
+  color: var(--color-accent);
+  text-decoration: none;
 }
 
 a:hover {
   color: var(--color-text);
 }
 
+h1 {
+  font-size: 2rem;
+  padding: 0 3rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  padding: 0 3rem;
+}
+
+
+/* media - WIP */
+
+/*
+.small {
+  display: inline-block;
+}
+
+.big {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .small {
+    display: none;
+  }
+
+  .big {
+    display: inline-block;
+  }
+/*
+}

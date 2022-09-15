@@ -1,6 +1,5 @@
 .waveform {
   position: relative;
-  display: none;
 }
 
 .waveform-data {
@@ -18,15 +17,7 @@
   z-index: 100;
 }
 
-.description {
+.description, .tagline {
   text-align: center;
   margin: 1%;
-}
-
-.description h1 {
-  font-size: 2rem;
-}
-
-.description h2 {
-  font-size: 1.8rem;
 }
