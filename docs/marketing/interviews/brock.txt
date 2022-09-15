@@ -1,0 +1,68 @@
+- General intro
+    How would you describe yourself in a sentence?
+        - musician, worse visual artist
+        - nonbinary
+        - present in a lot of music Discord servers:
+            - active mod in Dean Blunt server
+            - used to moderate a Brock Hampton server
+            - moderated a James Feraro server and still is active
+    How do you spend your free time?
+        - video games: minecraft, worms, minesweeper, picross (?)
+        - media consumer: youtubes
+            - "watch for rolling rocks": challenge, speedrun-type game runs in super mario 64
+    
+- Discord Voice Chat
+    What do you use Discord for?
+        - met friends he's making an album with via Discord
+        - online friends based on Instagram or Discord
+        - Discord browsing: finding active convos and joining
+    What do you use voice chat for? 
+        - when possible
+        - join ongoing chat to catch
+        - prefer voice over text when possible
+        - sometimes schedules meetings about progress of an album on voice chat
+    Can you describe a typical voice/video session?
+        - throw out a "vc?" to a group, see if people respond
+        - frequently jumps into vc at work, due to lots of free time
+
+- Bots
+    Tell me about any bots you use.
+        - Discord music bots: seem to break every few months
+        - counting bot: game where people send numbers, bot tells you you're wrong
+            - Counting#5250
+        - moderation bots
+    What do you like about the bots you use? 
+        - likes roles bots: reaction-based interaction is cool
+        - connect 4 bot was fun
+        - automating tedium
+    If you don't use any bots, why?
+    Tell me about the easiest-to-use bot you've encountered.
+        - doesn't like different prefixes for bots
+        - seems excited about slash commands
+    Which servers need a bot?
+
+- Soundboards
+    Where have you encountered soundboards?
+        - phone apps
+        - DJs adding sounds over songs
+        - live performance - as an ironic gesture
+            - launchpad controller with buttons mapped to sounds
+    What kinds of clips belong in a soundboard?
+        - radio shows: useful sound bites
+            - topical, related audio clips
+            - quotations
+        - launching a full music performance
+    How should a soundboard's controls feel?
+
+- Etc.
+    How did you decide to add a bot to a server? OR
+    How do you discover new mobile apps to install? OR
+    Tell me about a time you decided to install a browser extension.
+
+- Finish on high note
+    If you could capture any audio you hear at will, where would you replay it?
+        - musical sampling
+        - in a lecture, radio show, Discord podcast:
+            - play back field recordings (natural situations)
+            - interesting friend quotes
+        - animal noises for immitation purposes
