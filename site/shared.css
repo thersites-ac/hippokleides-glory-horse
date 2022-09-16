@@ -1,5 +1,14 @@
 /* document */
 
+/* barbie
+:root {
+  --color-primary: #FB0091;
+  --color-secondary: #FB8691;
+  --color-text: #FB9E91;
+  --color-accent: #FBDA91;
+}
+*/
+
 /* gold
 :root {
   --color-primary: #990000;
@@ -29,7 +38,8 @@
 }
 */
 
-/* default */
+/* default
+*/
 :root {
   --color-primary: #25316D;
   --color-secondary: #5F6F94;
