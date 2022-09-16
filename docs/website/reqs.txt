@@ -1,5 +1,0 @@
-As a random google traffic searcher, I need to see...
-    * CTA: add bot
-    * verbal explanation
-    * some kind of demo/bot in action
-    * sharing
