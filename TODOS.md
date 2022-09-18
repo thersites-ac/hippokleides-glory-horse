@@ -56,6 +56,8 @@
     * also, convert table to an in-memory cache
   * consider alternative backend architectures
   * should dynamo records for recordings really contain presigned URLs? (this seems better when I recall it's meant to be a short-lived cache)
+  * add trimmer UI to monorepo
+  * changelog scripting
 
 # Feature requests
   * hall of fame clips to avoid accidental deletion
