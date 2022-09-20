@@ -3,3 +3,6 @@ https://discord.com/api/oauth2/authorize?client_id=996373324072493056&permission
 
 QA bot:
 https://discord.com/api/oauth2/authorize?client_id=741105142493085706&permissions=3165184&scope=bot
+
+Public site:
+http://hippokleides-public.s3-website.us-east-2.amazonaws.com/index.html
