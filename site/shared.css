@@ -1,5 +1,50 @@
 /* document */
 
+/* rose
+:root {
+  --color-primary: #FCEEF5;
+  --color-secondary: #F3BAD6;
+  --color-text: #EA86B6;
+  --color-accent: #E05297;
+}
+*/
+
+/* easter
+:root {
+  --color-primary: #FA26A0;
+  --color-secondary: #05DFD7;
+  --color-text: #A3F7BF;
+  --color-accent: #FFF591;
+}
+*/
+
+/* pastel
+:root {
+  --color-primary: #EFEE9D;
+  --color-secondary: #D1EAA3;
+  --color-text: #DBC6EB;
+  --color-accent: #ABC2E8;
+}
+*/
+
+/* april
+:root {
+  --color-primary: #ECFEFF;
+  --color-secondary: #00B7C2;
+  --color-text: #128494;
+  --color-accent: #4EF037;
+}
+*/
+
+/* winter
+:root {
+  --color-primary: #FAFAFA;
+  --color-secondary: #E8F1F5;
+  --color-text: #005691;
+  --color-accent: #004A7C;
+}
+*/
+
 /* barbie
 :root {
   --color-primary: #FB0091;
@@ -9,7 +54,7 @@
 }
 */
 
-/* gold
+/* golden
 :root {
   --color-primary: #990000;
   --color-secondary: #FF5B00;
