@@ -40,6 +40,7 @@ public class WriteAudioCommand implements DiscordCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(WriteAudioCommand.class);
     private static final String INPUT_STRING = "clip <username>";
+    private static final String HELP_MESSAGE = "Clip a user from the voice channel";
 
     private final RecordingService recordingService;
     private final RemoteStorageService remoteStorageService;
@@ -95,12 +96,12 @@ public class WriteAudioCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "clip <username>";
+        return INPUT_STRING;
     }
 
     @Override
     public String helpMessage() {
-        return "Clip a user from the voice channel. Make sure to run ~record first";
+        return HELP_MESSAGE;
     }
 
     @Override
@@ -145,5 +146,4 @@ public class WriteAudioCommand implements DiscordCommand {
                 .replace(':', '-')
                 .replace(' ', '_');
     }
-
 }

@@ -1,6 +1,5 @@
 # address
   * self-documenting
-  * clip botdocs are out of date
 
 # other
   * UX
