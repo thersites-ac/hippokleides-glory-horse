@@ -1,6 +1,6 @@
-# address ASAP
+# address
   * self-documenting
-  * interviews
+  * clip botdocs are out of date
 
 # other
   * UX

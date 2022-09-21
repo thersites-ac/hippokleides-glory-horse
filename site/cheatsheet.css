@@ -7,6 +7,10 @@ li {
   list-style: none;
 }
 
+li, p {
+  text-align: left;
+}
+
 ul {
   padding: 0;
 }

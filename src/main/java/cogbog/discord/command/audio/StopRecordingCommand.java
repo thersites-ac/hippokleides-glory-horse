@@ -32,16 +32,16 @@ public class StopRecordingCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "stop recording";
+        return "stop listening";
     }
 
     @Override
     public String helpMessage() {
-        return "I'll stop recording so you can have private chat time";
+        return "I'll plug my ears so you can have private chat time";
     }
 
     @Override
     public String userInput() {
-        return "stop recording";
+        return "stop listening";
     }
 }

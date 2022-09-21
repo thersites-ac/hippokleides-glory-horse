@@ -36,17 +36,17 @@ public class RecordCommand implements DiscordCommand {
 
     @Override
     public String example() {
-        return "record";
+        return "listen";
     }
 
     @Override
     public String helpMessage() {
-        return "Begin recording the voice channel so you can clip it";
+        return "Begin listening to the voice channel so you can clip it";
     }
 
     @Override
     public String userInput() {
-        return "record";
+        return "listen";
     }
 
 }
