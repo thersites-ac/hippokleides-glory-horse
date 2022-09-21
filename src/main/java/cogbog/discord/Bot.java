@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -67,8 +68,7 @@ public class Bot extends ListenerAdapter {
             var remoteAudio = injector.getInstance(RemoteStorageService.class);
             logger.info("I'm in " + jda.getGuilds().size() + " guilds");
             jda.getGuilds().forEach(g -> {
-                logger.info(format("Setting up guild %s (%s)", g.getName(), g.getId()));
-                remoteAudio.sync(g.getId());
+                setUpGuild(g, remoteAudio);
             });
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -79,6 +79,17 @@ public class Bot extends ListenerAdapter {
             }));
         } catch (Exception ex) {
             logger.error("Exception at startup", ex);
+        }
+    }
+
+    private static void setUpGuild(Guild g, RemoteStorageService remoteAudio) {
+        logger.info(format("Setting up guild %s (%s)", g.getName(), g.getId()));
+        remoteAudio.sync(g.getId());
+        try {
+            var users = g.getMembers().stream().filter(m -> !m.getUser().isBot()).collect(Collectors.toList());
+            logger.info("User count: " + users.size());
+        } catch (Throwable t) {
+            logger.error(format("Could not count users in guild %s", g.getId()), t);
         }
     }
 
