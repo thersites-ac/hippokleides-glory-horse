@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -44,6 +45,7 @@ public class Bot extends ListenerAdapter {
 
     private static JDA jda;
     private static Injector injector;
+    private static RemoteStorageService remoteAudio;
 
     private final Map<Long, GuildPlayer> guildPlayers;
     private final AudioPlayerManager playerManager;
@@ -65,11 +67,9 @@ public class Bot extends ListenerAdapter {
 
             // todo: is there a cleaner way to schedule this after the connection is ready?
             Thread.sleep(3000);
-            var remoteAudio = injector.getInstance(RemoteStorageService.class);
+            remoteAudio = injector.getInstance(RemoteStorageService.class);
             logger.info("I'm in " + jda.getGuilds().size() + " guilds");
-            jda.getGuilds().forEach(g -> {
-                setUpGuild(g, remoteAudio);
-            });
+//            jda.getGuilds().forEach(g -> setUpGuild(g, remoteAudio));
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (jda != null) {
@@ -234,5 +234,10 @@ public class Bot extends ListenerAdapter {
     private boolean eventOccurredInConnectedChannel(AudioManager audioManager, VoiceChannel channel) {
         var connectedChannel = audioManager.getConnectedChannel();
         return connectedChannel != null && connectedChannel.getId().equals(channel.getId());
+    }
+
+    @Override
+    public void onGuildReady(@Nonnull GuildReadyEvent event) {
+        setUpGuild(event.getGuild(), remoteAudio);
     }
 }
