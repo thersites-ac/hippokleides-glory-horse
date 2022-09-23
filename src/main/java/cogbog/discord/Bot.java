@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.guild.GuildAvailableEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -237,7 +238,7 @@ public class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildReady(@Nonnull GuildReadyEvent event) {
+    public void onGuildAvailable(@Nonnull GuildAvailableEvent event) {
         setUpGuild(event.getGuild(), remoteAudio);
     }
 }
