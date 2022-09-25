@@ -56,7 +56,6 @@ public class Bot extends ListenerAdapter {
     public static void main(String[] args) {
         try {
             injector = Guice.createInjector(new DefaultModule());
-            jda = injector.getInstance(JDA.class);
 
             if (injector.getInstance(Key.get(Boolean.class, Names.named("sqs.poll.enabled")) )) {
                 logger.info("SQS polling is enabled");
@@ -69,8 +68,8 @@ public class Bot extends ListenerAdapter {
             // todo: is there a cleaner way to schedule this after the connection is ready?
             Thread.sleep(3000);
             remoteAudio = injector.getInstance(RemoteStorageService.class);
+            jda = injector.getInstance(JDA.class);
             logger.info("I'm in " + jda.getGuilds().size() + " guilds");
-//            jda.getGuilds().forEach(g -> setUpGuild(g, remoteAudio));
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (jda != null) {
@@ -238,7 +237,18 @@ public class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildAvailable(@Nonnull GuildAvailableEvent event) {
+    public void onGuildReady(@Nonnull GuildReadyEvent event) {
+        logger.info("Guild ready: {}", fullGuildIdentifier(event.getGuild()));
         setUpGuild(event.getGuild(), remoteAudio);
+    }
+
+    @Override
+    public void onGuildAvailable(@Nonnull GuildAvailableEvent event) {
+        logger.info("Guild available: {}", fullGuildIdentifier(event.getGuild()));
+        setUpGuild(event.getGuild(), remoteAudio);
+    }
+
+    private static String fullGuildIdentifier(Guild guild) {
+        return format("%s (%s)", guild.getName(), guild.getId());
     }
 }
