@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import cogbog.discord.adaptor.MessageReceivedActions;
 import cogbog.discord.parse.CommandDsl;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -190,5 +191,15 @@ public class JdaMessageReceivedActions extends AudioActions implements MessageRe
     @Override
     public long getOriginatingTextChannelId() {
         return event.getChannel().getIdLong();
+    }
+
+    @Override
+    public void respond(File upload, String name) {
+        event.getMessage().reply(upload, name).queue();
+    }
+
+    @Override
+    public void respond(String message) {
+        event.getMessage().reply(message).queue();
     }
 }

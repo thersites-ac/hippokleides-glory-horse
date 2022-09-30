@@ -7,6 +7,7 @@ import cogbog.discord.adaptor.impl.AudioActions;
 import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import cogbog.discord.exception.UserIdentificationException;
 
+import java.io.File;
 import java.util.*;
 
 public class SpyMessageReceivedActions implements MessageReceivedActions {
@@ -22,6 +23,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
     private boolean connected;
     private boolean wasNuked = false;
     private String userInput;
+    private List<File> files;
 
     public SpyMessageReceivedActions() {
         sentMessages = new ArrayList<>();
@@ -30,6 +32,7 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
         members = new HashMap<>();
         queuedAudio = new LinkedList<>();
         connected = false;
+        files = new ArrayList<>();
     }
 
     @Override
@@ -135,6 +138,17 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
         return 0L;
     }
 
+    @Override
+    public void respond(File upload, String name) {
+        files.add(upload);
+        sentMessages.add("Sent file with name: " + name);
+    }
+
+    @Override
+    public void respond(String message) {
+        sentMessages.add(message);
+    }
+
     public List<String> getSentMessage() {
         return sentMessages;
     }
@@ -177,5 +191,9 @@ public class SpyMessageReceivedActions implements MessageReceivedActions {
 
     public String getGuildName() {
         return guildName;
+    }
+
+    public List<File> getSentFiles() {
+        return files;
     }
 }

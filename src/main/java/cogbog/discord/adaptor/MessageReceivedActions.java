@@ -6,6 +6,8 @@ import cogbog.discord.exception.NoOwnerException;
 import cogbog.discord.exception.NotEnoughQueueCapacityException;
 import cogbog.discord.exception.UserIdentificationException;
 
+import java.io.File;
+
 public interface MessageReceivedActions {
     void send(String message);
     void send(MessageEmbed embed);
@@ -33,4 +35,6 @@ public interface MessageReceivedActions {
     String getGuildName();
     int getAudioQueueSize();
     long getOriginatingTextChannelId();
+    void respond(File upload, String name);
+    void respond(String message);
 }

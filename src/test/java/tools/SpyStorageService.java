@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class SpyStorageService implements RemoteStorageService {
 
@@ -24,6 +25,10 @@ public class SpyStorageService implements RemoteStorageService {
 
     public SpyStorageService(String id) {
         this.id = id;
+    }
+
+    public SpyStorageService() {
+        this.id = UUID.randomUUID().toString();
     }
 
     @Override
