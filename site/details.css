@@ -1,0 +1,46 @@
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 3rem;
+}
+
+.step-image, .step, .step-number {
+  vertical-align: middle;
+}
+
+.step, .step-number {
+  display: inline-block;
+}
+
+.step-image {
+  border: 8px solid var(--color-secondary);
+  width: 40%;
+}
+
+.step-number {
+  margin: 2rem;
+  padding: 0;
+}
+
+.step {
+  width: 100%;
+  max-width: 40%;
+  font-size: 1.8rem;
+  padding: 0;
+  margin: 2rem;
+}
+
+.right {
+  text-align: right;
+}
+
+.question-marks {
+  text-align: center;
+  margin: 4rem auto;
+  padding: 0;
+  text-align: center;
+}
+
+.question-marks .step {
+  font-size: 6rem;
+}

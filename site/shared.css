@@ -1,89 +1,13 @@
 /* document */
 
-/* nightlight (most popular on colorhunt)
+/* Colors - thanks Sydney */
 :root {
-  --color-primary: #222831;
-  --color-secondary: #393E46;
-  --color-text: #00ADB5;
-  --color-accent: #EEEEE;
+  --color-primary: #091123;
+  --color-secondary: #2b364e;
+  --color-text: #F4BDDC;
+  --color-accent: #C4ECF9;
+  --color-hover: #54C7EC;
 }
-*/
-
-/* moonlight (also popular)
-:root {
-  --color-primary: #1B262C;
-  --color-secondary: #0F4C75;
-  --color-text: #3282B8;
-  --color-accent: #BBE1FA;
-}
-*/
-
-/* stargazer
-*/
-:root {
-  --color-primary: #000033;
-  --color-secondary: #0066CC;
-  --color-text: #0099FF;
-  --color-accent: #EDEDED;
-}
-
-/* classy purse
-:root {
-  --color-primary: #EEF2F5;
-  --color-secondary: #EA168E;
-  --color-text: #612570;
-  --color-accent: #1EAFED;
-}
-*/
-
-/* 50s diner
-:root {
-  --color-primary: #08D9D6;
-  --color-secondary: #252A34;
-  --color-text: #FF2E63;
-  --color-accent: #EAEAEA;
-}
-*/
-
-/* faded 50s diner
-:root {
-  --color-primary: #BFF4ED;
-  --color-secondary: #280F34;
-  --color-text: #E41655;
-  --color-accent: #B30753;
-}
-*/
-
-/* winter
-:root {
-  --color-primary: #FAFAFA;
-  --color-secondary: #E8F1F5;
-  --color-text: #005691;
-  --color-accent: #004A7C;
-}
-*/
-
-/* neon 
-:root {
-  --color-text: #72FFFF;
-  --color-accent: #72FFFF;
-  --color-primary: #0096FF;
-  --color-secondary: #5800FF;
-
-  also involved: #00D7FF
-}
-*/
-
-/* cloudy night (default)
-:root {
-  --color-primary: #25316D;
-  --color-secondary: #5F6F94;
-  --color-text: #97D2EC;
-  --color-accent: #FEF5AC;
-}
-*/
-
-
 
 * {
   box-sizing: border-box;
@@ -164,11 +88,11 @@ a {
 }
 
 a:hover {
-  color: var(--color-text);
+  color: var(--color-hover);
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   padding: 0 3rem;
 }
 

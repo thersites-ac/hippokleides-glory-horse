@@ -10,7 +10,7 @@
 .waveform-selection {
   width: 13%;
   height: 100%;
-  background-color: rgba(151, 210, 236, 0.2); /* --color-secondary with 20% alpha */
+  background-color: rgba(43, 54, 78, 0.3); /* --color-secondary with 20% alpha */
   position: absolute;
   top: 0;
   left: 72%;
