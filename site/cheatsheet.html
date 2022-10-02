@@ -22,34 +22,91 @@
       </nav>
     </header>
     <main>
-      <section>
-        <h2>Playback</h2>
-        <p>After you have created and named the clip, use the name as a command to tell Voice Blaster Platinum to play it back. For example, if you named your clip <em>rad</em>, use the command <em>;rad</em> to hear it.</p>
-      </section>
-      <section>
-        <h2>Other fun ones</h2>
-        <ul>
-          <li><strong>;clip (user)</strong> - select a segment to save from the last 30 seconds of audio</li>
-          <li><strong>;delete (title)</strong> - delete a clip permanently. for example, after <em>;delete rad</em>, the command <em>;rad</em> will do nothing. only an admin can do this</li>
-          <li><strong>;gtfo</strong> - force the bot to leave the voice channel it's in. Only an admin can use this</li>
-          <li><strong>;list</strong> - list all the clips you can play</li>
-          <li><strong>;listen</strong> - this will undo <em>;stop listening</em>. Only an admin can use this</li>
-          <li><strong>;nuke</strong> - clear all queued-up clips. Useful after someone sends <em>;repeat rad 9001 times</em>. Only an admin can use <em>;nuke</em></li>
-          <li><strong>;random</strong> - play a random clip</li>
-          <li><strong>;repeat (title) (number) times</strong> - hear a clip multiple times. For example, <em>;repeat rad 69 times</em> if you really liked hearing <em>;rad</em></li>
-          <li><strong>;stop listening</strong> - stops the bot from listening to your chat until you send <em>;listen</em>. Only an admin can use this</li>
-          <li><strong>;welcome (user) with (clip)</strong> - play the clip whenever the user joins voice chat</li>
-        </ul>
-      </section>
-      <section>
+      <div class="hole hole-top"></div>
+      <div class="hole hole-mid"></div>
+      <div class="hole hole-bot"></div>
+      <div class="paper-gutter"></div>
+        <ol class="paper-rows">
+          <li class="paper-row top-row">after you have created and named the clip, use the name as a command to tell voice blaster platinum to play it back.</li>
+          <li class="paper-row"></li>
+          <li class="paper-row">
+            <h2 class="section-title">audio commands</h2>
+          </li>
+          <li class="paper-row">
+            <div class="command">;clip (user)</div>
+            <div class="command-description">select a segment of audio to save</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;delete (title)</div>
+            <div class="command-description">delete a clip <span class="scary">permanently</span>!</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;download (title)</div>
+            <div class="command-description">download a clip for your own purposes</div>
+          <li class="paper-row">
+            <div class="command">;gtfo</div>
+            <div class="command-description">tell the bot to leave a voice channel</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;list</div>
+            <div class="command-description">list all the clips you can play</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;listen</div>
+            <div class="command-description">undo <em>;stop listening</em></div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;nuke</div>
+            <div class="command-description">clear all queued-up clips</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;random</div>
+            <div class="command-description">play a random clip</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;repeat (title) (number) times</div>
+            <div class="command-description">hear a clip multiple times</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;stop listening</div>
+            <div class="command-description">stops the bot from listening to voice chat</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;welcome (user) with (clip)</div>
+            <div class="command-description">play a clip whenever someone joins voice chat</div>
+          </li>
+          <li class="paper-row"></li>
+          <li class="paper-row">
+            <h2 class="section-title">housekeeping</h2>
+          </li>
+          <li class="paper-row">
+            <div class="command">;admin (user)</div>
+            <div class="command-description">give someone admin privileges</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;ban (user)</div>
+            <div class="command-description">cut a user off from Voice Blaster Platinum</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;share</div>
+            <div class="command-description">get the bot add link</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;sync</div>
+            <div class="command-description">tell the bot check for new clips</div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;unadmin (user)</div>
+            <div class="command-description">undoes <em>;admin</em></div>
+          </li>
+          <li class="paper-row">
+            <div class="command">;unban (user)</div>
+            <div class="command-description">undoes <em>;ban</em></div>
+          </li>
+        </ol>
+      <section class="hide">
         <h2>Housekeeping</h2>
         <ul>
-          <li><strong>;admin (user)</strong> - give someone admin privileges. Only the guild owner can do this</li>
-          <li><strong>;ban (user)</strong> - prevent a user from interacting with Voice Blaster Platinum. Only an admin can do this</li>
-          <li><strong>;share</strong> - get the bot add link</li>
-          <li><strong>;sync</strong> - tell Voice Blaster Platinum to download new clips, in case it missed one. You shouldn't have to do this, but nobody's perfect</li>
-          <li><strong>;unadmin (user)</strong> - undoes <em>;admin</em></li>
-          <li><strong>;unban (user)</strong> - undoes <em>;ban</em></li>
         </ul>
       </section>
     </main>
