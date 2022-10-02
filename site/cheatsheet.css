@@ -18,7 +18,7 @@ main {
   top: 0;
   left: 0;
   height: 100%;
-  width: 5rem;
+  width: 7rem;
   border-right: 4px solid #FF4D6C;
 }
 
@@ -27,7 +27,7 @@ main {
 }
 
 .paper-row {
-  padding-left: 6rem;
+  padding-left: 8rem;
   padding-right: 2rem;
   border-bottom: 2px solid var(--color-hover);
   width: 100%;
