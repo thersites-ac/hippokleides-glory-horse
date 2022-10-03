@@ -1,46 +1,62 @@
+.banner {
+  font-size: 4rem;
+  padding: 2rem 4rem;
+  margin: auto;
+  text-align: center;
+  font-weight: normal;
+}
+
+.fail {
+  text-decoration: line-through var(--color-accent);
+}
+
 .steps {
   list-style: none;
   padding: 0;
-  margin: 3rem;
+  margin: 3rem 6rem;
 }
 
-.step-image, .step, .step-number {
+.step-image, .step {
   vertical-align: middle;
-}
-
-.step, .step-number {
-  display: inline-block;
 }
 
 .step-image {
   border: 8px solid var(--color-secondary);
-  width: 40%;
-}
-
-.step-number {
-  margin: 2rem;
-  padding: 0;
+  width: 53%;
+  margin: 2rem 0;
 }
 
 .step {
-  width: 100%;
-  max-width: 40%;
-  font-size: 1.8rem;
-  padding: 0;
-  margin: 2rem;
+  max-width: 35%;
+  margin: 3rem;
+  text-align: left;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.right {
+.step-number {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+  font-size: 5rem;
+}
+
+.step-description {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 0;
+}
+
+.right  {
   text-align: right;
 }
 
 .question-marks {
-  text-align: center;
-  margin: 4rem auto;
   padding: 0;
   text-align: center;
 }
 
-.question-marks .step {
+.question-marks .step-description {
   font-size: 6rem;
 }

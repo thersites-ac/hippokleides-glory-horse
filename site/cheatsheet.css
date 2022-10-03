@@ -1,8 +1,5 @@
-main {
+.paper {
   text-align: center;
-  padding-top: 7rem;
-  padding-bottom: 4rem;
-
   width: 80vw;
   margin: auto;
   margin-top: 3rem;
@@ -18,26 +15,40 @@ main {
   z-index: 100;
 }
 
-.cabbagemn {
-  bottom: 22rem;
-  right: 1rem;
-  height: 26rem;
-  transform: rotate(-15deg);
-}
-
 .smugcat-smol {
   top: 1rem;
   right: 1rem;
   width: 8rem;
 }
 
-.lordx-smol {
-  top: 10rem;
-  left: 0.5rem;
-  width: 8rem;
+.cabbagemn-smol {
+  bottom: 1rem;
+  right: 8rem;
+  height: 18rem;
+  transform: rotate(-15deg);
 }
 
-.paper-gutter {
+.lordx-smol {
+  bottom: 3rem;
+  left: 9rem;
+  width: 18rem;
+}
+
+.smugcat {
+  bottom: 10rem;
+  right: 4rem;
+  height: 30rem;
+  transform: rotate(10deg);
+}
+
+.cabbagemn {
+  bottom: 1rem;
+  left: 8rem;
+  transform: rotate(-15deg);
+  height: 35rem;
+}
+
+.paper-side-gutter {
   position: absolute;
   top: 0;
   left: 0;
@@ -50,10 +61,6 @@ main {
   z-index: 50;
 }
 
-.top-row {
-  border-top: 2px solid var(--color-hover);
-}
-
 .paper-row {
   padding-left: 8rem;
   padding-right: 2rem;
@@ -62,6 +69,19 @@ main {
   height: 3rem;
   display: flex;
   align-items: center;
+}
+
+.paper-top-gutter {
+  height: 7rem;
+}
+
+.paper-top-gutter h1 {
+  margin: auto;
+}
+
+.bottom-row {
+  border: 0;
+  height: 4rem;
 }
 
 .section-title {
@@ -85,22 +105,8 @@ main {
   text-decoration: wavy underline #C0302C;
 }
 
-section li {
-  list-style: none;
-  border-bottom: 2px solid var(--color-hover);
-}
-
 li, p {
   text-align: left;
-}
-
-ul {
-  padding: 0;
-}
-
-section {
-  border-left: 4px solid #FF4D6C;
-  padding-left: 20px;
 }
 
 .hole {
@@ -127,3 +133,11 @@ section {
 .hide {
   display: none;
 }
+
+/* media queries -- WIP
+@media(max-height: 90rem) {
+  .paper-row {
+    height: 4rem;
+  }
+}
+*/
