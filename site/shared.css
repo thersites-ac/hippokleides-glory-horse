@@ -105,24 +105,36 @@ h2 {
 }
 
 
-/* media queries - WIP */
+/* media queries */
 
-/*
-.small {
-  display: inline-block;
-}
-
-.big {
+.med-only {
   display: none;
 }
 
-@media (min-width: 40rem) {
-  .small {
+.small-only {
+  display: none;
+}
+
+@media (max-width: 90rem) {
+  .large {
     display: none;
   }
 
-  .big {
-    display: inline-block;
+  .med-only {
+    display: initial;
   }
 }
-*/
+
+@media (max-width: 68rem) {
+  .large {
+    display: none;
+  }
+
+  .small-only {
+    display: initial;
+  }
+
+  .med-plus {
+    display: none;
+  }
+}

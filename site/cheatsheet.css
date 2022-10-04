@@ -24,28 +24,35 @@
 .cabbagemn-smol {
   bottom: 1rem;
   right: 8rem;
-  height: 18rem;
+  height: 24rem;
   transform: rotate(-15deg);
 }
 
 .lordx-smol {
   bottom: 3rem;
   left: 9rem;
-  width: 18rem;
+  width: 16rem;
 }
 
 .smugcat {
-  bottom: 10rem;
+  bottom: 0.5rem;
   right: 4rem;
-  height: 30rem;
-  transform: rotate(10deg);
+  height: 20rem;
+  transform: rotate(6deg);
 }
 
 .cabbagemn {
-  bottom: 1rem;
-  left: 8rem;
-  transform: rotate(-15deg);
-  height: 35rem;
+  bottom: 8rem;
+  left: 14rem;
+  transform: rotate(-10deg);
+  height: 40rem;
+}
+
+.lordx {
+  bottom: 4rem;
+  right: 2rem;
+  height: 44rem;
+  transform: rotate(-5deg);
 }
 
 .paper-side-gutter {
@@ -101,6 +108,10 @@
   width: 37%;
 }
 
+.command-description {
+  width: 50%;
+}
+
 .scary {
   text-decoration: wavy underline #C0302C;
 }
@@ -134,10 +145,41 @@ li, p {
   display: none;
 }
 
-/* media queries -- WIP
-@media(max-height: 90rem) {
+
+/* media queries -- default is large (width > 90rem) */
+
+/* medium */
+@media(max-width: 90rem) {
   .paper-row {
     height: 4rem;
   }
+
+  .paper-top-gutter {
+    height: 9rem;
+  }
+
+  .bottom-row {
+    height: 5rem;
+  }
+
+  .cabbagemn-smol {
+    height: 20rem;
+  }
 }
-*/
+
+/* medium */
+@media (max-width: 90rem) {
+  .smugcat-smol {
+    top: 80%;
+    left: 16rem;
+    width: 12rem;
+  }
+}
+
+/* small */
+@media (max-width: 68rem) {
+  .paper {
+    margin: 1rem 0;
+    width: 100%;
+  }
+}
