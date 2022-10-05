@@ -35,16 +35,35 @@ main {
 nav, footer {
   background: var(--color-secondary);
   width: 100%;
-  min-height: 4rem;
+  height: 4rem;
 }
 
-p.brand {
+nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.brand {
+  height: 100%;
+  margin: 0 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.brand p {
   font-family: 'Monoton', cursive;
   font-size: 2rem;
-  width: 45%;
+  width: 100%;
   text-align: left;
   color: var(--color-accent);
-  margin: 1% 2%;
+  margin: 0;
+  display: inline-block;
+}
+
+.brand img {
+  height: 80%;
+  display: inline-block;
+  margin: auto;
 }
 
 ol, ul {
@@ -54,9 +73,11 @@ ol, ul {
 }
 
 .nav-links {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   text-align: right;
-  width: 48%;
+  justify-content: space-between;
+  margin-right: 1rem;
 }
 
 .nav-item, .divider {
@@ -70,6 +91,7 @@ ol, ul {
   height: 5px;
   width: 5px;
   background-color: var(--color-accent);
+  margin: 0 1rem;
 }
 
 footer {
@@ -106,6 +128,10 @@ h2 {
 
 
 /* media queries */
+
+.hide {
+  display: none !important;
+}
 
 .med-only {
   display: none;
