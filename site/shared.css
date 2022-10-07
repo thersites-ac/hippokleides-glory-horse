@@ -1,6 +1,5 @@
 /* document */
 
-/* Colors - thanks Sydney */
 :root {
   --color-primary: #091123;
   --color-secondary: #2b364e;
@@ -41,6 +40,7 @@ nav, footer {
 nav {
   display: flex;
   justify-content: space-between;
+  position: relative;
 }
 
 .brand {
@@ -50,7 +50,7 @@ nav {
   align-items: center;
 }
 
-.brand p {
+.brand-text {
   font-family: 'Monoton', cursive;
   font-size: 2rem;
   width: 100%;
@@ -60,9 +60,9 @@ nav {
   display: inline-block;
 }
 
-.brand img {
+.brand-icon {
   height: 80%;
-  display: inline-block;
+  display: none;
   margin: auto;
 }
 
@@ -72,12 +72,18 @@ ol, ul {
   margin: 0;
 }
 
-.nav-links {
+.nav-options {
   display: inline-flex;
   align-items: center;
   text-align: right;
   justify-content: space-between;
   margin-right: 1rem;
+}
+
+.nav-hamburger {
+  display: none;
+  width: 3rem;
+  height: 3rem;
 }
 
 .nav-item, .divider {
@@ -129,38 +135,67 @@ h2 {
 
 /* media queries */
 
-.hide {
-  display: none !important;
-}
-
-.med-only {
-  display: none;
-}
-
-.small-only {
-  display: none;
-}
-
 @media (max-width: 90rem) {
-  .large {
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-links {
     display: none;
   }
 
-  .med-only {
-    display: initial;
+  .nav-links-dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    position: absolute;
+    right: 0;
+    margin-right: 0;
+    top: 4rem;
+    background-color: var(--color-secondary);
+    padding: 0.5rem;
+    border-radius: 0.1rem;
+    z-index: 300;
+  }
+
+  .nav-links-dropdown .nav-item {
+    display: block;
+    margin: 0.5rem;
+    font-size: 2rem;
+  }
+
+  .nav-links-dropdown .nav-item a {
+    color: var(--color-accent);
+  }
+
+  .nav-links-dropdown .nav-item a:hover {
+    color: var(--color-hover);
+  }
+
+  .nav-links-dropdown .nav-item .divider {
+    display: none;
   }
 }
 
 @media (max-width: 68rem) {
-  .large {
+  nav {
+    height: 6rem;
+  }
+
+  .brand-text {
     display: none;
   }
 
-  .small-only {
-    display: initial;
+  .brand-icon {
+    display: inline-block;
   }
 
-  .med-plus {
-    display: none;
+  .nav-hamburger {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .nav-links-dropdown {
+    top: 6rem;
   }
 }

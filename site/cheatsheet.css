@@ -167,6 +167,14 @@ li, p {
   }
 }
 
+.med-only {
+  display: none;
+}
+
+.small-only {
+  display: none;
+}
+
 /* medium */
 @media (max-width: 90rem) {
   .smugcat-smol {
@@ -174,10 +182,26 @@ li, p {
     left: 16rem;
     width: 12rem;
   }
+
+  .large {
+    display: none;
+  }
+
+  .med-only {
+    display: initial;
+  }
 }
 
 /* small */
 @media (max-width: 68rem) {
+  .large {
+    display: none;
+  }
+
+  .small-only {
+    display: initial;
+  }
+
   .paper {
     margin: 1rem 0;
     width: 100%;
